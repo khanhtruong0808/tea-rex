@@ -15,7 +15,9 @@ const Sidebar = () => {
   ];
   return (
     <div className="h-24 flex justify-center items-center gap-32 bg-gradient-to-bl from-amber-600 to-amber-500">
-      <NavLink to="/"></NavLink>
+      <NavLink to="/">
+        <img src="tea-rex-sign.png" alt="" className="max-h-24" />
+      </NavLink>
       <ul className="flex gap-12">
         {routes.map((route) => (
           <NavLink to={route.path} key={route.name}>
