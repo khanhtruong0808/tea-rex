@@ -5,6 +5,7 @@ export default {
     extend: {
       fontFamily: {
         navbar: ["Changa", "sans-serif"],
+        menu: ["Brush Script MT", "sans-serif"],
       },
     },
   },
