@@ -21,7 +21,9 @@ const Navbar = () => {
   return (
     <nav
       className={`min-h-24 flex ${
-        isExpanded ? "flex-col items-start gap-2 pb-4" : "flex-row"
+        isExpanded
+          ? "flex-col lg:flex-row items-start gap-2 pb-4 lg:pb-0"
+          : "flex-row"
       } justify-between lg:justify-evenly 2xl:justify-center lg:items-center 2xl:gap-32 bg-gradient-to-bl from-amber-600 to-amber-500 lg:px-0 pl-1 pr-8`}
     >
       <NavLink to="/" className="shrink-0">
