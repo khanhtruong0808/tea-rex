@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+import Modal from 'react-modal';
 
 const Menu = () => {
 
@@ -229,23 +231,168 @@ const Menu = () => {
     { name: '1 Cup Cotton Candy', price: 1.50},
   ];
 
+  const [showModal, setShowModal] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<{ name: string } | null>(null);
+  
+  type Item = { name: string};
+  const handleAddToCart = (item: Item) => {
+    setSelectedItem(item);
+    setShowModal(true);
+  };
+  
+  const handleCloseModal = () => {
+    setSelectedItem(null);
+    setShowModal(false);
+  };
+
+  const [quantity, setQuantity] = useState(1);
+  
+  const selectedItemDetails = selectedItem ? (
+    <>
+      <div className="flex justify-between items-center mb-4">
+        <h2 id="modalTitle" className="text-2xl font-bold">{selectedItem.name}</h2>
+        <button className="text-gray-400 hover:text-gray-800 text-4xl" onClick={handleCloseModal}>&#10005;</button>
+      </div>
+      <hr className="bg-black border-black h-0.5 mb-4"></hr>
+      <div className="px-4">
+        <div className="flex flex-col">
+          <h3 className="text-lg font-bold mb-2">Quantity:</h3>
+          <div className="flex items-center">
+            <button className="bg-gray-200 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-l" onClick={() => setQuantity(Math.max(quantity - 1, 1))}> - </button>
+            <input type="number" value={quantity} onChange={(e) => setQuantity(Math.max(parseInt(e.target.value), 1))} className="w-12 text-center"/>
+            <button className="bg-gray-200 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-r" onClick={() => setQuantity(quantity + 1)}>+</button>
+          </div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">Choice of Sauce<span className="text-gray-400 text-sm font-normal"> (up to 1 max)</span></h3>
+          <hr className="border-gray-300 mb-4"></hr>
+          <div className="flex flex-col">
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Salt &amp; Pepper On Side</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Sauce on the Side</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Extra 2nd Sauce</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Ranch</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Sweet Red Chili</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Orange Sauce</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Tea Rex Special Sauce (BBQ) </span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Hoisin Sauce</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Garlic Sauce</span>
+            </label>
+          <div className ="flex flex-col ml-6">
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Spicy on Side</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Extra 1st Sauce +$0.50</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Extra 3rd Sauce +$0.50</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Sweet & Sour</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Teriyaki</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Spicy Mayo</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Honey Wasabi</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="checkbox" className="form-checkbox h-5 w-5 text-gray-600" />
+              <span className="ml-2 text-gray-700">Dumpling Sauce</span>
+            </label>
+            {/* Add more sauce choices here */}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  ) : null;   
+  
+  /*const styles = {
+    modal: {
+      content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+        width: '90%', // adjust the width as needed
+        height: '90%', // adjust the height as needed
+        maxWidth: '700px',
+        maxHeight: '700px',
+        overflow: 'auto'
+      },
+    },
+  };  */
+
+  const styles = {
+    modal: {
+      content: 
+      "top-1/2 left-1/2 right-auto bottom-auto -mr-1/2 transform translate-x-1/2 -translate-y-1/2 w-90 h-90 max-w-700 max-h-700 overflow-auto",
+    },
+  };
+
   return (
     <>
       <div className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Snack</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://cdn.shopify.com/s/files/1/0595/3850/5936/articles/20221127144116-taiwanese-popcorn-chicken.png?v=1669560530" alt="Popcorn Chicken" />
-        {snackItemsFixed.map((item, index) => (
+        {snackItemsFixed.map((item: { name: string, price: number}, index) => (
           <article key={index} className="my-2">
-            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p><p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}</p><button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full">Add to Cart</button>
+            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p>
+            <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}</p>
+            <button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full" onClick={() => handleAddToCart(item)}>Add to Cart</button>
           </article>
         ))}
-        {snackItemsVariable.map((item, index) => (
+        {snackItemsVariable.map((item: { name: string, price: number}, index) => (
           <article key={index} className="my-2">
-            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p><p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}+</p><button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full">Add to Cart</button>
+            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p>
+            <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}+</p>
+            <button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full" onClick={() => handleAddToCart(item)}>Add to Cart</button>
           </article>
         ))}
       </div>
+      <Modal isOpen={showModal} onRequestClose={handleCloseModal}>
+        {selectedItemDetails}
+      </Modal>
       
       <div className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Musubi</h2>
@@ -253,10 +400,15 @@ const Menu = () => {
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://polynesia.com/blog/wp-content/uploads/2018/08/Musubi-pic-from-the-WolfPit.jpg" alt="Spam Musubi" />
         {musubiItems.map((item, index) => (
           <article key={index} className="my-2">
-            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p><p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}+</p><button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full">Add to Cart</button>
+            <p className="text-left w-3/6 self-center inline-block font-semibold">{item.name}</p>
+            <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">${item.price}+</p>
+            <button className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full" onClick={() => handleAddToCart(item)}>Add to Cart</button>
           </article>
         ))}
       </div>
+      <Modal isOpen={showModal} onRequestClose={handleCloseModal}>
+        {selectedItemDetails}
+      </Modal>
 
       <div className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Bento Box</h2>
