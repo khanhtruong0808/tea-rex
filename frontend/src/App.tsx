@@ -10,12 +10,14 @@ import Gallery from "./pages/Gallery";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Rewards from "./pages/Rewards";
+import Login from "./pages/Login";
 
 function App() {
   // See https://reactrouter.com/
   const router = createBrowserRouter(
     createRoutesFromElements(
       <Route path="/" element={<Layout />} errorElement={<h1>Error</h1>}>
+        <Route path="/admin" element={<Login />} />
         <Route index element={<Home />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/gallery" element={<Gallery />} />
