@@ -17,6 +17,7 @@ const Navbar = () => {
     },
     { name: "Gallery", path: "/gallery" },
     { name: "Contact Us", path: "/contact" },
+    { path: "/admin"}
   ];
   return (
     <nav
