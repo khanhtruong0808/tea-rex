@@ -1,4 +1,4 @@
-import SidebarMenu from "./SidebarMenu";
+import SidebarMenu from "./SidebarMenu"; //adds the sidebar to menu
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
