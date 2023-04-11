@@ -5,7 +5,7 @@
 .full-screen {
   @apply fixed top-0 left-0 w-full h-full object-contain z-50;
 }
-/*Created for SidebarIcons*/
+/*Created for SidebarIcons as a placeholder*/
 @layer components {
   .sidebar-icon {
     @apply relative flex items-center justify-center 
