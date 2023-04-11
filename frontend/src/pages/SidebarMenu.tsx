@@ -4,6 +4,7 @@ import { AiFillSetting } from "react-icons/ai";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { BsCalendar2CheckFill } from "react-icons/bs";
 import { useState } from "react";
+//changed react icons to all lowercase
 
 const SidebarMenu = () => {
   const [open, setOpen] = useState(true); //for toggle, not implemented yet
