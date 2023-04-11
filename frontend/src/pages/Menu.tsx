@@ -1,3 +1,4 @@
+import SidebarMenu from "./SidebarMenu"; //adds the sidebar to menu
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
@@ -371,6 +372,9 @@ const Menu = () => {
 
   return (
     <>
+      <div className="flex">
+        <SidebarMenu />
+      </div>
       <div className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Snack</h2>
         <hr className="bg-black border-black h-0.5"></hr>
