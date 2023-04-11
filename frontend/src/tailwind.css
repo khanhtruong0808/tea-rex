@@ -3,5 +3,17 @@
 @tailwind utilities;
 
 .full-screen {
-    @apply fixed top-0 left-0 w-full h-full object-contain z-50;
+  @apply fixed top-0 left-0 w-full h-full object-contain z-50;
+}
+/*Created for SidebarIcons*/
+@layer components {
+  .sidebar-icon {
+    @apply relative flex items-center justify-center 
+        h-16 w-16 mx-auto
+        bg-lime-700 text-white
+        hover:bg-green-600 hover:text-white
+        rounded-3xl hover:rounded-xl
+        transition-all duration-300 ease-linear
+        cursor-pointer;
   }
+}
