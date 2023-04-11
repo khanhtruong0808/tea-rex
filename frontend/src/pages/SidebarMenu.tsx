@@ -1,8 +1,8 @@
 import { ReactNode } from "react";
-import { TfiMenu } from "react-icons/Tfi";
-import { AiFillSetting } from "react-icons/Ai";
-import { FaMapMarkedAlt } from "react-icons/Fa";
-import { BsCalendar2CheckFill } from "react-icons/Bs";
+import { TfiMenu } from "react-icons/tfi";
+import { AiFillSetting } from "react-icons/ai";
+import { FaMapMarkedAlt } from "react-icons/fa";
+import { BsCalendar2CheckFill } from "react-icons/bs";
 import { useState } from "react";
 
 const SidebarMenu = () => {
