@@ -11,8 +11,11 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Rewards from "./pages/Rewards";
 import Login from "./pages/Login";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 function App() {
+  const queryClient = new QueryClient();
+
   // See https://reactrouter.com/
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -27,7 +30,11 @@ function App() {
       </Route>
     )
   );
-  return <RouterProvider router={router} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <RouterProvider router={router} />
+    </QueryClientProvider>
+  );
 }
 
 export default App;

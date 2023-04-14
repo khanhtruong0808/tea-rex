@@ -42,7 +42,7 @@ const Footer = () => {
     <div className="h-64 flex-wrap gap-32 bg-gradient-to-bl from-amber-600 to-amber-500">
       <ul className="flex justify-center items-center gap-64 h-48">
         {footInfo.map((footInfo) => (
-          <li>
+          <li key={footInfo.name}>
             <p className="text-xl font-semibold">{footInfo.name}</p>
             <p>{footInfo.hours}</p>
             <p>{footInfo.phone}</p>
@@ -52,7 +52,11 @@ const Footer = () => {
       </ul>
       <ul className="flex justify-center items-center gap-6">
         {footIcons.map((footIcons) => (
-          <NavLink to={footIcons.path} className="flex gap-6">
+          <NavLink
+            to={footIcons.path}
+            key={footIcons.name}
+            className="flex gap-6"
+          >
             <li className="flex text-2xl bg-lime-700 text-white font-bold rounded-full px-2 py-2 hover:scale-125 transition">
               {footIcons.icon}
             </li>
