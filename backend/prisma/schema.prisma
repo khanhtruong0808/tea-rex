@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model MenuSection {
+  id           Int        @id @unique @default(autoincrement())
+  name         String     @db.VarChar(255)
+  imageUrl     String?    @db.VarChar(255)
+  imageAltText String?    @db.VarChar(255)
+  items        MenuItem[]
+}
+
+model MenuItem {
+  id            Int         @id @default(autoincrement())
+  price         Decimal     @db.Decimal(6, 2)
+  name          String      @db.VarChar(255)
+  section       MenuSection @relation(fields: [menuSectionId], references: [id])
+  menuSectionId Int
+
+  @@index([menuSectionId])
+}
