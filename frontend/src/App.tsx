@@ -12,6 +12,7 @@ import Menu from "./pages/Menu";
 import Rewards from "./pages/Rewards";
 import Login from "./pages/Login";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ function App() {
   );
   return (
     <QueryClientProvider client={queryClient}>
+      <Toaster />
       <RouterProvider router={router} />
     </QueryClientProvider>
   );

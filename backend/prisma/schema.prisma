@@ -11,7 +11,7 @@ datasource db {
 model MenuSection {
   id           Int        @id @unique @default(autoincrement())
   name         String     @db.VarChar(255)
-  imageUrl     String     @db.VarChar(255)
+  imageUrl     String?    @db.VarChar(255)
   imageAltText String?    @db.VarChar(255)
   items        MenuItem[]
 }
