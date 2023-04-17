@@ -1,21 +1,40 @@
 import React from "react";
-import { GoogleMap as GoogleMapApi, LoadScript } from "@react-google-maps/api";
+import { GoogleMap as GoogleMapApi, LoadScript, Marker } from "@react-google-maps/api";
+
 
 const containerStyle = {
   width: "50%",
-  height: "400px",
+  height: "500px",
 };
 
-const center = {
-  lat: 38.40953413760819,
-  lng: -121.4786259953363,
+const storeLoc = {
+  lat: 38.40948371588517,
+  lng: -121.47864745092666,
+};
+
+const mark = new Marker({
+  position: storeLoc,
+  title: "Tea-Rex"
+});
+
+const showInMapClicked = () => {
+  window.open("https://www.google.com/maps/place/Tea+Rex/@38.4093492,-121.4811902,17z/data=!3m1!4b1!4m6!3m5!1s0x809ac8efe05de4f3:0x43044f5f27b8ce91!8m2!3d38.409345!4d-121.4786099!16s%2Fg%2F11b6_k79zm");
 };
 
 const GoogleMap: React.FC = () => {
   return (
-    <LoadScript googleMapsApiKey="AIzaSyCqgP43SARskbuxpyajGacfm304krkUmBE">
-      <GoogleMapApi mapContainerStyle={containerStyle} center={center} zoom={10}>
-        {/* Add markers or other map elements here */}
+    <LoadScript 
+      googleMapsApiKey={import.meta.env.VITE_APP_GOOGLE_MAPS_API_KEY || ''}>
+      <GoogleMapApi 
+        mapContainerStyle={containerStyle} 
+        center={storeLoc} 
+        zoom={17}
+        >
+          <Marker 
+          position={storeLoc} 
+          title={"Tea-Rex"} 
+          onClick = {showInMapClicked} 
+          />
       </GoogleMapApi>
     </LoadScript>
   );
