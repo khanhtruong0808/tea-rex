@@ -17,3 +17,14 @@
         cursor-pointer;
   }
 }
+
+/* scrollbar styles */
+::-webkit-scrollbar {
+  width: 10px;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #aaa;
+  border-radius: 10px;
+}
