@@ -39,17 +39,22 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="h-64 flex-wrap gap-32 bg-gradient-to-bl from-amber-600 to-amber-500">
-      <ul className="flex justify-center items-center gap-64 h-48">
-        {footInfo.map((footInfo) => (
-          <li key={footInfo.name}>
-            <p className="text-xl font-semibold">{footInfo.name}</p>
-            <p>{footInfo.hours}</p>
-            <p>{footInfo.phone}</p>
-            <p>{footInfo.location}</p>
-          </li>
-        ))}
-      </ul>
+    <div className="min-h-64 flex-wrap gap-32 bg-gradient-to-bl from-amber-600 to-amber-500">
+      <div>
+        <ul className="flex justify-evenly items-center h-48 flex-col sm:flex-row pt-8">
+          {footInfo.map((footInfo) => (
+            <li
+              key={footInfo.name}
+              className="flex justify-center sm:block items-end gap-1"
+            >
+              <p className="text-xl font-semibold">{footInfo.name}</p>
+              <p>{footInfo.hours}</p>
+              <p>{footInfo.phone}</p>
+              <p>{footInfo.location}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
       <ul className="flex justify-center items-center gap-6">
         {footIcons.map((footIcons) => (
           <NavLink

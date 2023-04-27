@@ -1,5 +1,11 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import GoogleMap from "../components/GoogleMap";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper";
+
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 const topTenItems = [
   { src: "top-ten-items/1.jpg", alt: "item1" },
@@ -16,18 +22,22 @@ const topTenItems = [
 
 const galleryItems = [
   { src: "food-items/chicken-ramen-burger.jpg", alt: "chicken ramen burger" },
-  { src: "food-items/menu-board.jpg", alt: "menu-board"},
-  { src: "food-items/outside.jpg", alt: "outside"},
-  { src: "food-items/popcorn-chicken-bento-rice.jpg", alt: "popcorn chicken bento rice"},
-  { src: "food-items/popcorn-chicken.jpg", alt: "popcorn chicken"},
-  { src: "food-items/spam-masubi.jpg", alt: "spam masubi"},
-  { src: "food-items/tofu.jpg", alt: "tofu"},
-  { src: "food-items/outside1.jpg", alt: "outside"}
-]
+  { src: "food-items/menu-board.jpg", alt: "menu-board" },
+  { src: "food-items/outside.jpg", alt: "outside" },
+  {
+    src: "food-items/popcorn-chicken-bento-rice.jpg",
+    alt: "popcorn chicken bento rice",
+  },
+  { src: "food-items/popcorn-chicken.jpg", alt: "popcorn chicken" },
+  { src: "food-items/spam-masubi.jpg", alt: "spam masubi" },
+  { src: "food-items/tofu.jpg", alt: "tofu" },
+  { src: "food-items/outside1.jpg", alt: "outside" },
+];
 
 const Home: React.FC = () => {
-
-  const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(null);
+  const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
+    null
+  );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
     setFullScreenImageUrl(event.currentTarget.src); // copies the clicked image's url to be stored this variable
@@ -50,51 +60,72 @@ const Home: React.FC = () => {
     };
   }, [fullScreenImageUrl]);
 
-    return (
-      <div className="relative">
+  return (
+    <div className="relative">
       {fullScreenImageUrl && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70" onClick={closeFullScreen}>
-          <img src={fullScreenImageUrl} alt="Full Screen" className="max-w-full max-h-full object-contain" />
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70"
+          onClick={closeFullScreen}
+        >
+          <img
+            src={fullScreenImageUrl}
+            alt="Full Screen"
+            className="max-w-full max-h-full object-contain"
+          />
         </div>
       )}
       {/* Gallery section */}
-      <section className="mt-10">
-      <div className="flex flex-wrap">
-        {galleryItems.map((item, index) => (
-          <figure key = {index} className="text-center">
-            <img
-              src={item.src}
-              alt = {item.alt}
-              className="w-64 h-64 object-cover cursor-pointer"
-              onClick={handleImageClick}
-            />
-          </figure>
-        ))}
+      <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
+        <Swiper
+          style={{
+            /*@ts-ignore*/
+            "--swiper-navigation-color": "#000000",
+            "--swiper-pagination-color": "#000000",
+          }}
+          spaceBetween={0}
+          slidesPerView={3}
+          loop={true}
+          modules={[Pagination, Navigation]}
+          navigation={true}
+          pagination={{ clickable: true }}
+          onSlideChange={() => console.log("slide change")}
+          onSwiper={(swiper) => console.log(swiper)}
+          className="w-full h-full rounded-2xl object-center object-cover relative"
+        >
+          {galleryItems.map((item, index) => (
+            <SwiperSlide key={index}>
+              <img
+                src={item.src}
+                alt={item.alt}
+                className="w-full h-full cursor-pointer object-scale-down"
+                onClick={handleImageClick}
+              ></img>
+            </SwiperSlide>
+          ))}
+        </Swiper>
       </div>
-      </section>
       {/* Top Ten Items Section */}
       <section className="mt-10">
-      <h2 className="text-3xl font-bold mb-5">Top Ten Items</h2>
-      <div className="flex flex-wrap">
-        {topTenItems.map((item, index) => (
-          <figure key = {index} className="text-center">
-            <img
-              src={item.src}
-              alt = {item.alt}
-              className="w-64 h-64 object-cover cursor-pointer"
-              onClick={handleImageClick}
-            />
-            
-          </figure>
-        ))}
-      </div>
+        <h2 className="text-3xl font-bold mb-5">Top Ten Items</h2>
+        <div className="flex flex-wrap">
+          {topTenItems.map((item, index) => (
+            <figure key={index} className="text-center">
+              <img
+                src={item.src}
+                alt={item.alt}
+                className="w-64 h-64 object-cover cursor-pointer"
+                onClick={handleImageClick}
+              />
+            </figure>
+          ))}
+        </div>
       </section>
       {/* Google Map Section */}
       <section className="mt-10">
         <GoogleMap />
       </section>
     </div>
-    );
-  };
+  );
+};
 
 export default Home;
