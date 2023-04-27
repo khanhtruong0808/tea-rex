@@ -375,7 +375,7 @@ const Menu = () => {
       <div className="flex">
         <SidebarMenu />
       </div>
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Snack" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Snack</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://cdn.shopify.com/s/files/1/0595/3850/5936/articles/20221127144116-taiwanese-popcorn-chicken.png?v=1669560530" alt="Popcorn Chicken" />
@@ -398,7 +398,7 @@ const Menu = () => {
         {selectedItemDetails}
       </Modal>
       
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Musubi" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Musubi</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://polynesia.com/blog/wp-content/uploads/2018/08/Musubi-pic-from-the-WolfPit.jpg" alt="Spam Musubi" />
@@ -414,7 +414,7 @@ const Menu = () => {
         {selectedItemDetails}
       </Modal>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Bento" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Bento Box</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://japanexpressaz.com/wp-content/uploads/2014/08/Japan-Express_Salmon-Teriyaki.jpg" alt="Salmon Teriyaki Bento Box" />
@@ -425,7 +425,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Chowmein" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Ramen Chowmein</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://www.recipetineats.com/wp-content/uploads/2019/06/Chow-Mein-Ramen_3.jpg?w=480&h=270&crop=1" alt="Chicken Ramen Chowmein" />
@@ -441,7 +441,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Sushi" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Sushi</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/2d22de36cfd2d0e47bfa7680da03c61e.jpg" alt="Tempura Shrimp Roll" />
@@ -457,7 +457,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "PokeBowl" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Poke Bowl</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/a0e4839313630d7354c00f3cfb95fbe9.jpg" alt="Squirtle Poke Bowl" />
@@ -468,7 +468,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Ramen" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Ramen<br></br>(Noodle Soup)</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://cdn.shopify.com/s/files/1/0111/1729/7722/articles/shutterstock_697241275_tonkotsu_ramen-landscape.jpg?v=1562316760" alt="Tonkotsu Ramen" />
@@ -479,7 +479,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Rice/Soup" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Rice | Soup</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://www.pressurecookrecipes.com/wp-content/uploads/2021/05/miso-soup.jpg" alt="Miso Soup" />
@@ -495,7 +495,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Milk Tea" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Milk Tea</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/ef00e6a3646c564ed11f3d70294e93e1.png" alt="Milk Tea on a Table" />
@@ -506,7 +506,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Flavor Tea" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Flavor | Tea</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/39448ef1a7ca3bc328c4811a1717cf73.png" alt="Honey Green Tea and Peach Green Tea on a table" />
@@ -517,7 +517,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Not So Secret" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Not So Secret Drink</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/d8116893a552288f6e667663a4fd6cb9.png" alt="The Loco Mango Slushy" />
@@ -528,7 +528,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Slushy" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Slushy</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/e866b2c3a6c85e9d6eb490c3714c29c8.jpg" alt="Passionfruit, Strawberry, and Taro Slushies on a table" />
@@ -539,7 +539,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Soda" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Soda</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://www.thedailymeal.com/img/gallery/16-oldest-soda-brands-that-are-still-on-the-market/l-intro-1674496494.jpg" alt="Variety of Soda" />
@@ -550,7 +550,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Watermelon" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Watermelon Juice | Slushy</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/490771347263bd9c6e6af7cc4ce4c182.jpg" alt="Fresh Watermelon Juice" />
@@ -561,7 +561,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Mojito" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-5xl pb-4 font-menu">Mojito 24 Oz Only<br></br>(Green Tea Base)</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/560f6f518745ffcf77a13fadd5c7ee6b.png" alt="Mango Mojito" />
@@ -572,7 +572,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Paradise" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Fresh Fruit Paradise Tea</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/c07ba31c8be002717a4c4ceced19adf0.jpg" alt="Fresh Fruit Paradise Tea" />
@@ -583,7 +583,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Butterfly" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Butterfly Layer</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://i.gyazo.com/b4a9495a49bd450842c58e06c9a62a9f.jpg" alt="Mango Butterfly Layer Tea" />
@@ -594,7 +594,7 @@ const Menu = () => {
         ))}
       </div>
 
-      <div className="w-9/12 mx-auto p-5 max-w-lg">
+      <div id = "Party" className="w-9/12 mx-auto p-5 max-w-lg">
         <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">Party Tray</h2>
         <hr className="bg-black border-black h-0.5"></hr>
         <img className="object-contain self-start float-left mt-1 w-96 mb-2" src="https://vietchef.com/media/food/69/popcorn-chicken-party-platter-2669.jpg" alt="Large Party Tray Popcorn Chicken" />

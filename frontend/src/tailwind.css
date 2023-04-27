@@ -7,9 +7,9 @@
 }
 /*Created for SidebarIcons as a placeholder*/
 @layer components {
-  .sidebar-icon {
+  .sidebarmenu {
     @apply relative flex items-center justify-center 
-        h-16 w-16 mx-auto
+        h-16 w-28 mx-auto
         bg-lime-700 text-white
         hover:bg-green-600 hover:text-white
         rounded-3xl hover:rounded-xl
