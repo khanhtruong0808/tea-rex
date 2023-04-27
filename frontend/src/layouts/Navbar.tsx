@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { AiOutlineClose } from "react-icons/ai";
 import { useState } from "react";
+import {FaShoppingCart} from "react-icons/fa"
 
 const Navbar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -17,6 +18,7 @@ const Navbar = () => {
     },
     { name: "Gallery", path: "/gallery" },
     { name: "Contact Us", path: "/contact" },
+    
   ];
   return (
     <nav
@@ -42,6 +44,9 @@ const Navbar = () => {
           </NavLink>
         ))}
       </ul>
+      <NavLink to="/cart" className="text-3xl bg-lime-700 text-white font-bold rounded-full px-3 py-3 hover:scale-110 transition">
+          <FaShoppingCart />
+      </NavLink>
       <NavLink
         to="/menu"
         className={`${
