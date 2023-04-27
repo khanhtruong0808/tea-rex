@@ -1,29 +1,26 @@
 import { ReactNode } from "react";
-import { TfiMenu } from "react-icons/tfi";
-import { AiFillSetting } from "react-icons/ai";
-import { FaMapMarkedAlt } from "react-icons/fa";
-import { BsCalendar2CheckFill } from "react-icons/bs";
 import { useState } from "react";
-//changed react icons to all lowercase
+import { Anchor} from 'antd'; // snaps, no text color
 
-const SidebarMenu = () => {
+const { Link } = Anchor;
+
+const SidebarMenu = ({menuSections}:any) => {
   const [open, setOpen] = useState(true); //for toggle, not implemented yet
   //place holder icons
+  console.log(menuSections)
   return (
     <div className={`sidebar-container`}>
-      <div className="fixed top-[7rem] left-0 h-50 w-30 m-0 flex flex-col bg-amber-500 text-white shadow-lg gap-10 p-4 rounded-full cursor-pointer">
-        <SidebarIcon icon={<TfiMenu size="42" />} />
-        <SidebarIcon icon={<FaMapMarkedAlt size="30" />} />
-        <SidebarIcon icon={<BsCalendar2CheckFill size="30" />} />
-        <SidebarIcon icon={<AiFillSetting size="42" />} />
+      <div className="fixed top-[7rem] left-0 h-full w-30 m-0 flex flex-col bg-amber-500 text-white shadow-lg gap-10 p-4 rounded-full cursor-pointer" style={{ height: "50vh", justifyContent:"center" }}>
+      <Anchor style={{marginTop: "irem"}}>
+      {menuSections.map((menuSection:any)=> <Link key ={menuSection.name} href = {`#${menuSection.name}`} title = {`${menuSection.name}`}/>)}
+      </Anchor>
       </div>
     </div>
   );
 };
 
-//placeholder icons
-const SidebarIcon = ({ icon }: { icon: ReactNode }) => (
-  <div className="sidebar-icon group:">{icon}</div>
+const SidebarIcon = ({ string }: { string:ReactNode }) => (
+  <div className="sidebar-icon group:">{string}</div>
 );
 
 export default SidebarMenu;
