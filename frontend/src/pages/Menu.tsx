@@ -320,7 +320,7 @@ const Menu = () => {
   ) : (
     <div className="w-9/12 mx-auto p-5 max-w-lg">
       <div className="flex">
-        <SidebarMenu />
+        <SidebarMenu menuSections={data} />
       </div>
       <div className="absolute right-2">
         <div className="flex flex-col">

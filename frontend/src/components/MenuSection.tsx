@@ -55,7 +55,7 @@ export const MenuSection = ({
   };
 
   return (
-    <div className="relative flex flex-col">
+    <div id = {menuSection.name} className="relative flex flex-col">
       <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">
         {menuSection.name}
       </h2>
