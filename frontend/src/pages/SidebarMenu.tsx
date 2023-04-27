@@ -1,29 +1,44 @@
 import { ReactNode } from "react";
-import { TfiMenu } from "react-icons/tfi";
-import { AiFillSetting } from "react-icons/ai";
-import { FaMapMarkedAlt } from "react-icons/fa";
-import { BsCalendar2CheckFill } from "react-icons/bs";
 import { useState } from "react";
-//changed react icons to all lowercase
+import React from 'react';
+import { Anchor} from 'antd';
+
+const { Link } = Anchor;
 
 const SidebarMenu = () => {
   const [open, setOpen] = useState(true); //for toggle, not implemented yet
   //place holder icons
   return (
     <div className={`sidebar-container`}>
-      <div className="fixed top-[7rem] left-0 h-50 w-30 m-0 flex flex-col bg-amber-500 text-white shadow-lg gap-10 p-4 rounded-full cursor-pointer">
-        <SidebarIcon icon={<TfiMenu size="42" />} />
-        <SidebarIcon icon={<FaMapMarkedAlt size="30" />} />
-        <SidebarIcon icon={<BsCalendar2CheckFill size="30" />} />
-        <SidebarIcon icon={<AiFillSetting size="42" />} />
+      <div className="fixed top-[7rem] left-0 h-50 w-30 m-0 flex flex-col bg-amber-500 gap-10 p-4 rounded-full ">
+      <Anchor>
+        <Link href = "#Snack" title = "Snack"/>
+        <Link href = "#Musubi" title = "Musubi"/>
+        <Link href = "#Bento" title = "Bento Box"/>
+        <Link href = "#Chowmein" title = "Chowmein"/>
+        <Link href = "#Sushi" title = "Sushi"/>
+        <Link href = "#PokeBowl" title = "PokeBowl"/>
+        <Link href = "#Ramen" title = "Ramen"/>
+        <Link href = "#Rice/Soup" title = "Rice/Soup"/>
+        <Link href = "#Milk Tea" title = "Milk Tea"/>
+        <Link href = "#Flavor Tea" title = "Flavor Tea"/>
+        <Link href = "#Not So Secret" title = "Not So Secret"/>
+        <Link href = "#Slushy" title = "Slushy"/>
+        <Link href = "#Soda" title = "Soda"/>
+        <Link href = "#Watermelon" title = "Watermelon"/>
+        <Link href = "#Mojito" title = "Mojito"/>
+        <Link href = "#Paradise" title = "Paradise"/>
+        <Link href = "#Butterfly" title = "Butterfly"/>
+        <Link href = "#Party" title = "Party"/>
+      </Anchor>
       </div>
     </div>
   );
 };
 
 //placeholder icons
-const SidebarIcon = ({ icon }: { icon: ReactNode }) => (
-  <div className="sidebar-icon group:">{icon}</div>
+const SidebarIcon = ({ string }: { string:ReactNode }) => (
+  <div className="sidebar-icon group:">{string}</div>
 );
 
 export default SidebarMenu;
