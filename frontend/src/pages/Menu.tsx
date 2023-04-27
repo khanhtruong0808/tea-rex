@@ -229,34 +229,85 @@ const Menu = () => {
             </div>
           </div>
         </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">
+            Spicy
+          <span className="text-gray-400 text-sm font-normal">
+            {" "}
+            (up to 1 max)
+          </span>
+          </h3>
+          <hr className="border-gray-300 mb-4"></hr>
+            <div className="flex flex-col">
+              <div className="flex flex-row items-start">
+                <label className="inline-flex items-center">
+                <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-gray-600"
+              />
+                <span className="ml-2 text-gray-700">Mild</span>
+                </label>
+              <div className="ml-60 mr-16 p-4">
+              <label className="inline-flex items-center">
+              <input
+                type="checkbox"
+                className="form-checkbox h-5 w-5 text-gray-600"
+              />
+              <span className="ml-2 text-gray-700">Medium Spicy</span>
+              </label>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-4 p-4">
+            <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-gray-600"
+            />
+            <span className="ml-2 text-gray-700">Extra Spicy</span>
+            </label>
+            <label className="inline-flex items-center">
+            <input
+              type="checkbox"
+              className="form-checkbox h-5 w-5 text-gray-600"
+            />
+            <span className="ml-2 text-gray-700">Spicy on Side</span>
+            </label>
+            </div>
+          </div>
+        </div>
+        <div className="mt-4">
+          <h3 className="text-lg font-bold mb-2">
+            Special Instructions
+          </h3>
+          <hr className="border-gray-300 mb-4"></hr>
+          <div>
+            <textarea
+              className="border border-gray-300 p-2 w-full"
+              rows={3}
+              placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
+              maxLength={parseInt("500")}
+            ></textarea>
+          </div>
+        </div>
       </div>
     </>
   ) : null;
 
-  /*const styles = {
-    modal: {
-      content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-        width: '90%', // adjust the width as needed
-        height: '90%', // adjust the height as needed
-        maxWidth: '700px',
-        maxHeight: '700px',
-        overflow: 'auto'
-      },
-    },
-  };  */
-
-  const styles = {
+  const tailwindStyles = {
     modal: {
       content:
-        "top-1/2 left-1/2 right-auto bottom-auto -mr-1/2 transform translate-x-1/2 -translate-y-1/2 w-90 h-90 max-w-700 max-h-700 overflow-auto",
+        "absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-5 w-8/12 md:w-6/12 lg:w-6/12 max-w-700 max-h-[700px] overflow-y-auto border-2 border-gray-300 rounded-lg shadow-md",
+      maxHeight: "calc(100vh - 200px)",
+      scrollbar: {
+        width: "10px",
+        backgroundColor: "#f5f5f5",
+        thumb: {
+          backgroundColor: "#aaa",
+          borderRadius: "10px",
+        },
+      },
     },
-  };
+  };  
 
   return isLoading ? (
     <div className="flex justify-center items-center h-screen">
@@ -303,7 +354,7 @@ const Menu = () => {
           handleAddToCart={handleAddToCart}
         />
       ))}
-      <Modal isOpen={showModal} onRequestClose={handleCloseModal}>
+      <Modal isOpen={showModal} onRequestClose={handleCloseModal} className={tailwindStyles.modal.content}>
         {selectedItemDetails}
       </Modal>
     </div>
