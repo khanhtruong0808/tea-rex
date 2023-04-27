@@ -5,15 +5,3 @@
 .full-screen {
   @apply fixed top-0 left-0 w-full h-full object-contain z-50;
 }
-/*Created for SidebarIcons as a placeholder*/
-@layer components {
-  .sidebarmenu {
-    @apply relative flex items-center justify-center 
-        h-16 w-28 mx-auto
-        bg-lime-700 text-white
-        hover:bg-green-600 hover:text-white
-        rounded-3xl hover:rounded-xl
-        transition-all duration-300 ease-linear
-        cursor-pointer;
-  }
-}

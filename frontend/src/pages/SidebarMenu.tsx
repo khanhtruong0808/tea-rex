@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { useState } from "react";
 import React from 'react';
-import { Anchor} from 'antd';
+import { Anchor} from 'antd'; // snaps, no text color
 
 const { Link } = Anchor;
 
