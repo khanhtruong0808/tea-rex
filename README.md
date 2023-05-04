@@ -25,11 +25,15 @@ Before creating the website, we needed to come up with a proper mock-up in order
 
 [Tea-Rex Current Website Prototype](https://tea-rex.vercel.app/)
 
-Application Flow: Everything starts at the home page. From there, you can branch off into the various different website sections: rewards, gallery, contact us, order now, and admin pages. The website is interconnected via the nav bar so users can skip to whatever sections interest them or they can go back to the home page if need be. The admin page is inaccesible to customers. 
+### Application Flow 
+
+Everything starts at the home page. From there, you can branch off into the various different website sections: rewards, gallery, contact us, order now, and admin pages. The website is interconnected via the nav bar so users can skip to whatever sections interest them or they can go back to the home page if need be. The admin page is inaccesible to customers. 
  
 ![Navigation](Pictures/Tea_Rex_Site_Navigation.png)
 
-FIGMA: We decided to use Figma for our mock-up as there were many useful design tools present. Our home page design had a nav bar that was fully functional, some pictures of the interior design, top 10 menu items, a map showing the restaurants location, and a footer containing important business information. 
+### Figma 
+
+We decided to use Figma for our mock-up as there were many useful design tools present. Our home page design had a nav bar that was fully functional, some pictures of the interior design, top 10 menu items, a map showing the restaurants location, and a footer containing important business information. 
 
 ![Figma Design](Pictures/figma-home-page.png)
 
