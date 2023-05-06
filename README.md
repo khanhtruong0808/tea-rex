@@ -81,7 +81,7 @@ We will be deploying to production next semester in CSC 191.
 
 ![Roadmap](Pictures/SyntaxErrors_Roadmap.png)
 
-- Spring 3 (2023/03/26) - 2023/04/09)
+- Sprint 3 (2023/03/26 - 2023/04/09)
   - [X] Navbar
   - [X] Home and Rewards page, Footer
 - Sprint 4 (2023/04/10 - 2023/04/24)
