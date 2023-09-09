@@ -25,7 +25,7 @@ const Navbar = () => {
         isExpanded
           ? "flex-col items-start gap-2 pb-4 lg:flex-row lg:pb-0"
           : "flex-row"
-      } sticky top-0 z-50 justify-between bg-gradient-to-bl from-amber-600 to-amber-500 pl-1 pr-8 lg:items-center lg:justify-evenly lg:px-0 2xl:justify-center 2xl:gap-32`}
+      } sticky left-0 right-0 top-0 z-10 justify-between bg-gradient-to-bl from-amber-600 to-amber-500 pl-1 pr-8 lg:items-center lg:justify-evenly lg:px-0 2xl:justify-center 2xl:gap-32`}
     >
       <NavLink to="/" className="shrink-0">
         <img src="tea-rex-sign.png" alt="" className="max-h-24" />
