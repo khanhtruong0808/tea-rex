@@ -5,6 +5,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
+const stripe = require("stripe")("sk_test_51NoVQjEUsn4T1wuaSicH3D3jOu8prqhXp7lXuczgGFD1k4dd8QzsAzSCVtICPhIuXhG5QNoY04lLgcjtdbTCfZS100VsaE911S")
 
 app.use(cors()); // change later
 app.use(express.json());
@@ -75,6 +76,30 @@ app.put("/menu-item/:id", async (req, res) => {
   });
   res.json(menuItem);
 });
+
+app.post("/payment", cors(), async (req, res) => {
+  let {amount, id} = req.body;
+  try {
+    const payment = await stripe.paymentIntents.create({
+      amount,
+      currency: "USD",
+      description: "Tea-Rex",
+      payment_method: id,
+      confirm: true
+    })
+    console.log("Payment", payment);
+    res.json({
+      message: "Payment successful",
+      success: true
+    })
+  } catch (error) {
+      console.log("Error", error)
+      res.json({
+        message: "Payment failed",
+        success: false
+      })
+  }
+})
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);

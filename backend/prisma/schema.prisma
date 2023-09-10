@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider     = "mysql"
-  url          = env("DATABASE_URL")
+  url          = "mysql://wrycerhqpjcsghlqdqw5:pscale_pw_eDZOxTKeHJLQbx6TZMTdIdfHVEA48pzdlWkATX4JCSq@aws.connect.psdb.cloud/tea-rex?sslaccept=strict"
   relationMode = "prisma"
 }
 

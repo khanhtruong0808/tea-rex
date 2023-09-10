@@ -1,5 +1,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../config";
+import { useState } from "react";
+import PaymentForm from "../components/forms/PaymentForm";
+import StripeContainer from "../components/Stripe";
 
 const Cart = () => {
 
@@ -9,13 +12,15 @@ const Cart = () => {
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
 
-  const firstFiveItems = data ? data[0].items.slice(0, 5) : [];
+  const firstFiveItems = data ? data[0].items.slice(0, 5) : []; 
 
   const subtotal = firstFiveItems.reduce((acc: number, item: MenuItem) => acc + +item.price, 0);
 
   const tax = subtotal * 0.0875;
 
   const total = subtotal + tax;
+
+  const [isCheckingOut, setIsCheckingOut] = useState(false);
 
   return isLoading ? (
     <div className="flex justify-center items-center h-screen">
@@ -26,19 +31,31 @@ const Cart = () => {
       />
     </div>
   ) : (
-    <div className="relative flex flex-col">
+    <div className="flex">
+    
+    {/* Left Column */}
+    {isCheckingOut && (
+      <div className="w-1/2 p-5">
+        <StripeContainer totalAmount={total.toFixed(2) * 100} />
+      </div>
+    )}
+    
+    {/* Right Column */}
+    <div className={isCheckingOut ? "w-1/2 p-5" : "w-full p-5"} border-solid border-black>
+      {/* List of Items */}
+      <div className="relative flex flex-col">
         <div className="w-9/12 mx-auto p-5 max-w-lg border-solid border-black">
         {firstFiveItems.map((item: MenuItem) => (
-            <article key={item.id} className="my-2 relative">
-                <p className="text-left w-3/6 self-center inline-block font-semibold">
-                {item.name}
-                </p>
-                <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">
-                    ${item.price}
-                </p>
-            </article>
+          <article key={item.id} className="my-2 relative">
+            <p className="text-left w-3/6 self-center inline-block font-semibold">
+              {item.name}
+            </p>
+            <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">
+              ${item.price}
+            </p>
+          </article>
         ))}
-        </div>
+      </div>
         <div className="w-9/12 mx-auto p-5 max-w-lg border-solid border-black">
             <hr className="bg-black border-black h-0.5 mr-32"></hr>
             <article>
@@ -65,10 +82,13 @@ const Cart = () => {
                     ${total.toFixed(2)}
                 </p>
             </article>
-            <button className="float-right mt-4 mr-28 inline font-semibold bg-gray-500 hover:bg-gray-700 text-white px-2 pb-1 rounded-full">
+            <button className="float-right mt-4 mr-28 inline font-semibold bg-gray-500 hover:bg-gray-700 text-white px-2 pb-1 rounded-full"
+                onClick={() => setIsCheckingOut(true)}>
                 Proceed to Checkout
             </button>
+            </div>
         </div>
+    </div>
     </div>
   );
 };

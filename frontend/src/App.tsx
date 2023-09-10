@@ -15,7 +15,6 @@ import Registration from './pages/Registration';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Cart from "./pages/Cart";
-
 function App() {
   const queryClient = new QueryClient();
 
@@ -35,12 +34,14 @@ function App() {
       </Route>
     )
   );
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />
       <RouterProvider router={router} />
     </QueryClientProvider>
-    
+
   );
 }
 
