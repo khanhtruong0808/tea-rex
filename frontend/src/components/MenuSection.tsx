@@ -28,7 +28,7 @@ const MenuItem = ({
   handleAddToCart,
 }: MenuItemProps) => {
   return (
-    <div className="group flex bg-white px-3 py-2 text-xl hover:bg-gray-50">
+    <div className="group flex bg-white px-3 py-2 text-xl hover:bg-amber-400">
       <div
         className="flex flex-1 cursor-pointer justify-between"
         onClick={() => handleAddToCart(item)}

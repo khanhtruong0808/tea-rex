@@ -28,6 +28,7 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<Item>();
   const [quantity, setQuantity] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState();
+  console.log(selectedCategory);
 
   useEffect(() => {
     setSelectedCategory(data?.[0]?.name);
@@ -323,7 +324,7 @@ const Menu = () => {
             />
             <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px]  after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4  peer-focus:ring-blue-300"></div>
             <span className="ml-3 text-sm font-medium text-gray-900">
-              Toggle Admin View
+              Toggle Admin View ***TEMPORARY***
             </span>
           </label>
           {isAdmin && (
@@ -338,24 +339,32 @@ const Menu = () => {
         </div>
       </div>
 
-      <div className="flex-1">
-        {data.find(
-          (menuSection: MenuSection) => menuSection.name === selectedCategory
-        ) && (
-          <MenuSection
-            key={
-              data.find(
-                (menuSection: MenuSection) =>
-                  menuSection.name === selectedCategory
-              )?.id
-            }
-            menuSection={data.find(
+      <div className="flex-1 space-y-12">
+        {selectedCategory === "all"
+          ? data.map((menuSection: MenuSection) => (
+              <MenuSection
+                menuSection={menuSection}
+                handleAddToCart={handleAddToCart}
+              />
+            ))
+          : data.find(
               (menuSection: MenuSection) =>
                 menuSection.name === selectedCategory
+            ) && (
+              <MenuSection
+                key={
+                  data.find(
+                    (menuSection: MenuSection) =>
+                      menuSection.name === selectedCategory
+                  )?.id
+                }
+                menuSection={data.find(
+                  (menuSection: MenuSection) =>
+                    menuSection.name === selectedCategory
+                )}
+                handleAddToCart={handleAddToCart}
+              />
             )}
-            handleAddToCart={handleAddToCart}
-          />
-        )}
       </div>
 
       {/* Add to cart modal */}
