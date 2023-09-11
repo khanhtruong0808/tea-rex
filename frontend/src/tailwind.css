@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .full-screen {
-  @apply fixed top-0 left-0 w-full h-full object-contain z-50;
+  @apply fixed left-0 top-0 z-50 h-full w-full object-contain;
 }
 /* scrollbar styles */
 ::-webkit-scrollbar {

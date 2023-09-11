@@ -12,6 +12,55 @@ interface MenuSectionProps {
   handleAddToCart: (item: { name: string }) => void;
 }
 
+interface MenuItemProps {
+  item: MenuItem;
+  isAdmin: boolean;
+  handleItemEdit: (item: MenuItem) => void;
+  handleItemDelete: (itemId: number) => void;
+  handleAddToCart: (item: { name: string }) => void;
+}
+
+const MenuItem = ({
+  item,
+  isAdmin,
+  handleItemDelete,
+  handleItemEdit,
+  handleAddToCart,
+}: MenuItemProps) => {
+  return (
+    <div className="group flex bg-white px-3 py-2 text-xl hover:bg-amber-400">
+      <div
+        className="flex flex-1 cursor-pointer justify-between"
+        onClick={() => handleAddToCart(item)}
+        key={item.id}
+      >
+        <p>{item.name}</p>
+        <div className="flex text-center">
+          <p>${item.price}</p>
+        </div>
+      </div>
+      <div>
+        {isAdmin && (
+          <>
+            <button
+              onClick={() => handleItemEdit(item)}
+              className="ml-4 hover:scale-110"
+            >
+              <FiEdit3 size={24} />
+            </button>
+            <button
+              onClick={() => handleItemDelete(item.id)}
+              className="hover:scale-110"
+            >
+              <TbTrash size={24} />
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
 export const MenuSection = ({
   menuSection,
   handleAddToCart,
@@ -55,72 +104,61 @@ export const MenuSection = ({
   };
 
   return (
-    <div id = {menuSection.name} className="relative flex flex-col">
-      <h2 className="font-extrabold text-center text-6xl pb-4 font-menu">
-        {menuSection.name}
-      </h2>
-      {isAdmin && (
-        <div className="absolute top-10 right-[-4rem]">
-          <button
-            onClick={handleSectionEdit}
-            className="hover:scale-110 hover:bg-gray-200 rounded-full p-0.5"
-          >
-            <FiEdit3 size={28} />
-          </button>
-          <button
-            onClick={handleSectionDelete}
-            className="hover:scale-110 hover:bg-gray-200 rounded-full p-0.5"
-          >
-            <TbTrash size={28} />
-          </button>
-        </div>
-      )}
-      <hr className="bg-black border-black h-0.5"></hr>
-      <img
-        className="object-contain self-center float-left mt-1 w-96 mb-2"
-        src={menuSection.imageUrl}
-        alt={menuSection.imageAltText}
-      />
-      {isAdmin && (
-        <button
-          onClick={() => handleItemAdd(menuSection.id)}
-          className="text-white bg-lime-700 hover:bg-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 self-start"
-        >
-          Add Menu Item
-        </button>
-      )}
-      {menuSection.items.map((item: MenuItem) => (
-        <article key={item.id} className="my-2 relative">
-          <p className="text-left w-3/6 self-center inline-block font-semibold">
-            {item.name}
-          </p>
-          <p className="text-right w-1/4 pr-4 self-center inline-block font-semibold">
-            ${item.price}
-          </p>
-          <button
-            className="text-right bg-gray-500 hover:bg-gray-700 text-white font-bold px-2 pb-1 rounded-full"
-            onClick={() => handleAddToCart(item)}
-          >
-            Add to Cart
-          </button>
+    <div
+      key={menuSection.name}
+      id={menuSection.name}
+      className="flex w-full flex-col"
+    >
+      <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 pb-8">
+        <h2 className="text-center font-menu text-6xl font-extrabold uppercase">
           {isAdmin && (
-            <div className="absolute right-[-3.5rem] bottom-[-5px]">
+            <div className="absolute bottom-0">
               <button
-                onClick={() => handleItemEdit(item)}
-                className="hover:scale-110 hover:bg-gray-200 rounded-full p-0.5"
+                onClick={handleSectionEdit}
+                className="rounded-full p-0.5 hover:scale-110"
               >
                 <FiEdit3 size={28} />
               </button>
               <button
-                onClick={() => handleItemDelete(item.id)}
-                className="hover:scale-110 hover:bg-gray-200 rounded-full p-0.5"
+                onClick={handleSectionDelete}
+                className="rounded-full p-0.5 hover:scale-110"
               >
                 <TbTrash size={28} />
               </button>
             </div>
           )}
-        </article>
-      ))}
+          {menuSection.name}
+        </h2>
+
+        <img
+          className="max-w-sm self-center object-contain"
+          src={menuSection.imageUrl}
+          alt={menuSection.imageAltText}
+        />
+      </div>
+
+      {isAdmin && (
+        <div>
+          <button
+            onClick={() => handleItemAdd(menuSection.id)}
+            className="mb-4 self-start rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
+          >
+            Add Menu Item
+          </button>
+        </div>
+      )}
+
+      <div className="divide-y-2 divide-gray-100 overflow-hidden rounded-md ring-1 ring-gray-300">
+        {menuSection.items.map((item: MenuItem) => (
+          <MenuItem
+            item={item}
+            handleItemDelete={handleItemDelete}
+            handleItemEdit={handleItemEdit}
+            isAdmin={isAdmin}
+            handleAddToCart={handleAddToCart}
+          />
+        ))}
+      </div>
     </div>
   );
 };
