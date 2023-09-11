@@ -6,7 +6,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require('stripe')("sk_test_51NoVQjEUsn4T1wuaSicH3D3jOu8prqhXp7lXuczgGFD1k4dd8QzsAzSCVtICPhIuXhG5QNoY04lLgcjtdbTCfZS100VsaE911S");
+const stripe = require('stripe')(process.env("STRIPE_SECRET_KEY"));
 
 app.use(cors()); // change later
 app.use(express.json());
@@ -92,11 +92,7 @@ app.post("/payment", cors(), async (req, res) => {
       description: "Tea-Rex",
       payment_method: id,
       confirm: true,
-      return_url: "http://localhost:5173/payment-result"
-      // automatic_payment_methods: {
-      //   enabled: true,
-      //   allow_redirects: 'never'
-      // }
+      return_url: import.meta.env.RETURN_URL
     })
 
     res.json({
