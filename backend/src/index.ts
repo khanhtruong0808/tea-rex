@@ -2,10 +2,11 @@ import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 
+
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")("sk_test_51NoVQjEUsn4T1wuaSicH3D3jOu8prqhXp7lXuczgGFD1k4dd8QzsAzSCVtICPhIuXhG5QNoY04lLgcjtdbTCfZS100VsaE911S")
+const stripe = require('stripe')("sk_test_51NoVQjEUsn4T1wuaSicH3D3jOu8prqhXp7lXuczgGFD1k4dd8QzsAzSCVtICPhIuXhG5QNoY04lLgcjtdbTCfZS100VsaE911S");
 
 app.use(cors()); // change later
 app.use(express.json());
@@ -78,25 +79,36 @@ app.put("/menu-item/:id", async (req, res) => {
 });
 
 app.post("/payment", cors(), async (req, res) => {
+  
   let {amount, id} = req.body;
+
+  if (!amount || !id) {
+    return res.status(400).json({ message: "Amount and ID are required." });
+  }
   try {
     const payment = await stripe.paymentIntents.create({
       amount,
       currency: "USD",
       description: "Tea-Rex",
       payment_method: id,
-      confirm: true
+      confirm: true,
+      return_url: "http://localhost:5173/payment-result"
+      // automatic_payment_methods: {
+      //   enabled: true,
+      //   allow_redirects: 'never'
+      // }
     })
-    console.log("Payment", payment);
+
     res.json({
+      clientSecret: payment.client_secret,
       message: "Payment successful",
       success: true
-    })
-  } catch (error) {
-      console.log("Error", error)
+    });
+
+  } catch (error: any) {
       res.json({
-        message: "Payment failed",
-        success: false
+        message: "Payment failed " + error.message,
+        success: false,
       })
   }
 })

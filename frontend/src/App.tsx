@@ -12,6 +12,7 @@ import Menu from "./pages/Menu";
 import Rewards from "./pages/Rewards";
 import Login from "./pages/Login";
 import Registration from './pages/Registration';
+import PaymentResult from "./pages/PaymentResult";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Cart from "./pages/Cart";
@@ -30,12 +31,12 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/cart" element={<Cart />} />
+        <Route path="/payment-result" element={<PaymentResult />} />
         <Route path="*" element={<div>404</div>} />
       </Route>
     )
   );
-
-
+  
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster />

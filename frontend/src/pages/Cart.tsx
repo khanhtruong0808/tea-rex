@@ -1,8 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { config } from "../config";
 import { useState } from "react";
-import PaymentForm from "../components/forms/PaymentForm";
-import StripeContainer from "../components/Stripe";
+import Stripe from "../components/Stripe";
 
 const Cart = () => {
 
@@ -22,6 +21,10 @@ const Cart = () => {
 
   const [isCheckingOut, setIsCheckingOut] = useState(false);
 
+  const handleCancel = () => {
+    setIsCheckingOut(false);
+  };
+
   return isLoading ? (
     <div className="flex justify-center items-center h-screen">
       <img
@@ -31,18 +34,13 @@ const Cart = () => {
       />
     </div>
   ) : (
-    <div className="flex">
-    
-    {/* Left Column */}
+    <div className="flex">    
     {isCheckingOut && (
-      <div className="w-1/2 p-5">
-        <StripeContainer totalAmount={total.toFixed(2) * 100} />
+      <div className="w-4/5 p-5">
+        <Stripe totalAmount={total.toFixed(2) * 100} className="w-7/8 mx-auto" onCancelCheckout={handleCancel} />
       </div>
     )}
-    
-    {/* Right Column */}
     <div className={isCheckingOut ? "w-1/2 p-5" : "w-full p-5"} border-solid border-black>
-      {/* List of Items */}
       <div className="relative flex flex-col">
         <div className="w-9/12 mx-auto p-5 max-w-lg border-solid border-black">
         {firstFiveItems.map((item: MenuItem) => (
@@ -82,10 +80,13 @@ const Cart = () => {
                     ${total.toFixed(2)}
                 </p>
             </article>
-            <button className="float-right mt-4 mr-28 inline font-semibold bg-gray-500 hover:bg-gray-700 text-white px-2 pb-1 rounded-full"
-                onClick={() => setIsCheckingOut(true)}>
-                Proceed to Checkout
-            </button>
+            {!isCheckingOut && (
+              <button 
+                  className="float-right mt-4 mr-28 inline font-semibold bg-lime-700 hover:scale-110 transition lg:block text-white px-2 pb-1 rounded-full"
+                  onClick={() => setIsCheckingOut(true)}>
+                  Proceed to Checkout
+              </button>
+)}
             </div>
         </div>
     </div>

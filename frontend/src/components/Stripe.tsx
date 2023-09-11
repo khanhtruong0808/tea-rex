@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Elements } from "@stripe/react-stripe-js"
 import { loadStripe } from "@stripe/stripe-js"
 import PaymentForm from './forms/PaymentForm'
@@ -8,13 +8,17 @@ const stripePromise = loadStripe(PUBLIC_KEY)
 
 type StripeContainerProps = {
     totalAmount: number;
+    className?: string;
+    onCancelCheckout: () => void;
 };
 
-const StripeContainer: React.FC<StripeContainerProps> = ({ totalAmount }) => {
+const StripeContainer: React.FC<StripeContainerProps> = ({ totalAmount, className, onCancelCheckout}) => {
     return (
-        <Elements stripe={stripePromise}>
-            <PaymentForm totalAmount={totalAmount} />
-        </Elements>
+        <div className={className}>
+            <Elements stripe={stripePromise}>
+                <PaymentForm totalAmount={totalAmount} cancelCheckout={onCancelCheckout}/>
+            </Elements>
+        </div>
     );
 };
 
