@@ -88,8 +88,8 @@ const Home: React.FC = () => {
           modules={[Pagination, Navigation]}
           navigation={true}
           pagination={{ clickable: true }}
-          onSlideChange={() => console.log("slide change")}
-          onSwiper={(swiper) => console.log(swiper)}
+          // onSlideChange={() => console.log("slide change")}
+          // onSwiper={(swiper) => console.log(swiper)}
           className="w-full h-full rounded-2xl object-center object-cover relative"
         >
           {galleryItems.map((item, index) => (

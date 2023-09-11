@@ -28,7 +28,6 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<Item>();
   const [quantity, setQuantity] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState();
-  console.log(selectedCategory);
 
   useEffect(() => {
     setSelectedCategory(data?.[0]?.name);

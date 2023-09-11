@@ -2,11 +2,10 @@ import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 
-
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require('stripe')(process.env("STRIPE_SECRET_KEY"));
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 app.use(cors()); // change later
 app.use(express.json());
@@ -79,8 +78,7 @@ app.put("/menu-item/:id", async (req, res) => {
 });
 
 app.post("/payment", cors(), async (req, res) => {
-  
-  let {amount, id} = req.body;
+  let { amount, id } = req.body;
 
   if (!amount || !id) {
     return res.status(400).json({ message: "Amount and ID are required." });
@@ -92,22 +90,21 @@ app.post("/payment", cors(), async (req, res) => {
       description: "Tea-Rex",
       payment_method: id,
       confirm: true,
-      return_url: import.meta.env.RETURN_URL
-    })
+      return_url: process.env.RETURN_URL || "http://localhost:5173",
+    });
 
     res.json({
       clientSecret: payment.client_secret,
       message: "Payment successful",
-      success: true
+      success: true,
     });
-
   } catch (error: any) {
-      res.json({
-        message: "Payment failed " + error.message,
-        success: false,
-      })
+    res.json({
+      message: "Payment failed " + error.message,
+      success: false,
+    });
   }
-})
+});
 
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
