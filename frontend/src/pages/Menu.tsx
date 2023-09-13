@@ -50,6 +50,95 @@ const Menu = () => {
     setShowModal(false);
   };
 
+  const sauceChoices = [
+    "Salt & Pepper On Side",
+    "Sauce on the Side",
+    "Extra 2nd Sauce",
+    "Ranch",
+    "Sweet Red Chili",
+    "Orange Sauce",
+    "Tea Rex Special Sauce (BBQ)",
+    "Hoisin Sauce",
+    "Garlic Sauce",
+    "Spicy on Side",
+    "Extra 1st Sauce +$0.50",
+    "Extra 3rd Sauce +$0.50",
+    "Sweet & Sour",
+    "Teriyaki",
+    "Spicy Mayo",
+    "Honey Wasabi",
+    "Dumpling Sauce",
+    // Add more sauce choices here
+  ];
+
+  const SauceSelector = ({ sauceName }: { sauceName: string }) => {
+    const [quantity, setQuantity] = useState(0);
+  
+    const handleIncrement = () => {
+      setQuantity(quantity + 1);
+    };
+  
+    const handleDecrement = () => {
+      if (quantity > 0) {
+        setQuantity(quantity - 1);
+      }
+    };
+  
+    const handleDelete = () => {
+      setQuantity(0);
+    };
+  
+    return (
+      <div className="w-3/4 p-0 flex items-center">
+        <div className="w-[500px] rounded-lg border border-gray-300 p-2 flex items-center">
+          <button
+            className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              quantity === 0 ? 'bg-gray-200' : 'bg-red-500 text-white'
+            }`}
+            onClick={quantity === 0 ? handleIncrement : handleDelete}
+          >
+            {quantity === 0 ? '+' : 'X'}
+          </button>
+          <span className="w-40 whitespace-nowrap overflow-hidden overflow-ellipsis">{sauceName}</span>
+          <button
+            className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center"
+            onClick={handleIncrement}
+          >
+            +
+          </button>
+          <span className="mx-2">{quantity}</span>
+          <button
+            className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center"
+            onClick={handleDecrement}
+          >
+            -
+          </button>
+        </div>
+      </div>
+    );    
+  };
+
+  const spicyChoices = [
+    "Not Spicy",
+    "Mild",
+    "Medium Spicy",
+    "Extra Spicy",
+    "Spicy on Side",
+    // Add more spicy choices here
+  ];
+  
+  const renderSpicyChoices = () => {
+    return spicyChoices.map((choice, index) => (
+      <label key={index} className="inline-flex items-center">
+        <input
+          type="checkbox"
+          className="form-checkbox h-5 w-5 text-gray-600"
+        />
+        <span className="ml-2 text-gray-700">{choice}</span>
+      </label>
+    ));
+  };
+
   const selectedItemDetails = selectedItem && (
     <>
       <div className="mb-4 flex items-center justify-between">
@@ -94,189 +183,34 @@ const Menu = () => {
         <div className="mt-4">
           <h3 className="mb-2 text-lg font-bold">
             Choice of Sauce
-            <span className="text-sm font-normal text-gray-400">
-              {" "}
-              (up to 1 max)
-            </span>
+            <span className="text-sm font-normal text-gray-400"> (up to 1 max)</span>
           </h3>
-          <hr className="mb-4 border-gray-300"></hr>
-          <div className="flex flex-col">
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">
-                Salt &amp; Pepper On Side
-              </span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Sauce on the Side</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Extra 2nd Sauce</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Ranch</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Sweet Red Chili</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Orange Sauce</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">
-                Tea Rex Special Sauce (BBQ){" "}
-              </span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Hoisin Sauce</span>
-            </label>
-            <label className="inline-flex items-center">
-              <input
-                type="checkbox"
-                className="form-checkbox h-5 w-5 text-gray-600"
-              />
-              <span className="ml-2 text-gray-700">Garlic Sauce</span>
-            </label>
-            <div className="ml-6 flex flex-col">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Spicy on Side</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">
-                  Extra 1st Sauce +$0.50
-                </span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">
-                  Extra 3rd Sauce +$0.50
-                </span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Sweet & Sour</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Teriyaki</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Spicy Mayo</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Honey Wasabi</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Dumpling Sauce</span>
-              </label>
-              {/* Add more sauce choices here */}
-            </div>
+          <hr className="mb-4 border-gray-300" />
+          <div className="grid grid-cols-2 gap-4">
+            {sauceChoices.map((choice, index) => (
+            <SauceSelector key={index} sauceName={choice} />
+            ))}
           </div>
         </div>
         <div className="mt-4">
           <h3 className="mb-2 text-lg font-bold">
             Spicy
-            <span className="text-sm font-normal text-gray-400">
-              {" "}
-              (up to 1 max)
-            </span>
+            <span className="text-sm font-normal text-gray-400"> (up to 1 max)</span>
           </h3>
-          <hr className="mb-4 border-gray-300"></hr>
-          <div className="flex flex-col">
-            <div className="flex flex-row items-start">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Mild</span>
-              </label>
-              <div className="ml-60 mr-16 p-4">
-                <label className="inline-flex items-center">
-                  <input
-                    type="checkbox"
-                    className="form-checkbox h-5 w-5 text-gray-600"
-                  />
-                  <span className="ml-2 text-gray-700">Medium Spicy</span>
-                </label>
-              </div>
+          <hr className="mb-4 border-gray-300" />
+          <div className="grid grid-cols-2 gap-2">
+            {spicyChoices.map((choice, index) => (
+            <div
+              key={index}
+              className="w-3/4 p-0 flex items-center rounded-lg border border-gray-300"
+              >
+              <input
+              type="checkbox"
+              className="form-checkbox h-4 w-4 text-gray-600"
+              />
+              <span className="ml-2 text-gray-700">{choice}</span>
             </div>
-            <div className="grid grid-cols-2 gap-4 p-4">
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Extra Spicy</span>
-              </label>
-              <label className="inline-flex items-center">
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-5 w-5 text-gray-600"
-                />
-                <span className="ml-2 text-gray-700">Spicy on Side</span>
-              </label>
-            </div>
+          ))}
           </div>
         </div>
         <div className="mt-4">
