@@ -9,7 +9,7 @@ import { ItemAddForm } from "./forms/ItemAddForm";
 import adminModeStore from "../utils/adminModeStore";
 interface MenuSectionProps {
   menuSection: MenuSection;
-  handleAddToCart: (item: { name: string }) => void;
+  handleAddToCart: (item: MenuItem) => void;
 }
 
 interface MenuItemProps {
@@ -17,7 +17,7 @@ interface MenuItemProps {
   isAdmin: boolean;
   handleItemEdit: (item: MenuItem) => void;
   handleItemDelete: (itemId: number) => void;
-  handleAddToCart: (item: { name: string }) => void;
+  handleAddToCart: (item: MenuItem) => void;
 }
 
 const MenuItem = ({
