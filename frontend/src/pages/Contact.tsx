@@ -1,4 +1,8 @@
-const Contact = () => {
-  return <h1>Contact</h1>;
-};
-export default Contact;
+import ContactSection from '../components/ContactSection';//update contact info in ContactSection.tsx
+export default function Contact(){
+  return(
+    <div>
+      <ContactSection /> 
+    </div>
+  )
+}
