@@ -7,8 +7,11 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import { SectionAddForm } from "../components/forms/SectionAddForm";
 import adminModeStore from "../utils/adminModeStore";
+import { useNavigate } from 'react-router-dom';
 
 const Menu = () => {
+  const navigate = useNavigate;
+
   const { data, isLoading } = useQuery({
     queryKey: ["menuSections"],
     queryFn: () =>
@@ -32,6 +35,12 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<{ name: string } | null>(
     null
   );
+
+  const handleLogout = () => {
+    // Clear the admin mode state
+    adminModeStore.setState({ isAdmin: false });
+
+  };
 
   type Item = { name: string };
   const handleAddToCart = (item: Item) => {
@@ -345,6 +354,17 @@ const Menu = () => {
               Add Menu Section
             </button>
           )}
+          {isAdmin && (
+          <div className="mt-5 justify-center">
+            <button
+              onClick={handleLogout}
+              className="w-full border-red-500 bg-red-500 text-white py-1 px-5 rounded-md"
+              type="button"
+            >
+              Logout
+            </button>
+          </div>
+        )}
         </div>
       </div>
       {data.map((menuSection: MenuSection) => (
