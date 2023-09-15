@@ -16,6 +16,7 @@ import PaymentResult from "./pages/PaymentResult";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
 import Cart from "./pages/Cart";
+import { ShoppingCartProvider } from "./components/ShoppingCartContext";
 function App() {
   const queryClient = new QueryClient();
 
@@ -38,11 +39,12 @@ function App() {
   );
   
   return (
-    <QueryClientProvider client={queryClient}>
-      <Toaster />
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-
+    <ShoppingCartProvider>
+      <QueryClientProvider client={queryClient}>
+        <Toaster />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ShoppingCartProvider>
   );
 }
 

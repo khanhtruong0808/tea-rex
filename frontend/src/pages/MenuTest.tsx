@@ -8,13 +8,11 @@ import useDialog from "../utils/dialogStore";
 import { SectionAddForm } from "../components/forms/SectionAddForm";
 import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartContext";
-import { SauceSelector } from "../components/SauceSelector";
 
 interface Item {
-  id?: number
-  name: string;
-  price?: number;
-  qty: number;
+    name: string;
+    price?: number;
+    qty?: number;
 }
 
 const Menu = () => {
@@ -33,10 +31,10 @@ const Menu = () => {
   const [selectedItem, setSelectedItem] = useState<MenuItem>();
   const [quantity, setQuantity] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState();
-  const [selectedOption, setSelectedOption] = useState<Item[]>([]);
-  const [selectedSpiceLevel, setSelectedSpiceLevel] = useState<Item>({ name: "mild", qty: 1});
+  const [selectedOption, setSelectedOption] = useState<Item>({ name: "salt-pepper" });
+  const [selectedSpiceLevel, setSelectedSpiceLevel] = useState<Item>({ name: "mild" });
 
-  const { addToCart } = useShoppingCart();
+  const { addToCart, getCartItems } = useShoppingCart();
 
   useEffect(() => {
     setSelectedCategory(data?.[0]?.name);
@@ -59,41 +57,18 @@ const Menu = () => {
     setShowModal(false);
   };
 
+  const handleOptionChange = (e: Item) => {
+    setSelectedOption(e);
+  };
+
   const handleSpiceOptionChange = (e: Item) => {
     setSelectedSpiceLevel(e);
   };
 
-  const handleCartFunction = (selectedItem: MenuItem, selectedOption: Item[], selectedSpiceLevel: Item) => {
-    const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
-
-    newOptionArr.map((x) => x.name === 'Extra 1st Sauce +$0.50' || x.name === 'Extra 2nd Sauce +$0.50' || x.name === 'Extra 3rd Sauce +$0.50' ? x.price=0.50 : x);
-
-    newOptionArr.map((x) => x.qty + 1);
-
-    addToCart(selectedItem, newOptionArr, selectedSpiceLevel);
-
-    setSelectedOption([]);
-    handleCloseModal();
-  }
-
-  const collectAllOptionQuantity = (sauceName: string, quantity: number) => {
-
-    const exist = selectedOption.find((x) => x.name === sauceName);
-
-    if(exist) {
-      const newSelectedOption = selectedOption.map((x) => x.name === sauceName ? {...exist, qty: quantity}: x);
-      setSelectedOption(newSelectedOption);
-    } else {
-      const newSelectedOption = [...selectedOption, {name: sauceName, qty: 1}];
-      setSelectedOption(newSelectedOption);
-    }
-
-  }
-
   const sauceChoices = [
     "Salt & Pepper On Side",
     "Sauce on the Side",
-    "Extra 2nd Sauce +$0.50",
+    "Extra 2nd Sauce",
     "Ranch",
     "Sweet Red Chili",
     "Orange Sauce",
@@ -110,6 +85,53 @@ const Menu = () => {
     "Dumpling Sauce",
     // Add more sauce choices here
   ];
+
+  const SauceSelector = ({ sauceName }: { sauceName: string }) => {
+    const [quantity, setQuantity] = useState(0);
+  
+    const handleIncrement = () => {
+      setQuantity(quantity + 1);
+    };
+  
+    const handleDecrement = () => {
+      if (quantity > 0) {
+        setQuantity(quantity - 1);
+      }
+    };
+  
+    const handleDelete = () => {
+      setQuantity(0);
+    };
+  
+    return (
+      <div className="w-3/4 p-0 flex items-center">
+        <div className="w-[500px] rounded-lg border border-gray-300 p-2 flex items-center">
+          <button
+            className={`w-8 h-8 rounded-full flex items-center justify-center ${
+              quantity === 0 ? 'bg-gray-200' : 'bg-red-500 text-white'
+            }`}
+            onClick={quantity === 0 ? handleIncrement : handleDelete}
+          >
+            {quantity === 0 ? '+' : 'X'}
+          </button>
+          <span className="w-40 whitespace-nowrap overflow-hidden overflow-ellipsis">{sauceName}</span>
+          <button
+            className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center"
+            onClick={handleIncrement}
+          >
+            +
+          </button>
+          <span className="mx-2">{quantity}</span>
+          <button
+            className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center"
+            onClick={handleDecrement}
+          >
+            -
+          </button>
+        </div>
+      </div>
+    );    
+  };
 
   const spicyChoices = [
     "Not Spicy",
@@ -181,11 +203,7 @@ const Menu = () => {
           <hr className="mb-4 border-gray-300" />
           <div className="grid grid-cols-2 gap-4">
             {sauceChoices.map((choice, index) => (
-            <SauceSelector 
-              key={index} 
-              sauceName={choice}
-              onQtyChange={(quantity) => collectAllOptionQuantity(choice, quantity)}
-            />
+            <SauceSelector key={index} sauceName={choice} />
             ))}
           </div>
         </div>
@@ -204,8 +222,6 @@ const Menu = () => {
               <input
               type="checkbox"
               className="form-checkbox h-4 w-4 text-gray-600"
-              checked={ selectedSpiceLevel.name === choice }
-              onChange={() => handleSpiceOptionChange({name: choice, qty: 1})}
               />
               <span className="ml-2 text-gray-700">{choice}</span>
             </div>
@@ -227,7 +243,7 @@ const Menu = () => {
             <button
               className="bg-gray-500 hover:bg-gray-700 text-white font-bold mt-3 px-2 pb-1 rounded-full"
               id="add-to-cart"
-              onClick={() => handleCartFunction(selectedItem, selectedOption, selectedSpiceLevel)}
+              onClick={() => addToCart(selectedItem, selectedOption, selectedSpiceLevel)}
             >
               Add to Cart
             </button>
