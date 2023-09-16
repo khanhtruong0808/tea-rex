@@ -77,6 +77,33 @@ app.put("/menu-item/:id", async (req, res) => {
   res.json(menuItem);
 });
 
+// session. Do later
+/*app.use(
+  session({
+    secret: 'test-secret-key',
+    resave: false,
+    saveUninitialized: true,
+  })
+)*/
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  if (!user || user.password !== password) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+
+  if (user.password === password) {
+    res.status(200).json({ message: "Login successful" });
+  } else {
+    res.status(401).json({ message: "Invalid password" });
+  }
+});
+
 app.post("/payment", cors(), async (req, res) => {
   let { amount, id } = req.body;
 

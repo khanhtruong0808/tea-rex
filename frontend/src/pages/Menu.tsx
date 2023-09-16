@@ -7,11 +7,12 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import { SectionAddForm } from "../components/forms/SectionAddForm";
 import adminModeStore from "../utils/adminModeStore";
+import { useNavigate } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartContext";
 import { SauceSelector } from "../components/SauceSelector";
 
 interface Item {
-  id?: number
+  id?: number;
   name: string;
   price?: number;
   qty: number;
@@ -34,7 +35,10 @@ const Menu = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState();
   const [selectedOption, setSelectedOption] = useState<Item[]>([]);
-  const [selectedSpiceLevel, setSelectedSpiceLevel] = useState<Item>({ name: "mild", qty: 1});
+  const [selectedSpiceLevel, setSelectedSpiceLevel] = useState({
+    name: "mild",
+    qty: 1,
+  });
 
   const { addToCart } = useShoppingCart();
 
@@ -47,6 +51,11 @@ const Menu = () => {
       title: "Add Menu Section",
       content: <SectionAddForm />,
     });
+  };
+
+  const handleLogout = () => {
+    // Clear the admin mode state
+    adminModeStore.setState({ isAdmin: false });
   };
 
   const handleAddToCart = (item: MenuItem) => {
@@ -63,10 +72,20 @@ const Menu = () => {
     setSelectedSpiceLevel(e);
   };
 
-  const handleCartFunction = (selectedItem: MenuItem, selectedOption: Item[], selectedSpiceLevel: Item) => {
+  const handleCartFunction = (
+    selectedItem: MenuItem,
+    selectedOption: Item[],
+    selectedSpiceLevel: Item
+  ) => {
     const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
-    newOptionArr.map((x) => x.name === 'Extra 1st Sauce +$0.50' || x.name === 'Extra 2nd Sauce +$0.50' || x.name === 'Extra 3rd Sauce +$0.50' ? x.price=0.50 : x);
+    newOptionArr.map((x) =>
+      x.name === "Extra 1st Sauce +$0.50" ||
+      x.name === "Extra 2nd Sauce +$0.50" ||
+      x.name === "Extra 3rd Sauce +$0.50"
+        ? (x.price = 0.5)
+        : x
+    );
 
     newOptionArr.map((x) => x.qty + 1);
 
@@ -74,21 +93,24 @@ const Menu = () => {
 
     setSelectedOption([]);
     handleCloseModal();
-  }
+  };
 
   const collectAllOptionQuantity = (sauceName: string, quantity: number) => {
-
     const exist = selectedOption.find((x) => x.name === sauceName);
 
-    if(exist) {
-      const newSelectedOption = selectedOption.map((x) => x.name === sauceName ? {...exist, qty: quantity}: x);
+    if (exist) {
+      const newSelectedOption = selectedOption.map((x) =>
+        x.name === sauceName ? { ...exist, qty: quantity } : x
+      );
       setSelectedOption(newSelectedOption);
     } else {
-      const newSelectedOption = [...selectedOption, {name: sauceName, qty: 1}];
+      const newSelectedOption = [
+        ...selectedOption,
+        { name: sauceName, qty: 1 },
+      ];
       setSelectedOption(newSelectedOption);
     }
-
-  }
+  };
 
   const sauceChoices = [
     "Salt & Pepper On Side",
@@ -119,7 +141,7 @@ const Menu = () => {
     "Spicy on Side",
     // Add more spicy choices here
   ];
-  
+
   const renderSpicyChoices = () => {
     return spicyChoices.map((choice, index) => (
       <label key={index} className="inline-flex items-center">
@@ -176,40 +198,50 @@ const Menu = () => {
         <div className="mt-4">
           <h3 className="mb-2 text-lg font-bold">
             Choice of Sauce
-            <span className="text-sm font-normal text-gray-400"> (up to 1 max)</span>
+            <span className="text-sm font-normal text-gray-400">
+              {" "}
+              (up to 1 max)
+            </span>
           </h3>
           <hr className="mb-4 border-gray-300" />
           <div className="grid grid-cols-2 gap-4">
             {sauceChoices.map((choice, index) => (
-            <SauceSelector 
-              key={index} 
-              sauceName={choice}
-              onQtyChange={(quantity) => collectAllOptionQuantity(choice, quantity)}
-            />
+              <SauceSelector
+                key={index}
+                sauceName={choice}
+                onQtyChange={(quantity) =>
+                  collectAllOptionQuantity(choice, quantity)
+                }
+              />
             ))}
           </div>
         </div>
         <div className="mt-4">
           <h3 className="mb-2 text-lg font-bold">
             Spicy
-            <span className="text-sm font-normal text-gray-400"> (up to 1 max)</span>
+            <span className="text-sm font-normal text-gray-400">
+              {" "}
+              (up to 1 max)
+            </span>
           </h3>
           <hr className="mb-4 border-gray-300" />
           <div className="grid grid-cols-2 gap-2">
             {spicyChoices.map((choice, index) => (
-            <div
-              key={index}
-              className="w-3/4 p-0 flex items-center rounded-lg border border-gray-300"
+              <div
+                key={index}
+                className="flex w-3/4 items-center rounded-lg border border-gray-300 p-0"
               >
-              <input
-              type="checkbox"
-              className="form-checkbox h-4 w-4 text-gray-600"
-              checked={ selectedSpiceLevel.name === choice }
-              onChange={() => handleSpiceOptionChange({name: choice, qty: 1})}
-              />
-              <span className="ml-2 text-gray-700">{choice}</span>
-            </div>
-          ))}
+                <input
+                  type="checkbox"
+                  className="form-checkbox h-4 w-4 text-gray-600"
+                  checked={selectedSpiceLevel.name === choice}
+                  onChange={() =>
+                    handleSpiceOptionChange({ name: choice, qty: 1 })
+                  }
+                />
+                <span className="ml-2 text-gray-700">{choice}</span>
+              </div>
+            ))}
           </div>
         </div>
         <div className="mt-4">
@@ -223,11 +255,17 @@ const Menu = () => {
               maxLength={parseInt("500")}
             ></textarea>
           </div>
-          <div className="flex justify-center content-center">
+          <div className="flex content-center justify-center">
             <button
-              className="bg-gray-500 hover:bg-gray-700 text-white font-bold mt-3 px-2 pb-1 rounded-full"
+              className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
               id="add-to-cart"
-              onClick={() => handleCartFunction(selectedItem, selectedOption, selectedSpiceLevel)}
+              onClick={() =>
+                handleCartFunction(
+                  selectedItem,
+                  selectedOption,
+                  selectedSpiceLevel
+                )
+              }
             >
               Add to Cart
             </button>
@@ -276,6 +314,17 @@ const Menu = () => {
             >
               Add Menu Section
             </button>
+          )}
+          {isAdmin && (
+            <div className="mt-5 justify-center">
+              <button
+                onClick={handleLogout}
+                className="w-full rounded-md border-red-500 bg-red-500 px-5 py-1 text-white"
+                type="button"
+              >
+                Logout
+              </button>
+            </div>
           )}
         </div>
       </div>
