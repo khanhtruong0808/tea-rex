@@ -82,8 +82,11 @@ const Home: React.FC = () => {
             "--swiper-navigation-color": "#000000",
             "--swiper-pagination-color": "#000000",
           }}
-          spaceBetween={0}
-          slidesPerView={3}
+            breakpoints={{
+              480: {slidesPerView: 1, spaceBetween: 80},
+              768: {slidesPerView: 2, spaceBetween: 150},
+              1024: {slidesPerView: 3, spaceBetween: 50}
+            }}
           loop={true}
           modules={[Pagination, Navigation]}
           navigation={true}
@@ -104,26 +107,66 @@ const Home: React.FC = () => {
           ))}
         </Swiper>
       </div>
+      {/* About Us & Google Map Section */}
+      <div className="column-1 md:columns-2">
+        <div>
+          <div className="w-9/12 max-w-xl mx-auto">
+            <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">About Us</h1>
+            <div className="pt-2 border-t-2 border-black justify-center"></div>
+              <h3 className="text-center text-xl pt-3">Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine in a trendy, 
+              cheerful atmosphere. We make everything with love using only the freshest ingredients. 
+              We offer a wide variety of Asian dishes, including authentic ramen, sushi, bento boxes, hot pots, and snacks. 
+              From our famous ramen burger to our popcorn chicken, our unique Asian-American flavors are sure to delight! 
+              Wash down your meal with our incredible selection of flavored teas, milk teas, and slushies, available in flavors like mango, 
+              taro, passionfruit, lychee, and many more. Join us for a casual dining experience or place your order to go for a filling meal or delicious drink on the go!</h3>
+          </div>
+        </div>
+        <div className="flex justify-center">
+          <GoogleMap />
+        </div>
+      </div>
       {/* Top Ten Items Section */}
       <section className="mt-10">
-        <h2 className="text-3xl font-bold mb-5">Top Ten Items</h2>
-        <div className="flex flex-wrap">
+      <div>
+      <div className="w-9/12 max-w-xl mx-auto">
+        <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">Top Ten Items</h1>
+        <div className="pt-2 border-t-2 border-black justify-center"></div>
+      </div>
+    </div>
+        <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
+        <Swiper
+          style={{
+            /*@ts-ignore*/
+            "--swiper-navigation-color": "#000000",
+            "--swiper-pagination-color": "#000000",
+          }}
+            breakpoints={{
+              480: {slidesPerView: 1, spaceBetween: 80},
+              768: {slidesPerView: 2, spaceBetween: 150},
+              1024: {slidesPerView: 3, spaceBetween: 50}
+            }}
+          loop={true}
+          modules={[Pagination, Navigation]}
+          navigation={true}
+          pagination={{ clickable: true }}
+          // onSlideChange={() => console.log("slide change")}
+          // onSwiper={(swiper) => console.log(swiper)}
+          className="w-full h-full rounded-2xl object-center object-cover relative"
+        >
           {topTenItems.map((item, index) => (
-            <figure key={index} className="text-center">
+            <SwiperSlide key={index}>
               <img
                 src={item.src}
                 alt={item.alt}
-                className="w-64 h-64 object-cover cursor-pointer"
+                className="w-full h-full cursor-pointer object-scale-down"
                 onClick={handleImageClick}
-              />
-            </figure>
+              ></img>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
+      </div>
       </section>
-      {/* Google Map Section */}
-      <section className="mt-10">
-        <GoogleMap />
-      </section>
+      
     </div>
   );
 };
