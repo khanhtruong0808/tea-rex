@@ -55,14 +55,12 @@ const Cart = () => {
   ) : (
     <div className="relative flex flex-col">
         <div className="flex">
-
             {/* Left Column */}
             {isCheckingOut && (
                 <div className="w-1/2 p-5">
                     <Stripe totalAmount={Number(total.toFixed(2)) * 100} onCancelCheckout={handleCancel} />
                 </div>
             )}
-
             {/* Right Column */}
             <div className={isCheckingOut ? "w-1/2 p-5" : "w-full p-5"} border-solid border-black>
                 {/* List of Items */}
