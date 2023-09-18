@@ -121,8 +121,8 @@ const Home: React.FC = () => {
               taro, passionfruit, lychee, and many more. Join us for a casual dining experience or place your order to go for a filling meal or delicious drink on the go!</h3>
           </div>
         </div>
-        <div className="flex justify-center">
-          <GoogleMap />
+        <div className="flex justify-center mr-10">
+          <GoogleMap width="90%"/>
         </div>
       </div>
       {/* Top Ten Items Section */}

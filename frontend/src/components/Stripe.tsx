@@ -4,9 +4,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./forms/PaymentForm";
 const PUBLIC_KEY = import.meta.env.STRIPE_PUBLIC_KEY;
 
-const stripePromise = loadStripe(`${PUBLIC_KEY}`); // string interprolation to fix error saying apiUrl needs to be string
+const stripePromise = loadStripe(`${PUBLIC_KEY}`); // string interpolation to fix error saying apiUrl needs to be string
 
-type StripeContainerProps = {
+interface StripeContainerProps {
   totalAmount: number;
   className?: string;
   onCancelCheckout: () => void;

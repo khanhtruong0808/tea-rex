@@ -107,7 +107,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
           <label className="block text-sm font-semibold text-gray-600 mb-2">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <GoogleMap />
+            <GoogleMap width="75%"/>
           </label>
         </div>
         {/* Name */}
@@ -121,7 +121,6 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
             className="p-2 border border-gray-200 rounded w-full"
           />
         </div>
-
         {/* Card Number */}
         <div className="mb-4 relative">
           <label className="block text-sm font-medium text-gray-600 mb-2">
@@ -133,7 +132,6 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
           />
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
-
         {/* Expiration Date, CVV and Zip */}
         <div className="flex justify-between mb-4">
           {/* Expiration Date */}
