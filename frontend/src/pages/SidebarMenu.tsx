@@ -15,8 +15,7 @@ const SidebarMenu = ({
   };
 
   return (
-    // TODO: Make a mobile-friendly version of this sidebar
-    <div className="flex flex-col gap-y-8 whitespace-nowrap text-2xl font-medium">
+    <div className="flex flex-col gap-y-4 lg:gap-y-6 xl:gap-y-8 whitespace-nowrap text-lg lg:text-xl xl:text-2xl font-medium">
       <h2 className="border-b border-amber-300 pb-4 text-4xl font-extrabold">
         Menu
       </h2>
@@ -34,7 +33,7 @@ const SidebarMenu = ({
           <p
             className={`${
               isSelected ? "text-amber-500" : "hover:text-amber-500"
-            } cursor-pointer uppercase `}
+            } cursor-pointer uppercase`}
             key={menuSection.name}
             onClick={() => handleSelectCategory(menuSection.name)}
           >

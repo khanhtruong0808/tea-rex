@@ -28,7 +28,7 @@ const MenuItem = ({
   handleAddToCart,
 }: MenuItemProps) => {
   return (
-    <div className="group flex bg-white px-3 py-2 text-xl hover:bg-amber-400">
+    <div className="group flex bg-white px-3 py-2 text-lg sm:text-xl hover:bg-amber-400">
       <div
         className="flex flex-1 cursor-pointer justify-between"
         onClick={() => handleAddToCart(item)}
@@ -131,7 +131,7 @@ export const MenuSection = ({
         </h2>
 
         <img
-          className="max-w-sm self-center object-contain"
+          className="max-w-xs sm:max-w-sm self-center object-contain"
           src={menuSection.imageUrl}
           alt={menuSection.imageAltText}
         />
