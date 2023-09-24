@@ -1,6 +1,5 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  mode:'jit', // added just in time mode to compile faster
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -10,5 +9,5 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/forms")],
 };

@@ -28,7 +28,7 @@ const MenuItem = ({
   handleAddToCart,
 }: MenuItemProps) => {
   return (
-    <div className="group flex bg-white px-3 py-2 text-xl hover:bg-amber-400">
+    <div className="group flex bg-white px-3 py-2 text-lg sm:text-xl hover:bg-amber-400">
       <div
         className="flex flex-1 cursor-pointer justify-between"
         onClick={() => handleAddToCart(item)}
@@ -39,24 +39,22 @@ const MenuItem = ({
           <p>${item.price}</p>
         </div>
       </div>
-      <div>
-        {isAdmin && (
-          <>
-            <button
-              onClick={() => handleItemEdit(item)}
-              className="ml-4 hover:scale-110"
-            >
-              <FiEdit3 size={24} />
-            </button>
-            <button
-              onClick={() => handleItemDelete(item.id)}
-              className="hover:scale-110"
-            >
-              <TbTrash size={24} />
-            </button>
-          </>
-        )}
-      </div>
+      {isAdmin && (
+        <>
+          <button
+            onClick={() => handleItemEdit(item)}
+            className="ml-4 mr-1 hover:scale-110"
+          >
+            <FiEdit3 size={24} />
+          </button>
+          <button
+            onClick={() => handleItemDelete(item.id)}
+            className="hover:scale-110"
+          >
+            <TbTrash size={24} />
+          </button>
+        </>
+      )}
     </div>
   );
 };
@@ -110,7 +108,7 @@ export const MenuSection = ({
       className="flex w-full flex-col"
     >
       <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 pb-8">
-        <h2 className="text-center font-menu text-6xl font-extrabold uppercase">
+        <h2 className="text-center font-menu text-6xl font-bold uppercase">
           {isAdmin && (
             <div className="absolute bottom-0">
               <button
@@ -131,7 +129,7 @@ export const MenuSection = ({
         </h2>
 
         <img
-          className="max-w-sm self-center object-contain"
+          className="max-w-sm w-auto h-auto self-center object-contain"
           src={menuSection.imageUrl}
           alt={menuSection.imageAltText}
         />
