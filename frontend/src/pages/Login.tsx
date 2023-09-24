@@ -102,7 +102,7 @@ function Login() {
             <input
               type="password"
               placeholder="password"
-              className="my-2 w-full border-b border-black bg-transparent py-4 text-black outline-none focus:outline-none"
+              className="my-2 w-full border-t-0 border-x-0 border-b border-black bg-transparent py-4 text-black px-0 ring-0 focus:ring-0 focus:border-b-black"
               value={password}
               onChange={handlePasswordChange}
             />

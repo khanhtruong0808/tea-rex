@@ -1,11 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import SidebarMenu from "./SidebarMenu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Modal from "react-modal";
 import { MenuSection } from "../components/MenuSection";
 import { config } from "../config";
 import useDialog from "../utils/dialogStore";
-import { SectionAddForm } from "../components/forms/SectionAddForm";
 import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartContext";
 import { SauceSelector } from "../components/SauceSelector";
@@ -24,16 +23,13 @@ const Menu = () => {
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
 
-  const [isAdmin, setIsAdmin] = adminModeStore((state) => [
-    state.isAdmin,
-    state.setIsAdmin,
-  ]);
+  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const openDialog = useDialog((state) => state.openDialog);
   const closeDialog = useDialog((state) => state.closeDialog);
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem>();
   const [quantity, setQuantity] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedOption, setSelectedOption] = useState<Item[]>([]);
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState({
     name: "mild",
@@ -42,16 +38,16 @@ const Menu = () => {
 
   const { addToCart } = useShoppingCart();
 
-  useEffect(() => {
-    setSelectedCategory(data?.[0]?.name);
-  }, [data]);
-
-  const handleAddSection = () => {
-    openDialog({
-      title: "Add Menu Section",
-      content: <SectionAddForm />,
-    });
-  };
+  if (isLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <img
+          src="dino-sprite.png"
+          alt="Bouncing Dinosaur"
+          className="w-40 animate-bounce text-center"
+        />
+      </div>
+    );
 
   const handleLogout = () => {
     // Clear the admin mode state
@@ -296,16 +292,8 @@ const Menu = () => {
     </>
   );
 
-  return isLoading ? (
-    <div className="flex h-screen items-center justify-center">
-      <img
-        src="dino-sprite.png"
-        alt="Bouncing Dinosaur"
-        className="w-40 animate-bounce text-center"
-      />
-    </div>
-  ) : (
-    <div className="flex gap-x-4 px-4 lg:px-12 pt-12 pb-20">
+  return (
+    <div className="flex gap-x-4 px-4 lg:px-6 pt-12 pb-20">
       <button
         className="block md:hidden z-50 fixed rounded-full shadow-md bg-lime-700 px-4 py-6 text-sm font-bold text-white hover:bg-lime-800"
         onClick={handleOpenMobileMenu}
@@ -323,14 +311,7 @@ const Menu = () => {
       <div className="absolute right-2 top-28">
         <div className="flex flex-col">
           {isAdmin && (
-            <>
-              <button
-                type="button"
-                className="mb-2 mr-2 rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
-                onClick={handleAddSection}
-              >
-                Add Menu Section
-              </button>
+            <div className="z-10">
               <div className="justify-center">
                 <button
                   onClick={handleLogout}
@@ -340,7 +321,7 @@ const Menu = () => {
                   Logout
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
@@ -349,6 +330,7 @@ const Menu = () => {
         {selectedCategory === "all"
           ? data.map((menuSection: MenuSection) => (
               <MenuSection
+                key={data.name}
                 menuSection={menuSection}
                 handleAddToCart={handleAddToCart}
               />

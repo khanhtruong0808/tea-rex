@@ -15,7 +15,7 @@ const routes = [
   { name: "Contact Us", path: "/contact" },
 ];
 
-export default function Example() {
+export const Navbar = () => {
   return (
     <Disclosure
       as="nav"
@@ -23,7 +23,7 @@ export default function Example() {
     >
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-4 md:px-3 lg:px-5 xl:px-8">
+          <div className="mx-auto max-w-7xl px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 md:h-20 xl:h-24 items-center justify-between">
               <div className="flex items-center">
                 <NavLink reloadDocument to="/" className="shrink-0">
@@ -100,4 +100,4 @@ export default function Example() {
       )}
     </Disclosure>
   );
-}
+};
