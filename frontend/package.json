@@ -28,6 +28,7 @@
     "stripe": "^13.5.0",
     "styled-components": "^6.0.8",
     "swiper": "^9.2.4",
+    "validator": "^13.11.0",
     "zustand": "^4.3.7"
   },
   "devDependencies": {
