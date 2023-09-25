@@ -1,13 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import SidebarMenu from "./SidebarMenu"; //adds the sidebar to menu
-import { useEffect, useState } from "react";
+import SidebarMenu from "./SidebarMenu";
+import { useState } from "react";
 import Modal from "react-modal";
 import { MenuSection } from "../components/MenuSection";
 import { config } from "../config";
 import useDialog from "../utils/dialogStore";
-import { SectionAddForm } from "../components/forms/SectionAddForm";
 import adminModeStore from "../utils/adminModeStore";
-import { useNavigate } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartContext";
 import { SauceSelector } from "../components/SauceSelector";
 
@@ -25,15 +23,13 @@ const Menu = () => {
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
 
-  const [isAdmin, setIsAdmin] = adminModeStore((state) => [
-    state.isAdmin,
-    state.setIsAdmin,
-  ]);
+  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const openDialog = useDialog((state) => state.openDialog);
+  const closeDialog = useDialog((state) => state.closeDialog);
   const [showModal, setShowModal] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem>();
   const [quantity, setQuantity] = useState(1);
-  const [selectedCategory, setSelectedCategory] = useState();
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedOption, setSelectedOption] = useState<Item[]>([]);
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState({
     name: "mild",
@@ -42,16 +38,16 @@ const Menu = () => {
 
   const { addToCart } = useShoppingCart();
 
-  useEffect(() => {
-    setSelectedCategory(data?.[0]?.name);
-  }, [data]);
-
-  const handleAddSection = () => {
-    openDialog({
-      title: "Add Menu Section",
-      content: <SectionAddForm />,
-    });
-  };
+  if (isLoading)
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <img
+          src="dino-sprite.png"
+          alt="Bouncing Dinosaur"
+          className="w-40 animate-bounce text-center"
+        />
+      </div>
+    );
 
   const handleLogout = () => {
     // Clear the admin mode state
@@ -70,6 +66,27 @@ const Menu = () => {
 
   const handleSpiceOptionChange = (e: Item) => {
     setSelectedSpiceLevel(e);
+  };
+
+  const handleMobileSetSelectedCategory = (category: string) => {
+    setSelectedCategory(category);
+    closeDialog();
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 1);
+  };
+
+  const handleOpenMobileMenu = () => {
+    openDialog({
+      title: "",
+      content: (
+        <SidebarMenu
+          menuSections={data}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={handleMobileSetSelectedCategory}
+        />
+      ),
+    });
   };
 
   const handleCartFunction = (
@@ -275,55 +292,35 @@ const Menu = () => {
     </>
   );
 
-  return isLoading ? (
-    <div className="flex h-screen items-center justify-center">
-      <img
-        src="dino-sprite.png"
-        alt="Bouncing Dinosaur"
-        className="w-40 animate-bounce text-center"
-      />
-    </div>
-  ) : (
-    <div className="flex gap-x-4 bg-gray-50 px-12 py-20">
-      <SidebarMenu
-        menuSections={data}
-        selectedCategory={selectedCategory}
-        setSelectedCategory={setSelectedCategory}
-      />
+  return (
+    <div className="flex gap-x-4 px-4 lg:px-6 pt-12 pb-20">
+      <button
+        className="block md:hidden z-50 fixed rounded-full shadow-md bg-lime-700 px-4 py-6 text-sm font-bold text-white hover:bg-lime-800"
+        onClick={handleOpenMobileMenu}
+      >
+        Menu
+      </button>
+      <div className="hidden md:block">
+        <SidebarMenu
+          menuSections={data}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+        />
+      </div>
 
-      {/* TODO: Remove this temporary admin toggle */}
       <div className="absolute right-2 top-28">
         <div className="flex flex-col">
-          <label className="relative mb-4 inline-flex cursor-pointer items-center">
-            <input
-              onChange={() => setIsAdmin(!isAdmin)}
-              type="checkbox"
-              checked={isAdmin}
-              className="peer sr-only"
-            />
-            <div className="peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px]  after:top-0.5 after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:ring-4  peer-focus:ring-blue-300"></div>
-            <span className="ml-3 text-sm font-medium text-gray-900">
-              Toggle Admin View ***TEMPORARY***
-            </span>
-          </label>
           {isAdmin && (
-            <button
-              type="button"
-              className="mb-2 mr-2 rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
-              onClick={handleAddSection}
-            >
-              Add Menu Section
-            </button>
-          )}
-          {isAdmin && (
-            <div className="mt-5 justify-center">
-              <button
-                onClick={handleLogout}
-                className="w-full rounded-md border-red-500 bg-red-500 px-5 py-1 text-white"
-                type="button"
-              >
-                Logout
-              </button>
+            <div className="z-10">
+              <div className="justify-center">
+                <button
+                  onClick={handleLogout}
+                  className="w-full rounded-md border-red-500 bg-red-500 px-5 py-1 text-white"
+                  type="button"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           )}
         </div>
@@ -333,6 +330,7 @@ const Menu = () => {
         {selectedCategory === "all"
           ? data.map((menuSection: MenuSection) => (
               <MenuSection
+                key={data.name}
                 menuSection={menuSection}
                 handleAddToCart={handleAddToCart}
               />
