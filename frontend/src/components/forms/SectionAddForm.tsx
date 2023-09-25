@@ -15,8 +15,8 @@ export const SectionAddForm = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<MenuSection>();
-
   const mutation = useMutation({
+    
     mutationFn: (newSection: MenuSection) =>
       fetch(config.baseApiUrl + "/menu-section", {
         method: "POST",

@@ -35,12 +35,14 @@ const CARD_OPTIONS = {
   showIcon: true,
 };
 
-type PaymentFormProps = {
+interface PaymentFormProps {
   totalAmount: number;
   cancelCheckout: () => void;
+  isRewardsMember: boolean;
+  phoneNumber: string;
 };
 
-const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
+const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber}: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -98,6 +100,37 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
       console.log(error.message);
       return;
     }
+
+    //update the points on the rewardsMember
+	if (isRewardsMember) {
+    	let newPoints = Math.floor(.10 * totalAmount); //points are just 10% of the total amount, may change later
+      	try {
+			let response = await fetch(config.baseApiUrl + "/rewards-member-check", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ phoneNumber })
+          	});
+
+			let data = await response.json();
+  
+          	if (data && data.exists) {
+				newPoints = data.points + newPoints;
+			}
+
+			response = await fetch(config.baseApiUrl + "/rewards-member-update", {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify({ phoneNumber, newPoints })
+			});
+      } catch (error) {
+			const errorMessage = (error as Error).message;
+			console.error(`Could not update points for the rewards member! ${errorMessage}`);
+      }
+    }
   };
 
   return (
@@ -107,7 +140,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
           <label className="block text-sm font-semibold text-gray-600 mb-2">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <GoogleMap width="75%"/>
+            <GoogleMap width="100%" />
           </label>
         </div>
         {/* Name */}
@@ -118,8 +151,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-2 border border-gray-200 rounded w-full"
-          />
+            className="p-1 border border-gray-200 rounded w-full" />
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -128,8 +160,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
           </label>
           <CardNumberElement
             options={CARD_OPTIONS as StripeCardNumberElementOptions}
-            className="p-2 border border-gray-200 rounded w-full"
-          />
+            className="p-2 border border-gray-200 rounded w-full" />
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
         {/* Expiration Date, CVV and Zip */}
@@ -139,37 +170,31 @@ const PaymentForm = ({ totalAmount, cancelCheckout }: PaymentFormProps) => {
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Expiration Date
             </label>
-            <CardExpiryElement className="p-2 border border-gray-200 rounded w-full" />
+            <CardExpiryElement className="p-3 border border-gray-200 rounded w-full" />
           </div>
           {/* CVV */}
           <div className="flex-1 mr-2">
             <label className="block text-sm font-medium text-gray-600 mb-2">
               CVC
             </label>
-            <CardCvcElement className="p-2 border border-gray-200 rounded w-full" />
+            <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />
           </div>
           {/* ZIP */}
-          <div className="flex-1">
+          <div className="flex-1 mr-2">
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Zip
             </label>
-            <input
-              type="text"
-              placeholder="ZIP"
-              className="p-2 border border-gray-200 rounded w-full"
-            />
+            <input type="text" className="p-2 border border-gray-200 rounded w-full" placeholder="ZIP" pattern="\d{5}" maxLength={5}inputMode="numeric"  />
           </div>
         </div>
       </fieldset>
       <div className="flex mt-4 space-x-2">
-        <button className="bg-blue-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
+        <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
           Pay
         </button>
         <button
           type="button"
-          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
-          onClick={cancelCheckout}
-        >
+          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block" onClick={cancelCheckout}>
           Cancel
         </button>
       </div>

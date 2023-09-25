@@ -10,19 +10,20 @@ interface StripeContainerProps {
   totalAmount: number;
   className?: string;
   onCancelCheckout: () => void;
+  isRewardsMember: boolean;
+  phoneNumber: string;
 };
 
-const StripeContainer: React.FC<StripeContainerProps> = ({
-  totalAmount,
-  className,
-  onCancelCheckout,
-}) => {
+const StripeContainer = ({ totalAmount, className, onCancelCheckout,
+isRewardsMember, phoneNumber}: StripeContainerProps) => {
   return (
     <div className={className}>
       <Elements stripe={stripePromise}>
         <PaymentForm
           totalAmount={totalAmount}
           cancelCheckout={onCancelCheckout}
+          isRewardsMember={isRewardsMember}
+          phoneNumber={phoneNumber}
         />
       </Elements>
     </div>
