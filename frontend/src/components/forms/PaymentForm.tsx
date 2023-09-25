@@ -140,7 +140,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
           <label className="block text-sm font-semibold text-gray-600 mb-2">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <GoogleMap width="75%" />
+            <GoogleMap width="100%" />
           </label>
         </div>
         {/* Name */}

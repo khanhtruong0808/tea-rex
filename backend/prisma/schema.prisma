@@ -9,21 +9,21 @@ datasource db {
 }
 
 model MenuSection {
-    id           Int                  @id @unique @default(autoincrement())
-    name         String               @db.VarChar(255)
-    imageUrl     String?              @db.VarChar(255)
-    imageAltText String?              @db.VarChar(255)
-    menuType     MenuSection_menuType @default(food)
+    id           Int        @id @unique @default(autoincrement())
+    name         String     @db.VarChar(255)
+    imageUrl     String?    @db.VarChar(255)
+    imageAltText String?    @db.VarChar(255)
+    menuType     MenuType   @default(food)
     items        MenuItem[]
 }
 
 model MenuItem {
-    id            Int               @id @default(autoincrement())
-    price         Decimal           @db.Decimal(6, 2)
-    name          String            @db.VarChar(255)
+    id            Int         @id @default(autoincrement())
+    price         Decimal     @db.Decimal(6, 2)
+    name          String      @db.VarChar(255)
     menuSectionId Int
-    menuType      MenuItem_menuType @default(food)
-    section       MenuSection       @relation(fields: [menuSectionId], references: [id])
+    menuType      MenuType    @default(food)
+    section       MenuSection @relation(fields: [menuSectionId], references: [id])
 
     @@index([menuSectionId])
 }
