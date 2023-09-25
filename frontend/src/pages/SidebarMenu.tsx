@@ -39,7 +39,7 @@ const SidebarMenu = ({
   return (
     <div className="whitespace-nowrap text-sm lg:text-xl xl:text-2xl font-medium sticky top-28">
       <Tab.Group>
-        <Tab.List className="grid grid-cols-2 rounded-lg p-1 mb-5 w-[340px] lg:w-[425px] xl:w-[500px] bg-black/5 mx-auto">
+        <Tab.List className="grid grid-cols-2 rounded-lg p-1 mb-5 w-full md:w-[320px] lg:w-[425px] xl:w-[500px] bg-black/5 mx-auto">
           <Tab as={Fragment}>
             {({ selected }) => (
               <button

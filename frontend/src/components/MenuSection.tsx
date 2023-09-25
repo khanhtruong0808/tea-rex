@@ -28,16 +28,14 @@ const MenuItem = ({
   handleAddToCart,
 }: MenuItemProps) => {
   return (
-    <div className="group flex bg-white px-3 py-2 text-lg sm:text-xl hover:bg-amber-400">
+    <div className="group flex bg-white px-3 py-2 text-base sm:text-lg md:text-xl hover:bg-amber-400">
       <div
-        className="flex flex-1 cursor-pointer justify-between"
+        className="flex cursor-pointer justify-between w-full"
         onClick={() => handleAddToCart(item)}
         key={item.id}
       >
         <p>{item.name}</p>
-        <div className="flex text-center">
-          <p>${item.price}</p>
-        </div>
+        <p>${item.price}</p>
       </div>
       {isAdmin && (
         <>
@@ -107,8 +105,8 @@ export const MenuSection = ({
       id={menuSection.name}
       className="flex w-full flex-col"
     >
-      <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 pb-8">
-        <h2 className="text-center font-menu text-6xl font-bold uppercase">
+      <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 pb-8 px-2">
+        <h2 className="text-center font-menu text-5xl sm:text-6xl font-bold uppercase">
           {isAdmin && (
             <div className="absolute bottom-0">
               <button
@@ -129,7 +127,7 @@ export const MenuSection = ({
         </h2>
 
         <img
-          className="max-w-sm w-auto h-auto self-center object-contain"
+          className="max-w-xs sm:max-w-sm self-center object-contain"
           src={menuSection.imageUrl}
           alt={menuSection.imageAltText}
         />
