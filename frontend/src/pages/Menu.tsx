@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import SidebarMenu from "./SidebarMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { MenuSection } from "../components/MenuSection";
 import { config } from "../config";
@@ -53,6 +53,7 @@ const Menu = () => {
   const handleLogout = () => {
     // Clear the admin mode state
     adminModeStore.setState({ isAdmin: false });
+    localStorage.removeItem("isAdmin");
   };
 
   const handleAddToCart = (item: MenuItem) => {
@@ -130,6 +131,7 @@ const Menu = () => {
     }
   };
 
+  
   const sauceChoices = [
     "Salt & Pepper On Side",
     "Sauce on the Side",
