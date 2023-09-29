@@ -27,6 +27,9 @@ function Login() {
     setUsernameError("");
     setPasswordError("");
     setMessage("");
+
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    adminModeStore.setState({ isAdmin });
   }, []);
 
   // Sign in button handler.
@@ -70,6 +73,7 @@ function Login() {
       if (response.status === 200) {
         // if success, redirect to the menu page.
         adminModeStore.setState({ isAdmin: true });
+        localStorage.setItem('isAdmin', 'true');
         setUsernameError("");
         setPasswordError("");
         navigate("/menu");
