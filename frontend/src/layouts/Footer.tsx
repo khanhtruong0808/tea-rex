@@ -41,7 +41,7 @@ const Footer = () => {
   return (
     <div className="h-64 gap-30 bg-gradient-to-bl from-amber-600 to-amber-500">
       <div>
-        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 sm:container sm:mx-auto h-48 pt-10">
+        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 container mx-auto h-48 pt-10">
           {footInfo.map((footInfo) => (
             <li
               key={footInfo.name}

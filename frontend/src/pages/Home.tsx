@@ -6,7 +6,7 @@ import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "Swiper/css/effect-fade";
+import "swiper/css/effect-fade";
 
 const topTenItems = [
   { src: "top-ten-items/1.jpg", alt: "item1" },
