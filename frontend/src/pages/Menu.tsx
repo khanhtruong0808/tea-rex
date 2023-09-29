@@ -8,6 +8,7 @@ import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartContext";
 import { SauceSelector } from "../components/SauceSelector";
+import DeliveryOption from "../components/DeliveryOption";
 
 interface Item {
   id?: number;
@@ -306,7 +307,13 @@ const Menu = () => {
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
+      <div className = "fixed lg:px-40 pt-9 " >
+      <DeliveryOption
+        />
       </div>
+      </div>
+
+
 
       <div className="absolute right-2 top-28">
         <div className="flex flex-col">
