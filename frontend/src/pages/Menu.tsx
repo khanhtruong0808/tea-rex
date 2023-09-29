@@ -159,8 +159,58 @@ const Menu = () => {
     // Add more spicy choices here
   ];
 
-  const renderSpicyChoices = () => {
-    return spicyChoices.map((choice, index) => (
+  const cupChoices = [
+    "16 oz",
+    "24 oz +$0.50",
+    "Hot +$1.00",
+    // Add more cup choices here
+  ];
+
+  const bobaChoices = [
+    "Aloe Vera +$0.85",
+    "Crystal Boba +$0.85",
+    "Honey +$0.85",
+    "Coffee Jelly +$0.85",
+    "Lychee Jelly +$0.85",
+    "Strawberry Jelly +$0.85",
+    "Oreo Crumbles +$0.85",
+    "Mango Pop +$0.85",
+    "Str Pop +$0.85",
+    "Chunk: Mango +$0.85",
+    "Extra Toppings +$0.85",
+    "Boba +$0.85",
+    "Chia Seed +$0.85",
+    "Egg Pudding +$0.85",
+    "Grass Jelly +$0.85",
+    "Mango Jelly +$0.85",
+    "Rainbow Jelly +$0.85",
+    "Green Apple Pop +$0.85",
+    "PF Pop +$0.85",
+    "Rainbow Poping +$0.85",
+    "Red Bean +$0.85",
+    "Mix +$0.85",
+    // Add more boba choices here
+  ];
+
+  const iceChoices = [
+    "No Ice",
+    "Less Ice",
+    "More Ice",
+    // Add more ice choices here
+  ];
+
+  const sugarChoices = [
+    "0% Sugar",
+    "25% Sugar",
+    "50% Sugar",
+    "75% Sugar",
+    "100% Sugar",
+    "125% Sugar",
+    // Add more sugar choices here
+  ];
+
+  const renderChoices = (choices: string[]) => {
+    return choices.map((choice: string, index: number) => (
       <label key={index} className="inline-flex items-center">
         <input
           type="checkbox"
@@ -170,6 +220,11 @@ const Menu = () => {
       </label>
     ));
   };
+
+  const renderCupChoices = () => renderChoices(cupChoices);
+  const renderBobaChoices = () => renderChoices(bobaChoices);
+  const renderIceChoices = () => renderChoices(iceChoices);
+  const renderSugarChoices = () => renderChoices(sugarChoices);
 
   const selectedItemDetails = selectedItem && (
     <>
@@ -202,7 +257,7 @@ const Menu = () => {
               onChange={(e) =>
                 setQuantity(Math.max(parseInt(e.target.value), 1))
               }
-              className="w-12 text-center"
+              className="w-20 text-center"
             />
             <button
               className="rounded-r bg-gray-200 px-6 py-2 font-bold text-gray-800 hover:bg-gray-400"
@@ -212,82 +267,172 @@ const Menu = () => {
             </button>
           </div>
         </div>
-        <div className="mt-4">
-          <h3 className="mb-2 text-lg font-bold">
-            Choice of Sauce
-            <span className="text-sm font-normal text-gray-400">
-              {" "}
-              (up to 1 max)
-            </span>
-          </h3>
-          <hr className="mb-4 border-gray-300" />
-          <div className="grid grid-cols-2 gap-4">
-            {sauceChoices.map((choice, index) => (
-              <SauceSelector
-                key={index}
-                sauceName={choice}
-                onQtyChange={(quantity) =>
-                  collectAllOptionQuantity(choice, quantity)
-                }
-              />
-            ))}
-          </div>
-        </div>
-        <div className="mt-4">
-          <h3 className="mb-2 text-lg font-bold">
-            Spicy
-            <span className="text-sm font-normal text-gray-400">
-              {" "}
-              (up to 1 max)
-            </span>
-          </h3>
-          <hr className="mb-4 border-gray-300" />
-          <div className="grid grid-cols-2 gap-2">
-            {spicyChoices.map((choice, index) => (
-              <div
-                key={index}
-                className="flex w-3/4 items-center rounded-lg border border-gray-300 p-0"
-              >
-                <input
-                  type="checkbox"
-                  className="form-checkbox h-4 w-4 text-gray-600"
-                  checked={selectedSpiceLevel.name === choice}
-                  onChange={() =>
-                    handleSpiceOptionChange({ name: choice, qty: 1 })
-                  }
-                />
-                <span className="ml-2 text-gray-700">{choice}</span>
+
+        {selectedItem.menuType === "food" && (
+          <>
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Choice of Sauce
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (up to 1 max)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-screen-lg mx-auto">
+                {sauceChoices.map((choice, index) => (
+                  <SauceSelector
+                    key={index}
+                    sauceName={choice}
+                    onQtyChange={(quantity) =>
+                      collectAllOptionQuantity(choice, quantity)
+                    }
+                  />
+                ))}
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="mt-4">
-          <h3 className="mb-2 text-lg font-bold">Special Instructions</h3>
-          <hr className="mb-4 border-gray-300"></hr>
-          <div>
-            <textarea
-              className="w-full border border-gray-300 p-2"
-              rows={3}
-              placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
-              maxLength={parseInt("500")}
-            ></textarea>
-          </div>
-          <div className="flex content-center justify-center">
-            <button
-              className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
-              id="add-to-cart"
-              onClick={() =>
-                handleCartFunction(
-                  selectedItem,
-                  selectedOption,
-                  selectedSpiceLevel
-                )
-              }
-            >
-              Add to Cart
-            </button>
-          </div>
-        </div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Spicy
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (up to 1 max)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-2 gap-2">
+                {spicyChoices.map((choice, index) => (
+                  <div
+                    key={index}
+                    className="flex w-3/4 items-center rounded-lg border border-gray-300 p-0"
+                  >
+                    <input
+                      type="checkbox"
+                      className="form-checkbox h-4 w-4 text-gray-600"
+                      checked={selectedSpiceLevel.name === choice}
+                      onChange={() =>
+                        handleSpiceOptionChange({ name: choice, qty: 1 })
+                      }
+                    />
+                    <span className="ml-2 text-gray-700">{choice}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">Special Instructions</h3>
+              <hr className="mb-4 border-gray-300"></hr>
+              <div>
+                <textarea
+                  className="w-full border border-gray-300 p-2"
+                  rows={3}
+                  placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
+                  maxLength={parseInt("500")}
+                ></textarea>
+              </div>
+              <div className="flex content-center justify-center">
+                <button
+                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  id="add-to-cart"
+                  onClick={() =>
+                    handleCartFunction(
+                      selectedItem,
+                      selectedOption,
+                      selectedSpiceLevel
+                    )
+                  }
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+        {selectedItem?.menuType === "beverage" && (
+          <>
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Cup Size
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (Required* Please select 1)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-2 gap-2">{renderCupChoices()}</div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Add Boba Jelly
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (Please select up to 3)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-2 gap-2">
+                {renderBobaChoices()}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Ice Level
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (Please select up to 1)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-2 gap-2">{renderIceChoices()}</div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">
+                Sugar Level
+                <span className="text-sm font-normal text-gray-400">
+                  {" "}
+                  (Please select up to 1)
+                </span>
+              </h3>
+              <hr className="mb-4 border-gray-300" />
+              <div className="grid grid-cols-2 gap-2">
+                {renderSugarChoices()}
+              </div>
+            </div>
+
+            <div className="mt-4">
+              <h3 className="mb-2 text-lg font-bold">Special Instructions</h3>
+              <hr className="mb-4 border-gray-300"></hr>
+              <div>
+                <textarea
+                  className="w-full border border-gray-300 p-2"
+                  rows={3}
+                  placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
+                  maxLength={parseInt("500")}
+                ></textarea>
+              </div>
+              <div className="flex content-center justify-center">
+                <button
+                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  id="add-to-cart"
+                  onClick={() =>
+                    handleCartFunction(
+                      selectedItem,
+                      selectedOption,
+                      selectedSpiceLevel
+                    )
+                  }
+                >
+                  Add to Cart
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </>
   );
