@@ -39,13 +39,13 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="min-h-64 flex-wrap gap-32 bg-gradient-to-bl from-amber-600 to-amber-500">
+    <div className="h-64 gap-30 bg-gradient-to-bl from-amber-600 to-amber-500">
       <div>
-        <ul className="flex justify-evenly items-center h-48 flex-col sm:flex-row pt-8">
+        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 sm:container sm:mx-auto h-48 pt-10">
           {footInfo.map((footInfo) => (
             <li
               key={footInfo.name}
-              className="flex justify-center sm:block items-end gap-1"
+              className="flex justify-center sm:block gap-1 break-after-column"
             >
               <p className="text-xl font-semibold">{footInfo.name}</p>
               <p>{footInfo.hours}</p>
