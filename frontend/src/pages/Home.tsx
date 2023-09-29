@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import GoogleMap from "../components/GoogleMap";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation } from "swiper";
+import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import "swiper/css/effect-fade";
 
 const topTenItems = [
   { src: "top-ten-items/1.jpg", alt: "item1" },
@@ -82,13 +83,14 @@ const Home: React.FC = () => {
             "--swiper-navigation-color": "#000000",
             "--swiper-pagination-color": "#000000",
           }}
-            breakpoints={{
-              480: {slidesPerView: 1, spaceBetween: 80},
-              768: {slidesPerView: 2, spaceBetween: 150},
-              1024: {slidesPerView: 3, spaceBetween: 50}
-            }}
-          loop={true}
-          modules={[Pagination, Navigation]}
+          spaceBetween={30}
+          centeredSlides={true}
+          autoplay={{
+            delay: 5000,
+            disableOnInteraction: false,
+          }}
+          effect={'fade'}
+          modules={[Pagination, Navigation, EffectFade, Autoplay]}
           navigation={true}
           pagination={{ clickable: true }}
           // onSlideChange={() => console.log("slide change")}
@@ -100,7 +102,7 @@ const Home: React.FC = () => {
               <img
                 src={item.src}
                 alt={item.alt}
-                className="w-full h-full cursor-pointer object-scale-down"
+                className="w-full h-full cursor-pointer object-cover"
                 onClick={handleImageClick}
               ></img>
             </SwiperSlide>
@@ -108,18 +110,16 @@ const Home: React.FC = () => {
         </Swiper>
       </div>
       {/* About Us & Google Map Section */}
-      <div className="column-1 md:columns-2">
-        <div>
-          <div className="w-9/12 max-w-xl mx-auto">
+      <div className="display:flex; md:columns-2 sm:container sm:mx-auto">
+        <div className="flex-1">
             <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">About Us</h1>
             <div className="pt-2 border-t-2 border-black justify-center"></div>
-              <h3 className="text-center text-xl pt-3">Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine in a trendy, 
+              <h2 className="text-center text-xl pt-3 break-after-column">Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine in a trendy, 
               cheerful atmosphere. We make everything with love using only the freshest ingredients. 
-              We offer a wide variety of Asian dishes, including authentic ramen, sushi, bento boxes, hot pots, and snacks. 
+              We offer a variety of Asian dishes, including authentic ramen, sushi, bento boxes, hot pots, and snacks. 
               From our famous ramen burger to our popcorn chicken, our unique Asian-American flavors are sure to delight! 
               Wash down your meal with our incredible selection of flavored teas, milk teas, and slushies, available in flavors like mango, 
-              taro, passionfruit, lychee, and many more. Join us for a casual dining experience or place your order to go for a filling meal or delicious drink on the go!</h3>
-          </div>
+              taro, passionfruit, lychee, and many more. Join us for a casual dining experience or place your order to go for a filling meal or delicious drink on the go!</h2>
         </div>
         <div className="flex justify-center mr-10">
           <GoogleMap width="90%"/>
