@@ -347,10 +347,6 @@ app.put("/rewards-member-revert", async (req, res) => {
 		}
 		
 		const revertedPoints = member.points + spentPoints;
-		console.log("PhoneNumber: ", phoneNumber);
-		console.log("Received spentPoints: ", spentPoints);
-		console.log("Member's Current Points: ", member.points);
-		console.log("Reverted Points: ", revertedPoints);
 		const updatedMember = await prisma.rewardsMember.update({
 			where: {phoneNumber: phoneNumber},
 			data: {points: revertedPoints},
@@ -412,3 +408,4 @@ app.post("/payment", cors(), async (req, res) => {
 app.listen(PORT, () => {
 	console.log(`Listening on port ${PORT}`);
 });
+

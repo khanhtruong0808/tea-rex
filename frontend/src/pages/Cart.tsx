@@ -27,7 +27,6 @@ const Cart = () => {
 
     const subtotal = cart.reduce((acc: number, item) => {
         const itemPrice = Number(item.item.price);
-    
         const optionsTotal = item.option.reduce(
         (optionAccumulator: number, option) => {
             console.log(option);
@@ -69,7 +68,7 @@ const Cart = () => {
                                 currDiscount={discount}
                                 updateDiscount={updateDiscount}
                                 setIsRewardsMember={setIsRewardsMember}
-                                setRewardsMemberPhoneNumber={setPhoneNumber}/>
+                                setRewardsMemberPhoneNumber={setPhoneNumber} />
                         </div>
                     </>
                 )}

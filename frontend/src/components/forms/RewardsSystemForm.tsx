@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { config } from "../../config";
+import { useShoppingCart } from "../ShoppingCartContext";
 
 /*  
 	NOTES: ---------------------------------------------------------------
@@ -19,12 +20,14 @@ interface RewardsSystemProps {
 	setRewardsMemberPhoneNumber: (rewardsMemberPhoneNumber: string) => void;
 }
 const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewardsMember, setRewardsMemberPhoneNumber}: RewardsSystemProps) => {
-	let [phoneNumber, setPhoneNumber] = useState("");
+	const { getCartItems } = useShoppingCart();
     const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
-    const [points, setPoints] = useState<number | null>(null);
+    const [points, setPoints] = useState(0);
 	const [spendingPoints, setSpendingPoints] = useState(10); //default spend points is 10
 	const [spentPoints, setSpentPoints] = useState(0);
 	const [addPoints, setAddPoints] = useState(10); //default add points is 10 DELETE THIS LATER BEFORE FINAL DEPLOYMENT!!!!
+	let [phoneNumber, setPhoneNumber] = useState("");
+	const cart = getCartItems();
 
     const formatPhoneNumber = (input: string) => {
         let cleaned = ('' + input).replace(/\D/g, '');
@@ -48,6 +51,17 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 	const cleanPhoneNumber = (input:string) => {
 		return ('' + input).replace(/\D/g, '');
 	};
+
+	const applyBeverageDiscount = (points:number) => {
+		const totalBeverageDiscount = cart.reduce((acc: number, item) => {
+			if (item.item.menuType == "beverage") {
+				const beverageDiscount = item.item.price * (Math.min(points, 100) / 100);
+				return acc + beverageDiscount;
+			}
+			return acc;
+		}, 0);
+		return totalBeverageDiscount;
+	}
 
 	//This function only triggers when the user does a reload or exits the window, not when the user clicks on a new tab on the website.
     useEffect(() => {
@@ -145,14 +159,13 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 			const data = await response.json();
 	
 			if (data) {
-				console.log(data.points);
 				if (data.points !== undefined && data.pendingPoints !== undefined) {
 					setPoints(data.points);
 					setSpentPoints(data.pendingPoints);
 					
 					console.log(`Points left: ${data.points}, Pending points: ${data.pendingPoints}`);
 	
-					const potentialDiscount = data.pendingPoints * 0.10;
+					const potentialDiscount = applyBeverageDiscount(data.pendingPoints);
 					if (potentialDiscount >= subtotal) {
 						updateDiscount(subtotal);
 					} else {
@@ -245,7 +258,7 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 				<div className="mt-4">
 					Points: {points}
 						<div>
-						Spend points!
+						Spend points! Discount only applies to beverages!
 							<button onClick={handleSpendPoints} className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block">
 							Spend points
 							</button>
