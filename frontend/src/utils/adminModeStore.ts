@@ -1,4 +1,4 @@
-import create from "zustand";
+import { create } from "zustand";
 
 interface AdminState {
   isAdmin: boolean;
@@ -6,10 +6,10 @@ interface AdminState {
 }
 
 const adminModeStore = create<AdminState>((set) => ({
-  isAdmin: localStorage.getItem("isAdmin") === "true" ? true : false, 
+  isAdmin: localStorage.getItem("isAdmin") === "true" ? true : false,
   setIsAdmin: (val) => {
     set({ isAdmin: val });
-    localStorage.setItem("isAdmin", val.toString()); 
+    localStorage.setItem("isAdmin", val.toString());
   },
 }));
 

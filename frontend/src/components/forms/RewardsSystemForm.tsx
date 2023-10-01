@@ -42,12 +42,6 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
         }
     };
 
-    const handlePhoneChange = (e: { target: { value: string; }; }) => {
-        if (e.target.value.replace(/\D/g, '').length <= 10) {
-            setPhoneNumber(formatPhoneNumber(e.target.value));
-        }
-    };
-
 	const cleanPhoneNumber = (input:string) => {
 		return ('' + input).replace(/\D/g, '');
 	};
@@ -81,9 +75,19 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 		};
 	}, [spentPoints]);
 
+	const cancelShowingRewardsInfo = () => {
+		setIsShowingRewardsInfo(false);
+	}
+
+	const handlePhoneChange = (e: { target: { value: string; }; }) => {
+        if (e.target.value.replace(/\D/g, '').length <= 10) {
+            setPhoneNumber(formatPhoneNumber(e.target.value));
+        }
+    };
+
 	const handleRevertPendingPoints = async () => {
 		phoneNumber = cleanPhoneNumber(phoneNumber);
-	
+
 		try {
 			let response = await fetch(config.baseApiUrl + "/rewards-member-revert-pending", {
 				method: "PUT",
@@ -194,6 +198,10 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
         	console.error("Phone number is empty or undefined");
         	return;
       	}
+		if (phoneNumber.length < 14) {
+			console.error("Not enough numbers");
+			return;
+		}
 
 		phoneNumber = cleanPhoneNumber(phoneNumber);
 
@@ -213,7 +221,7 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 				setIsShowingRewardsInfo(true);
 				setIsRewardsMember(true);
 				setRewardsMemberPhoneNumber(data.phoneNumber);
-				console.log(`Phone Number: ${data.phoneNumber}, Points: ${data.points}`);
+				console.log(`current points: ${data.points}`);
 
 				if (!response.ok) {
 					throw new Error("Failed to increment points");
@@ -259,13 +267,18 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
 					Points: {points}
 						<div>
 						Spend points! Discount only applies to beverages!
-							<button onClick={handleSpendPoints} className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block">
-							Spend points
-							</button>
+							<div className="flex mt-4 space-x-2">
+								<button onClick={handleSpendPoints} className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block">
+								Spend points
+								</button>
+								<button onClick={cancelShowingRewardsInfo} className="mt-2 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:scale-110 transition lg:block">
+								Cancel
+								</button>
+							</div>
 							<button onClick={handleAddPoints} className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block">
 							Add points THIS IS A TESTING BUTTON DELETE LATER!!!!
 							</button>
-						</div>
+					</div>
 				</div>
 			)}
         </div>

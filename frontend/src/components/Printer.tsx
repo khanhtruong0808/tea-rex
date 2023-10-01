@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
+import { config } from "../config";
 
 export default function Printer() {
-  const apiToken = import.meta.env.VITE_APP_CLOVER_PRINTER_API_TOKEN;
+  const apiToken = config.cloverPrinterApiToken;
   const mid = "CVMBG5FBAFSF1"; //merchant ID
 
   interface Order {
@@ -11,7 +12,7 @@ export default function Printer() {
       {
         amount: number;
         description: string;
-      }
+      },
     ];
   }
 
@@ -39,7 +40,7 @@ export default function Printer() {
     };
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
-      options
+      options,
     )
       .then((res) => res.json())
       .then((res) => console.log(res))
