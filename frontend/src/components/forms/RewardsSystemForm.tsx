@@ -198,6 +198,10 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
         	console.error("Phone number is empty or undefined");
         	return;
       	}
+		if (phoneNumber.length < 14) {
+			console.error("Not enough numbers");
+			return;
+		}
 
 		phoneNumber = cleanPhoneNumber(phoneNumber);
 
