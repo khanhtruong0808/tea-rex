@@ -199,11 +199,6 @@ const RewardsSystem = ({subtotal, total, currDiscount, updateDiscount, setIsRewa
         	return;
       	}
 
-		if (phoneNumber.length < 10) {
-			console.error("Not enough numbers");
-			return;
-		}
-
 		phoneNumber = cleanPhoneNumber(phoneNumber);
 
       	try {
