@@ -1,7 +1,7 @@
-import styled from 'styled-components';
-import { MdEmail, MdLocalPhone, MdPlace } from 'react-icons/md';
-import ContactInfoItem from './ContactInfo';
-import SectionTitle from './SectionTitle';
+import styled from "styled-components";
+import { MdEmail, MdLocalPhone, MdPlace } from "react-icons/md";
+import ContactInfoItem from "./ContactInfo";
+import SectionTitle from "./SectionTitle";
 
 const ContactSectionStyle = styled.div`
   padding: 1rem 0;
@@ -14,7 +14,7 @@ const ContactSectionStyle = styled.div`
   }
   .contactSection__wrapper::after {
     position: absolute;
-    content: '';
+    content: "";
     width: 2px;
     height: 50%;
     background-color: var(--gray-1);
@@ -50,16 +50,28 @@ const ContactSectionStyle = styled.div`
 `;
 
 export default function ContactSection() {
-  return ( 
+  return (
     //Update info here
     <ContactSectionStyle>
       <div className="container">
-        <SectionTitle heading="contact us here" subheading="Give us some feedback!" />
+        <SectionTitle
+          heading="contact us here"
+          subheading="Give us some feedback!"
+        />
         <div className="contactSection__wrapper">
           <div className="left">
-            <ContactInfoItem icon={<MdLocalPhone style={{fontSize: '50px'}} />} text="+916-XXX-XXXX" /> 
-            <ContactInfoItem icon={<MdEmail style={{fontSize: '50px'}}/>} text="Tearexelkgrove@yahoo.com" />
-            <ContactInfoItem icon={<MdPlace style={{fontSize: '50px'}}/>} text="City, Address ,State" />
+            <ContactInfoItem
+              icon={<MdLocalPhone style={{ fontSize: "50px" }} />}
+              text="+916-XXX-XXXX"
+            />
+            <ContactInfoItem
+              icon={<MdEmail style={{ fontSize: "50px" }} />}
+              text="Tearexelkgrove@yahoo.com"
+            />
+            <ContactInfoItem
+              icon={<MdPlace style={{ fontSize: "50px" }} />}
+              text="City, Address ,State"
+            />
           </div>
         </div>
       </div>

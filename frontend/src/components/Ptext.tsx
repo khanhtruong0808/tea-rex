@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const PStyle = styled.div`
   max-width: 500px;
@@ -15,7 +15,7 @@ interface PTextProps {
   children: React.ReactNode;
 }
 
-export default function PText({children}: PTextProps) {
+export default function PText({ children }: PTextProps) {
   return (
     <PStyle className="para">
       <p>{children}</p>

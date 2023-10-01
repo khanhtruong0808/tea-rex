@@ -37,7 +37,7 @@ const galleryItems = [
 
 const Home: React.FC = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null
+    null,
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -89,7 +89,7 @@ const Home: React.FC = () => {
             delay: 5000,
             disableOnInteraction: false,
           }}
-          effect={'fade'}
+          effect={"fade"}
           modules={[Pagination, Navigation, EffectFade, Autoplay]}
           navigation={true}
           pagination={{ clickable: true }}
@@ -112,61 +112,70 @@ const Home: React.FC = () => {
       {/* About Us & Google Map Section */}
       <div className="display:flex; md:columns-2 sm:container sm:mx-auto">
         <div className="flex-1">
-            <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">About Us</h1>
-            <div className="pt-2 border-t-2 border-black justify-center"></div>
-              <h2 className="text-center text-xl pt-3 break-after-column">Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine in a trendy, 
-              cheerful atmosphere. We make everything with love using only the freshest ingredients. 
-              We offer a variety of Asian dishes, including authentic ramen, sushi, bento boxes, hot pots, and snacks. 
-              From our famous ramen burger to our popcorn chicken, our unique Asian-American flavors are sure to delight! 
-              Wash down your meal with our incredible selection of flavored teas, milk teas, and slushies, available in flavors like mango, 
-              taro, passionfruit, lychee, and many more. Join us for a casual dining experience or place your order to go for a filling meal or delicious drink on the go!</h2>
+          <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">
+            About Us
+          </h1>
+          <div className="pt-2 border-t-2 border-black justify-center"></div>
+          <h2 className="text-center text-xl pt-3 break-after-column">
+            Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine
+            in a trendy, cheerful atmosphere. We make everything with love using
+            only the freshest ingredients. We offer a variety of Asian dishes,
+            including authentic ramen, sushi, bento boxes, hot pots, and snacks.
+            From our famous ramen burger to our popcorn chicken, our unique
+            Asian-American flavors are sure to delight! Wash down your meal with
+            our incredible selection of flavored teas, milk teas, and slushies,
+            available in flavors like mango, taro, passionfruit, lychee, and
+            many more. Join us for a casual dining experience or place your
+            order to go for a filling meal or delicious drink on the go!
+          </h2>
         </div>
         <div className="flex justify-center mr-10">
-          <GoogleMap width="90%"/>
+          <GoogleMap width="90%" />
         </div>
       </div>
       {/* Top Ten Items Section */}
       <section className="mt-10">
-      <div>
-      <div className="w-9/12 max-w-xl mx-auto">
-        <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">Top Ten Items</h1>
-        <div className="pt-2 border-t-2 border-black justify-center"></div>
-      </div>
-    </div>
+        <div>
+          <div className="w-9/12 max-w-xl mx-auto">
+            <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">
+              Top Ten Items
+            </h1>
+            <div className="pt-2 border-t-2 border-black justify-center"></div>
+          </div>
+        </div>
         <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
-        <Swiper
-          style={{
-            /*@ts-ignore*/
-            "--swiper-navigation-color": "#000000",
-            "--swiper-pagination-color": "#000000",
-          }}
-            breakpoints={{
-              480: {slidesPerView: 1, spaceBetween: 80},
-              768: {slidesPerView: 2, spaceBetween: 150},
-              1024: {slidesPerView: 3, spaceBetween: 50}
+          <Swiper
+            style={{
+              /*@ts-ignore*/
+              "--swiper-navigation-color": "#000000",
+              "--swiper-pagination-color": "#000000",
             }}
-          loop={true}
-          modules={[Pagination, Navigation]}
-          navigation={true}
-          pagination={{ clickable: true }}
-          // onSlideChange={() => console.log("slide change")}
-          // onSwiper={(swiper) => console.log(swiper)}
-          className="w-full h-full rounded-2xl object-center object-cover relative"
-        >
-          {topTenItems.map((item, index) => (
-            <SwiperSlide key={index}>
-              <img
-                src={item.src}
-                alt={item.alt}
-                className="w-full h-full cursor-pointer object-scale-down"
-                onClick={handleImageClick}
-              ></img>
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+            breakpoints={{
+              480: { slidesPerView: 1, spaceBetween: 80 },
+              768: { slidesPerView: 2, spaceBetween: 150 },
+              1024: { slidesPerView: 3, spaceBetween: 50 },
+            }}
+            loop={true}
+            modules={[Pagination, Navigation]}
+            navigation={true}
+            pagination={{ clickable: true }}
+            // onSlideChange={() => console.log("slide change")}
+            // onSwiper={(swiper) => console.log(swiper)}
+            className="w-full h-full rounded-2xl object-center object-cover relative"
+          >
+            {topTenItems.map((item, index) => (
+              <SwiperSlide key={index}>
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className="w-full h-full cursor-pointer object-scale-down"
+                  onClick={handleImageClick}
+                ></img>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </section>
-      
     </div>
   );
 };
