@@ -18,10 +18,10 @@ const SidebarMenu = ({
   const { openDialog } = useDialog();
   const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const beverageMenuSections = menuSections.filter(
-    (menuSection: MenuSection) => menuSection.menuType === "beverage"
+    (menuSection: MenuSection) => menuSection.menuType === "beverage",
   );
   const foodMenuSections = menuSections.filter(
-    (menuSection: MenuSection) => menuSection.menuType === "food"
+    (menuSection: MenuSection) => menuSection.menuType === "food",
   );
 
   const handleSelectCategory = (category: string) => {

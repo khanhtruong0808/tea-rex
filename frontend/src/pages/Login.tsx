@@ -28,7 +28,7 @@ function Login() {
     setPasswordError("");
     setMessage("");
 
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    const isAdmin = localStorage.getItem("isAdmin") === "true";
     adminModeStore.setState({ isAdmin });
   }, []);
 
@@ -68,12 +68,12 @@ function Login() {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       if (response.status === 200) {
         // if success, redirect to the menu page.
         adminModeStore.setState({ isAdmin: true });
-        localStorage.setItem('isAdmin', 'true');
+        localStorage.setItem("isAdmin", "true");
         setUsernameError("");
         setPasswordError("");
         navigate("/menu");

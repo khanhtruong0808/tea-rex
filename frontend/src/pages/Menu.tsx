@@ -50,6 +50,9 @@ const Menu = () => {
       </div>
     );
 
+  // required for react-modal to avoid warning of accessibility
+  Modal.setAppElement("body");
+
   const handleLogout = () => {
     // Clear the admin mode state
     adminModeStore.setState({ isAdmin: false });
@@ -94,7 +97,7 @@ const Menu = () => {
   const handleCartFunction = (
     selectedItem: MenuItem,
     selectedOption: Item[],
-    selectedSpiceLevel: Item
+    selectedSpiceLevel: Item,
   ) => {
     const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
@@ -103,7 +106,7 @@ const Menu = () => {
       x.name === "Extra 2nd Sauce +$0.50" ||
       x.name === "Extra 3rd Sauce +$0.50"
         ? (x.price = 0.5)
-        : x
+        : x,
     );
 
     newOptionArr.map((x) => x.qty + 1);
@@ -119,7 +122,7 @@ const Menu = () => {
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity } : x
+        x.name === sauceName ? { ...exist, qty: quantity } : x,
       );
       setSelectedOption(newSelectedOption);
     } else {
@@ -131,7 +134,6 @@ const Menu = () => {
     }
   };
 
-  
   const sauceChoices = [
     "Salt & Pepper On Side",
     "Sauce on the Side",
@@ -343,7 +345,7 @@ const Menu = () => {
                     handleCartFunction(
                       selectedItem,
                       selectedOption,
-                      selectedSpiceLevel
+                      selectedSpiceLevel,
                     )
                   }
                 >
@@ -426,7 +428,7 @@ const Menu = () => {
                     handleCartFunction(
                       selectedItem,
                       selectedOption,
-                      selectedSpiceLevel
+                      selectedSpiceLevel,
                     )
                   }
                 >
@@ -454,13 +456,10 @@ const Menu = () => {
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
-      <div className = "fixed lg:px-40 pt-9 " >
-      <DeliveryOption
-        />
+        <div className="fixed lg:px-40 pt-9">
+          <DeliveryOption />
+        </div>
       </div>
-      </div>
-
-
 
       <div className="absolute right-2 top-28">
         <div className="flex flex-col">
@@ -484,25 +483,19 @@ const Menu = () => {
         {selectedCategory === "all"
           ? data.map((menuSection: MenuSection) => (
               <MenuSection
-                key={data.name}
+                key={menuSection.id}
                 menuSection={menuSection}
                 handleAddToCart={handleAddToCart}
               />
             ))
           : data.find(
               (menuSection: MenuSection) =>
-                menuSection.name === selectedCategory
+                menuSection.name === selectedCategory,
             ) && (
               <MenuSection
-                key={
-                  data.find(
-                    (menuSection: MenuSection) =>
-                      menuSection.name === selectedCategory
-                  )?.id
-                }
                 menuSection={data.find(
                   (menuSection: MenuSection) =>
-                    menuSection.name === selectedCategory
+                    menuSection.name === selectedCategory,
                 )}
                 handleAddToCart={handleAddToCart}
               />
