@@ -1,18 +1,15 @@
 import { useEffect, useState } from "react";
 import { config } from "../config";
 
-
 export function Printer() {
-  const apiToken = import.meta.env.VITE_APP_CLOVER_PRINTER_API_TOKEN;
-  const mid = import.meta.env.VITE_APP_CLOVER_MERCHANT_ID;
+  const apiToken = config.cloverPrinterApiToken;
+  const mid = config.cloverMerchantId;
 
   const cartItems = JSON.parse(localStorage.getItem("cartItems") || "");
-
 
   interface Order {
     items: [
       {
-
         price: string;
         name: string;
         options: [
@@ -25,7 +22,6 @@ export function Printer() {
           name: string;
           qty: number;
         };
-
       },
     ];
   }
@@ -113,10 +109,8 @@ export function Printer() {
     };
 
     fetch(
-
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
       options
-
     )
       .then((res) => res.json())
       .then((res) => {
