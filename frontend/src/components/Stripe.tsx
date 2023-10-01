@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "./forms/PaymentForm";
-const PUBLIC_KEY = import.meta.env.STRIPE_PUBLIC_KEY;
+import { config } from "../config";
 
-const stripePromise = loadStripe(`${PUBLIC_KEY}`); // string interpolation to fix error saying apiUrl needs to be string
+const stripePromise = loadStripe(config.stripePublicKey);
 
 interface StripeContainerProps {
   totalAmount: number;

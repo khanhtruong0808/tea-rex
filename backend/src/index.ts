@@ -1,12 +1,13 @@
 import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
+const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
+const bcryptPassword = require("bcrypt");
 app.use(cors()); // change later
 app.use(express.json());
 
@@ -86,6 +87,29 @@ app.put("/menu-item/:id", async (req, res) => {
   })
 )*/
 
+// make the exisiting password into hashed passwords.
+// call only once.
+async function updateHashedPasswords() {
+  try {
+    const users = await prisma.user.findMany();
+
+    for (const user of users) {
+      const hashedPassword = await bcrypt.hash(user.password, 10);
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          password: hashedPassword,
+        },
+      });
+    }
+    console.log("Passwords updated correctly");
+  } catch (error) {
+    console.error("updating wrong", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
@@ -93,15 +117,18 @@ app.post("/login", async (req, res) => {
     where: { username },
   });
 
-  if (!user || user.password !== password) {
+
+  if (!user) {
+    return res.status(401).json({ message: "Invalid credentials" });
+  }
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+
+  if (!isPasswordValid) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
 
-  if (user.password === password) {
-    res.status(200).json({ message: "Login successful" });
-  } else {
-    res.status(401).json({ message: "Invalid password" });
-  }
+  res.status(200).json({ message: "Login successful" });
+
 });
 
 app.post("/rewards-member-add", async (req, res) => {
@@ -380,3 +407,4 @@ app.post("/payment", cors(), async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
+

@@ -6,8 +6,11 @@ interface AdminState {
 }
 
 const adminModeStore = create<AdminState>((set) => ({
-  isAdmin: false,
-  setIsAdmin: (val) => set({ isAdmin: val }),
+  isAdmin: localStorage.getItem("isAdmin") === "true" ? true : false,
+  setIsAdmin: (val) => {
+    set({ isAdmin: val });
+    localStorage.setItem("isAdmin", val.toString());
+  },
 }));
 
 export default adminModeStore;

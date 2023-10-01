@@ -148,6 +148,7 @@ export const MenuSection = ({
         {menuSection.items.map((item: MenuItem) => (
           <MenuItem
             item={item}
+            key={item.id}
             handleItemDelete={handleItemDelete}
             handleItemEdit={handleItemEdit}
             isAdmin={isAdmin}
