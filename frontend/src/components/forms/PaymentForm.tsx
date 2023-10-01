@@ -10,6 +10,7 @@ import {
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
 import GoogleMap from "../GoogleMap";
+import { Printer } from "../Printer";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -88,6 +89,7 @@ const PaymentForm = ({
         const responseData = await response.json();
 
         if (responseData.success) {
+          Printer();
           console.log("successful payment");
           navigate("/payment-result", {
             state: {
@@ -118,7 +120,9 @@ const PaymentForm = ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ phoneNumber }),
+
           },
+
         );
 
         let data = await response.json();
@@ -137,7 +141,9 @@ const PaymentForm = ({
       } catch (error) {
         const errorMessage = (error as Error).message;
         console.error(
+
           `Could not update points for the rewards member! ${errorMessage}`,
+
         );
       }
     }
@@ -161,7 +167,9 @@ const PaymentForm = ({
           <input
             type="text"
             placeholder="Name on Card"
+
             className="p-2 border border-gray-200 rounded w-full" />
+
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -190,6 +198,7 @@ const PaymentForm = ({
             </label>
             <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />
           </div>
+
         </div>
         {/* ZIP */}
         <div className="mb-4 relative">
@@ -197,6 +206,7 @@ const PaymentForm = ({
             Zip
           </label>
           <input type="text" className="p-2 border border-gray-200 rounded w-full" placeholder="ZIP" pattern="\d{5}" maxLength={5}inputMode="numeric"  />
+
         </div>
       </fieldset>
       <div className="flex mt-4 space-x-2">
