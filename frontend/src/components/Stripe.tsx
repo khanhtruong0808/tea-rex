@@ -12,10 +12,15 @@ interface StripeContainerProps {
   onCancelCheckout: () => void;
   isRewardsMember: boolean;
   phoneNumber: string;
-};
+}
 
-const StripeContainer = ({ totalAmount, className, onCancelCheckout,
-isRewardsMember, phoneNumber}: StripeContainerProps) => {
+const StripeContainer = ({
+  totalAmount,
+  className,
+  onCancelCheckout,
+  isRewardsMember,
+  phoneNumber,
+}: StripeContainerProps) => {
   return (
     <div className={className}>
       <Elements stripe={stripePromise}>

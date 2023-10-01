@@ -10,6 +10,7 @@ import {
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
 import GoogleMap from "../GoogleMap";
+import { Printer } from "../Printer";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -40,9 +41,14 @@ interface PaymentFormProps {
   cancelCheckout: () => void;
   isRewardsMember: boolean;
   phoneNumber: string;
-};
+}
 
-const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber}: PaymentFormProps) => {
+const PaymentForm = ({
+  totalAmount,
+  cancelCheckout,
+  isRewardsMember,
+  phoneNumber,
+}: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -83,6 +89,7 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
         const responseData = await response.json();
 
         if (responseData.success) {
+          Printer();
           console.log("successful payment");
           navigate("/payment-result", {
             state: {
@@ -102,33 +109,38 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
     }
 
     //update the points on the rewardsMember
-	if (isRewardsMember) {
-    	let newPoints = Math.floor(.10 * totalAmount); //points are just 10% of the total amount, may change later
-      	try {
-			let response = await fetch(config.baseApiUrl + "/rewards-member-check", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({ phoneNumber })
-          	});
+    if (isRewardsMember) {
+      let newPoints = Math.floor(0.1 * totalAmount); //points are just 10% of the total amount, may change later
+      try {
+        let response = await fetch(
+          config.baseApiUrl + "/rewards-member-check",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ phoneNumber }),
+          }
+        );
 
-			let data = await response.json();
-  
-          	if (data && data.exists) {
-				newPoints = data.points + newPoints;
-			}
+        let data = await response.json();
 
-			response = await fetch(config.baseApiUrl + "/rewards-member-update", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({ phoneNumber, newPoints })
-			});
+        if (data && data.exists) {
+          newPoints = data.points + newPoints;
+        }
+
+        response = await fetch(config.baseApiUrl + "/rewards-member-update", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ phoneNumber, newPoints }),
+        });
       } catch (error) {
-			const errorMessage = (error as Error).message;
-			console.error(`Could not update points for the rewards member! ${errorMessage}`);
+        const errorMessage = (error as Error).message;
+        console.error(
+          `Could not update points for the rewards member! ${errorMessage}`
+        );
       }
     }
   };
@@ -151,7 +163,8 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-1 border border-gray-200 rounded w-full" />
+            className="p-1 border border-gray-200 rounded w-full"
+          />
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -160,7 +173,8 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
           </label>
           <CardNumberElement
             options={CARD_OPTIONS as StripeCardNumberElementOptions}
-            className="p-2 border border-gray-200 rounded w-full" />
+            className="p-2 border border-gray-200 rounded w-full"
+          />
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
         {/* Expiration Date, CVV and Zip */}
@@ -184,7 +198,14 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Zip
             </label>
-            <input type="text" className="p-2 border border-gray-200 rounded w-full" placeholder="ZIP" pattern="\d{5}" maxLength={5}inputMode="numeric"  />
+            <input
+              type="text"
+              className="p-2 border border-gray-200 rounded w-full"
+              placeholder="ZIP"
+              pattern="\d{5}"
+              maxLength={5}
+              inputMode="numeric"
+            />
           </div>
         </div>
       </fieldset>
@@ -194,7 +215,9 @@ const PaymentForm = ({ totalAmount, cancelCheckout, isRewardsMember, phoneNumber
         </button>
         <button
           type="button"
-          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block" onClick={cancelCheckout}>
+          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+          onClick={cancelCheckout}
+        >
           Cancel
         </button>
       </div>
