@@ -1,6 +1,8 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { HiOutlineShoppingCart } from 'react-icons/hi'
 import { NavLink } from "react-router-dom";
+import { useShoppingCart } from "../components/ShoppingCartContext";
 
 const routes = [
   {
@@ -16,6 +18,9 @@ const routes = [
 ];
 
 export const Navbar = () => {
+
+  const {openCart, closeCart, cartQuantity} = useShoppingCart();
+
   return (
     <Disclosure
       as="nav"
@@ -23,7 +28,7 @@ export const Navbar = () => {
     >
       {({ open }) => (
         <>
-          <div className="mx-auto max-w-7xl px-2 lg:px-5 xl:px-8">
+          <div className="mx-auto max-w-8xl px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 md:h-20 xl:h-24 items-center justify-between">
               <div className="flex items-center">
                 <NavLink reloadDocument to="/" className="shrink-0">
@@ -41,7 +46,7 @@ export const Navbar = () => {
                       to={route.path}
                       key={route.name}
                       reloadDocument
-                      className="font-navbar text-2xl xl:text-3xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100"
+                      className="whitespace-nowrap font-navbar text-2xl xl:text-3xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100"
                     >
                       {route.name}
                     </NavLink>
@@ -59,6 +64,25 @@ export const Navbar = () => {
                   </NavLink>
                 </div>
               </div>
+
+              <div>
+                <HiOutlineShoppingCart className="text-4xl hover:bg-gray-300 cursor-pointer rounded-lg p-1" onClick={openCart} />
+                {cartQuantity > 0 && (
+                  <div className="rounded-full bg-lime-700 flex justify-center items-center pb-1" 
+                  style={{
+                    color: "white", 
+                    width: "1.5rem",
+                    height: "1.5rem",
+                    position: "absolute",
+                    bottom: 20,
+                    right: 20, 
+                  }} >
+                    { cartQuantity }
+                  </div>
+                )}
+              </div>
+              
+
               <div className="-mr-2 flex md:hidden">
                 {/* Mobile menu button */}
                 <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-0 focus:ring-inset">

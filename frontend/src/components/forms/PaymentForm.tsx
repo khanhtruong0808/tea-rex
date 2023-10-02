@@ -122,7 +122,6 @@ const PaymentForm = ({
             body: JSON.stringify({ phoneNumber }),
 
           },
-
         );
 
         let data = await response.json();
@@ -141,9 +140,7 @@ const PaymentForm = ({
       } catch (error) {
         const errorMessage = (error as Error).message;
         console.error(
-
-          `Could not update points for the rewards member! ${errorMessage}`,
-
+          `Could not update points for the rewards member! ${errorMessage}`
         );
       }
     }
@@ -167,9 +164,7 @@ const PaymentForm = ({
           <input
             type="text"
             placeholder="Name on Card"
-
             className="p-2 border border-gray-200 rounded w-full" />
-
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -198,15 +193,20 @@ const PaymentForm = ({
             </label>
             <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />
           </div>
-
-        </div>
-        {/* ZIP */}
-        <div className="mb-4 relative">
-          <label className="block text-sm font-medium text-gray-600 mb-2">
-            Zip
-          </label>
-          <input type="text" className="p-2 border border-gray-200 rounded w-full" placeholder="ZIP" pattern="\d{5}" maxLength={5}inputMode="numeric"  />
-
+          {/* ZIP */}
+          <div className="flex-1 mr-2">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
+              Zip
+            </label>
+            <input
+              type="text"
+              className="p-2 border border-gray-200 rounded w-full"
+              placeholder="ZIP"
+              pattern="\d{5}"
+              maxLength={5}
+              inputMode="numeric"
+            />
+          </div>
         </div>
       </fieldset>
       <div className="flex mt-4 space-x-2">
