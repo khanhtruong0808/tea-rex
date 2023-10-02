@@ -1,13 +1,13 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const SectionTitleStyle = styled.div`
   text-align: center;
   p {
-    font-family: 'RobotoMono Regular';
+    font-family: "RobotoMono Regular";
     font-size: 2rem;
   }
   h2 {
-    font-family: 'Montserrat Bold';
+    font-family: "Montserrat Bold";
     font-size: 6rem;
     text-transform: uppercase;
   }
@@ -23,8 +23,8 @@ const SectionTitleStyle = styled.div`
 `;
 
 export default function SectionTitle({
-  subheading = 'Need Subheading',
-  heading = 'need heading',
+  subheading = "Need Subheading",
+  heading = "need heading",
 }) {
   return (
     <SectionTitleStyle className="section-title">

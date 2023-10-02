@@ -11,7 +11,7 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Rewards from "./pages/Rewards";
 import Login from "./pages/Login";
-import Registration from './pages/Registration';
+import Registration from "./pages/Registration";
 import PaymentResult from "./pages/PaymentResult";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
@@ -24,7 +24,7 @@ function App() {
     createRoutesFromElements(
       <Route path="/" element={<Layout />} errorElement={<h1>Error</h1>}>
         <Route path="/admin" element={<Login />} />
-        <Route path="/registration" element ={<Registration />} />
+        <Route path="/registration" element={<Registration />} />
         <Route index element={<Home />} />
         <Route path="/rewards" element={<Rewards />} />
         <Route path="/gallery" element={<Gallery />} />
@@ -32,10 +32,10 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/payment-result" element={<PaymentResult />} />
         <Route path="*" element={<div>404</div>} />
-      </Route>
-    )
+      </Route>,
+    ),
   );
-  
+
   return (
     
       <QueryClientProvider client={queryClient}>

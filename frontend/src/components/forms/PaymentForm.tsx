@@ -10,6 +10,7 @@ import {
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
 import GoogleMap from "../GoogleMap";
+import { Printer } from "../Printer";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -88,6 +89,7 @@ const PaymentForm = ({
         const responseData = await response.json();
 
         if (responseData.success) {
+          Printer();
           console.log("successful payment");
           navigate("/payment-result", {
             state: {
@@ -118,7 +120,8 @@ const PaymentForm = ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ phoneNumber }),
-          }
+
+          },
         );
 
         let data = await response.json();
@@ -154,15 +157,14 @@ const PaymentForm = ({
           </label>
         </div>
         {/* Name */}
-        <div className="mb-4">
+        <div className="mb-4 relative">
           <label className="block text-sm font-medium text-gray-600 mb-2">
             Name
           </label>
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-1 border border-gray-200 rounded w-full"
-          />
+            className="p-2 border border-gray-200 rounded w-full" />
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -175,18 +177,18 @@ const PaymentForm = ({
           />
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
-        {/* Expiration Date, CVV and Zip */}
-        <div className="flex justify-between mb-4">
+        {/* Expiration Date, CVV*/}
+        <div className="mb-4 w-full flex">
           {/* Expiration Date */}
-          <div className="flex-1 mr-2">
-            <label className="block text-sm font-medium text-gray-600 mb-2 whitespace-nowrap">
+          <div className="flex-grow mr-3">
+            <label className="block text-sm font-medium text-gray-600 mb-2">
               Expiration Date
             </label>
             <CardExpiryElement className="p-3 border border-gray-200 rounded w-full" />
           </div>
           {/* CVV */}
-          <div className="flex-1 mr-2">
-            <label className="block text-sm font-medium text-gray-600 mb-2">
+          <div className="flex-grow">
+            <label className="block text-sm font-medium text-gray-600 mb-2 ">
               CVC
             </label>
             <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />

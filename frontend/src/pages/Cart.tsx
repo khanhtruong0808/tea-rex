@@ -34,7 +34,7 @@ export default function Cart({ isOpen }: CartProps) {
           : 0;
         return optionAccumulator + optionPrice;
       },
-      0
+      0,
     );
 
     return acc + itemPrice + optionsTotal;
@@ -235,3 +235,4 @@ export default function Cart({ isOpen }: CartProps) {
     </Transition.Root>
   );
 }
+

@@ -1,30 +1,186 @@
 import { useEffect, useState } from "react";
+import { config } from "../config";
 
-export default function Printer() {
-  const apiToken = import.meta.env.VITE_APP_CLOVER_PRINTER_API_TOKEN;
-  const mid = "CVMBG5FBAFSF1"; //merchant ID
+export function Printer() {
+  const apiToken = config.cloverPrinterApiToken;
+  const mid = config.cloverMerchantId;
+
+  const cartItems = JSON.parse(localStorage.getItem("cartItems") || "");
 
   interface Order {
-    orderId: string;
-    // email: string,
     items: [
       {
-        amount: number;
-        description: string;
-      }
+        price: string;
+        name: string;
+        options: [
+          {
+            name: string;
+            qty: number;
+          },
+        ];
+        spice: {
+          name: string;
+          qty: number;
+        };
+      },
     ];
   }
 
   const [order, setOrder] = useState<Order>({
-    orderId: "",
-    // email: '',
-    items: [
-      {
-        amount: 1,
-        description: "food",
-      },
-    ],
+    items: cartItems.map(
+      (cartItem: {
+        item: { price: string; name: string };
+        option: [{ name: string; qty: number }];
+        spice: { name: string; qty: number };
+      }) => ({
+        price: cartItem.item.price,
+        name: cartItem.item.name,
+        options: cartItem.option.map((option) => ({
+          name: option.name,
+          quantity: option.qty,
+        })),
+        spice: {
+          name: cartItem.spice.name,
+          quantity: cartItem.spice.qty,
+        },
+      })
+    ),
   });
+
+  const addModifications = () => {
+    for (let i = 0; i < order.items.length; i++) {
+      order.items[i].options.push(order.items[i].spice);
+    }
+  };
+
+  // 1
+  function checkOrderType() {
+    console.log(order);
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        authorization: `Bearer ${apiToken}`,
+      },
+    };
+
+    fetch(
+      `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
+      options
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        let present = false;
+        let pos: number = -1;
+        for (let i = 0; i < res.elements.length; i++) {
+          if (res.elements[i].label === "online") {
+            present = true;
+            pos = i;
+            break;
+          }
+        }
+        // create orderType if does not exist
+        if (present) {
+          createOrder(order, res.elements[pos].id, res.elements[pos].label);
+          present = false;
+        } else {
+          createOrderType();
+        }
+      })
+      .catch((err) => console.error(err));
+  }
+
+  const createOrderType = () => {
+    const options = {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${apiToken}`,
+      },
+      body: JSON.stringify({
+        taxable: "false",
+        isDefault: "false",
+        filterCategories: "false",
+        isHidden: "false",
+        isDeleted: "false",
+        label: "online",
+      }),
+    };
+
+    fetch(
+      `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
+      options
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        createOrder(order, res.id, res.label);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const createOrder = (
+    order: Order,
+    orderTypeId: string,
+    orderTypeLabel: string
+  ) => {
+    const options = {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        authorization: `Bearer ${apiToken}`,
+      },
+      body: JSON.stringify({
+        orderCart: {
+          orderType: {
+            taxable: "false",
+            isDefault: "false",
+            filterCategories: "false",
+            isHidden: "false",
+            isDeleted: "false",
+            label: orderTypeLabel,
+            id: orderTypeId,
+          },
+          groupLineItems: "false",
+          lineItems: order.items.map((item) => ({
+            printed: "false",
+            exchange: "false",
+            refunded: "false",
+            refund: {
+              transactionInfo: {
+                isTokenBasedTx: "false",
+                emergencyFlag: "false",
+              },
+            },
+            isRevenue: "false",
+            name: item.name,
+            price: parseFloat(item.price),
+            modifications: item.options.map((option) => ({
+              modifier: {
+                available: "true",
+                // price: 0,
+                name: option.name,
+              },
+              amount: option.qty,
+            })),
+            note: item.spice.name,
+          })),
+          currency: "USD",
+        },
+      }),
+    };
+    fetch(
+      `https://sandbox.dev.clover.com/v3/merchants/${mid}/atomic_order/orders`,
+      options
+    )
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        submitPrintRequest(res.id);
+      })
+      .catch((err) => console.error(err));
+  };
 
   const submitPrintRequest = (oid: string) => {
     //oid = orderId
@@ -35,7 +191,7 @@ export default function Printer() {
         "content-type": "application/json",
         authorization: `Bearer ${apiToken}`,
       },
-      body: JSON.stringify({ orderRef: { id: oid } /*, id: id*/ }),
+      body: JSON.stringify({ orderRef: { id: oid } }),
     };
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
@@ -46,42 +202,10 @@ export default function Printer() {
       .catch((err) => console.error(err));
   };
 
-  // // order needs to be created before you can send a printRequest to the printer
-  const createOrder = (order: Order) => {
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        authorization: `Bearer ${apiToken}`,
-      },
-      body: JSON.stringify({
-        currency: "USD",
-        // email: order.email,
-        items: order.items.map((item) => ({
-          amount: item.amount,
-          description: item.description,
-          // inventory_id: order.items.inventory_id
-        })),
-      }),
-    };
-    fetch(`https://sandbox.dev.clover.com/v3/merchants/${mid}/orders`, options)
-      .then((res) => res.json())
-      .then((res) => {
-        // console.log(res)
-        submitPrintRequest(res.id);
-      })
-      .catch((err) => console.error(err));
-  };
+  useEffect(() => {
+    addModifications();
+    checkOrderType();
+  }, []);
 
-  return (
-    // this button was used for testing
-    <>
-      <div>
-        <button onClick={() => createOrder(order)}>print order</button>
-      </div>
-    </>
-  );
+  return <div></div>;
 }
-
-// createOrder(order)

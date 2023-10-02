@@ -1,6 +1,6 @@
-import { MdPlace } from 'react-icons/md';
-import styled from 'styled-components';
-import PText from './Ptext';
+import { MdPlace } from "react-icons/md";
+import styled from "styled-components";
+import PText from "./Ptext";
 
 const ItemStyles = styled.div`
   padding: 2rem;
@@ -21,10 +21,7 @@ const ItemStyles = styled.div`
   }
 `;
 
-export default function ContactInfo({
-  icon = <MdPlace />,
-  text = '',
-}) {
+export default function ContactInfo({ icon = <MdPlace />, text = "" }) {
   return (
     <ItemStyles>
       <div className="icon">{icon}</div>
