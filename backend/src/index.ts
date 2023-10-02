@@ -117,6 +117,7 @@ app.post("/login", async (req, res) => {
     where: { username },
   });
 
+
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
@@ -127,6 +128,7 @@ app.post("/login", async (req, res) => {
   }
 
   res.status(200).json({ message: "Login successful" });
+
 });
 
 app.post("/rewards-member-add", async (req, res) => {
