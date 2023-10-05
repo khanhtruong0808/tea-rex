@@ -1,6 +1,6 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { HiOutlineShoppingCart } from 'react-icons/hi'
+import { HiOutlineShoppingCart } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartContext";
 
@@ -18,8 +18,7 @@ const routes = [
 ];
 
 export const Navbar = () => {
-
-  const {openCart, closeCart, cartQuantity} = useShoppingCart();
+  const { openCart, cartQuantity } = useShoppingCart();
 
   return (
     <Disclosure
@@ -58,34 +57,27 @@ export const Navbar = () => {
                   <NavLink
                     to="/menu"
                     reloadDocument
-                    className="block rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white transition hover:scale-110 xl:block xl:px-6 xl:py-3"
+                    className="block whitespace-nowrap rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white transition hover:scale-110 xl:block xl:px-6 xl:py-3"
                   >
                     ORDER NOW
                   </NavLink>
                 </div>
               </div>
 
-              <div>
-                <HiOutlineShoppingCart className="text-4xl hover:bg-gray-300 cursor-pointer rounded-lg p-1" onClick={openCart} />
-                {cartQuantity > 0 && (
-                  <div className="rounded-full bg-lime-700 flex justify-center items-center pb-1" 
-                  style={{
-                    color: "white", 
-                    width: "1.5rem",
-                    height: "1.5rem",
-                    position: "absolute",
-                    bottom: 20,
-                    right: 20, 
-                  }} >
-                    { cartQuantity }
-                  </div>
-                )}
-              </div>
-              
-
-              <div className="-mr-2 flex md:hidden">
+              <div className="-mr-2 flex items-center">
+                <div className="relative">
+                  <HiOutlineShoppingCart
+                    className="h-8 w-8 cursor-pointer rounded-lg text-black/70 hover:text-black"
+                    onClick={openCart}
+                  />
+                  {cartQuantity > 0 && (
+                    <div className="rounded-full bg-lime-700 flex justify-center items-center h-6 w-6 text-sm text-white absolute top-5 right-5">
+                      {cartQuantity}
+                    </div>
+                  )}
+                </div>
                 {/* Mobile menu button */}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-0 focus:ring-inset">
+                <Disclosure.Button className="md:hidden relative inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-0 focus:ring-inset">
                   <span className="absolute -inset-0.5" />
                   <span className="sr-only">Open main menu</span>
                   {open ? (

@@ -4,6 +4,7 @@ import RewardsSystemForm from "../components/forms/RewardsSystemForm";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartList } from "../components/ShoppingCartList";
 
 type CartProps = {
   isOpen: boolean;
@@ -34,7 +35,7 @@ export default function Cart({ isOpen }: CartProps) {
           : 0;
         return optionAccumulator + optionPrice;
       },
-      0,
+      0
     );
 
     return acc + itemPrice + optionsTotal;
@@ -46,7 +47,7 @@ export default function Cart({ isOpen }: CartProps) {
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeCart}>
+      <Dialog as="div" className="relative z-50" onClose={closeCart}>
         <Transition.Child
           as={Fragment}
           enter="ease-in-out duration-500"
@@ -71,158 +72,99 @@ export default function Cart({ isOpen }: CartProps) {
                 leaveFrom="translate-x-0"
                 leaveTo="translate-x-full"
               >
-                <Dialog.Panel className="pointer-events-auto relative w-screen max-w-md">
-                  <Transition.Child
-                    as={Fragment}
-                    enter="ease-in-out duration-500"
-                    enterFrom="opacity-0"
-                    enterTo="opacity-100"
-                    leave="ease-in-out duration-500"
-                    leaveFrom="opacity-100"
-                    leaveTo="opacity-0"
-                  >
-                    <div className="absolute left-0 top-0 -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
-                      <button
-                        type="button"
-                        className="relative rounded-md text-gray-300 hover:text-white focus:outline-none focus:ring-2 focus:ring-white"
-                        onClick={closeCart}
-                      >
-                        <span className="absolute -inset-2.5" />
-                        <span className="sr-only">Close panel</span>
-                        <XMarkIcon className="h-6 w-6" aria-hidden="true" />
-                      </button>
-                    </div>
-                  </Transition.Child>
-                  <div className="flex h-full flex-col overflow-y-scroll bg-white py-6 shadow-xl">
-                    <div className="px-4 sm:px-6">
-                      <Dialog.Title className="text-base font-semibold leading-6 text-gray-900">
-                        Panel title
-                      </Dialog.Title>
-                    </div>
-                    <div className="relative mt-6 flex-1 px-4 sm:px-6 w-96">
-                      <div className="relative flex flex-col">
-                        <div className="flex flex-col">
-                          {isCheckingOut && (
-                            <>
-                              <div className="w-full p-5">
-                                <Stripe
-                                  totalAmount={Number(total.toFixed(2)) * 100}
-                                  onCancelCheckout={handleCancel}
-                                  isRewardsMember={isRewardsMember}
-                                  phoneNumber={phoneNumber}
-                                />
-                              </div>
-                              <div className="w-full p-5">
-                                <RewardsSystemForm
-                                  subtotal={Number(subtotal.toFixed(2))}
-                                  total={total}
-                                  currDiscount={discount}
-                                  updateDiscount={updateDiscount}
-                                  setIsRewardsMember={setIsRewardsMember}
-                                  setRewardsMemberPhoneNumber={setPhoneNumber}
-                                />
-                              </div>
-                            </>
-                          )}
-                          <div
-                            className={
-                              isCheckingOut ? "w-1/2 p-5" : "w-full p-5"
-                            }
-                            border-solid="true"
-                            border-black="true"
+                <Dialog.Panel className="pointer-events-auto w-screen max-w-md">
+                  <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
+                    <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+                      <div className="flex items-start justify-between">
+                        <Dialog.Title className="text-lg font-medium text-gray-900">
+                          Shopping cart
+                        </Dialog.Title>
+                        <div className="ml-3 flex h-7 items-center">
+                          <button
+                            type="button"
+                            className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
+                            onClick={closeCart}
                           >
-                            <div className="relative flex flex-col w-96">
-                              <div className="w-9/12 mx-auto p-5 max-w-lg border-solid border-black">
-                                {cart.map((item, id) => (
-                                  <>
-                                    <article key={id} className="my-2 relative">
-                                      <h1 className="text-left w-3/4 self-center inline-block font-semibold text-base whitespace-nowrap">
-                                        {item.item.name}
-                                      </h1>
-                                      <h1 className="text-right w-1/4 pr-4 self-center inline-block font-semibold text-base">
-                                        ${item.item.price}
-                                      </h1>
-                                    </article>
-
-                                    <article>
-                                      {item.option.map((options) => (
-                                        <>
-                                          <p className="text-left inline-block font-semibold text-xs">
-                                            {options.qty}
-                                          </p>
-                                          <p className="text-left pl-4 inline-block font-semibold text-xs">
-                                            {options.name}
-                                          </p>
-                                          <br />
-                                        </>
-                                      ))}
-
-                                      <p className="text-left inline-block font-semibold text-xs">
-                                        {item.spice.qty}
-                                      </p>
-                                      <p className="text-left pl-4 inline-block font-semibold text-xs">
-                                        {item.spice.name}
-                                      </p>
-                                    </article>
-                                  </>
-                                ))}
-                              </div>
-
-                              <div className="w-9/12 mx-auto p-5 max-w-lg border-solid border-black">
-                                <hr className="bg-black border-black h-0.5 mr-32"></hr>
-                                <article>
-                                  <p className="w-3/6 self center font-bold text-left inline-block text-sm">
-                                    Subtotal:
-                                  </p>
-                                  <p className="text-right w-1/4 pr-4 self-center inline-block font-bold text-sm">
-                                    ${subtotal.toFixed(2)}
-                                  </p>
-                                </article>
-                                <article>
-                                  <p className="w-3/6 self center font-bold text-left inline-block text-sm">
-                                    Discount:
-                                  </p>
-                                  <p className="text-right w-1/4 pr-4 self-center inline-block font-bold text-sm">
-                                    ${discount.toFixed(2)}
-                                  </p>
-                                </article>
-                                <article>
-                                  <p className="w-3/6 self center font-bold text-left inline-block text-sm">
-                                    Tax:
-                                  </p>
-                                  <p className="text-right w-1/4 pr-4 self-center inline-block font-bold text-sm">
-                                    ${tax.toFixed(2)}
-                                  </p>
-                                </article>
-                                <article>
-                                  <p className="w-3/6 self center font-bold text-left inline-block text-sm">
-                                    Total:
-                                  </p>
-                                  <p className="text-right w-1/4 pr-4 self-center inline-block font-bold text-sm">
-                                    ${total.toFixed(2)}
-                                  </p>
-                                </article>
-
-                                {!isCheckingOut && (
-                                  <>
-                                    <button
-                                      className="float-left mt-4 inline font-semibold bg-gray-500 hover:bg-gray-700 text-white px-2 pb-1 rounded-full text-sm"
-                                      onClick={() => clearCart()}
-                                    >
-                                      Clear Cart
-                                    </button>
-                                    <button
-                                      className="float-right mt-4  inline font-semibold bg-lime-700 hover:scale-110 transition lg:block text-white px-2 pb-1 rounded-full whitespace-nowrap text-sm"
-                                      onClick={() => setIsCheckingOut(true)}
-                                    >
-                                      Proceed to Checkout
-                                    </button>
-                                  </>
-                                )}
-                              </div>
-                            </div>
-                          </div>
+                            <span className="absolute -inset-0.5" />
+                            <span className="sr-only">Close panel</span>
+                            <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                          </button>
                         </div>
+                      </div>
+
+                      {/* hidden/shown using CSS to conserve state, not sure if this be implemented this way*/}
+                      <ShoppingCartList
+                        cartItems={cart}
+                        className={isCheckingOut ? "hidden" : ""}
+                      />
+                      <div
+                        className={`${
+                          isCheckingOut ? "" : "hidden"
+                        } bg-white h-full`}
+                      >
+                        <div className="w-full p-5">
+                          <Stripe
+                            totalAmount={Number(total.toFixed(2)) * 100}
+                            onCancelCheckout={handleCancel}
+                            isRewardsMember={isRewardsMember}
+                            phoneNumber={phoneNumber}
+                          />
+                        </div>
+                        <div className="w-full p-5">
+                          <RewardsSystemForm
+                            subtotal={Number(subtotal.toFixed(2))}
+                            total={total}
+                            currDiscount={discount}
+                            updateDiscount={updateDiscount}
+                            setIsRewardsMember={setIsRewardsMember}
+                            setRewardsMemberPhoneNumber={setPhoneNumber}
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
+                      <div className="flex justify-between text-sm font-medium text-gray-600">
+                        <p>Subtotal</p>
+                        <p>${subtotal.toFixed(2)}</p>
+                      </div>
+                      <div className="flex justify-between text-sm font-medium text-gray-600">
+                        <p>Tax</p>
+                        <p>${tax.toFixed(2)}</p>
+                      </div>
+                      {discount ? (
+                        <div className="flex justify-between text-sm font-medium text-green-600">
+                          <p>Discount</p>
+                          <p>- ${discount.toFixed(2)}</p>
+                        </div>
+                      ) : null}
+                      <div className="flex justify-between text-lg font-medium text-gray-900">
+                        <p>Total</p>
+                        <p>${total.toFixed(2)}</p>
+                      </div>
+                      {!isCheckingOut && (
+                        <div className="mt-6">
+                          <button
+                            onClick={() => setIsCheckingOut(true)}
+                            disabled={cart.length === 0}
+                            className="w-full flex items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:bg-opacity-50 disabled:cursor-not-allowed disabled:hover-none"
+                          >
+                            Checkout
+                          </button>
+                        </div>
+                      )}
+                      <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                        <p>
+                          or{" "}
+                          <button
+                            type="button"
+                            className="font-medium text-lime-600 hover:text-lime-500"
+                            onClick={closeCart}
+                          >
+                            Continue Shopping
+                            <span aria-hidden="true"> &rarr;</span>
+                          </button>
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -235,4 +177,3 @@ export default function Cart({ isOpen }: CartProps) {
     </Transition.Root>
   );
 }
-

@@ -8,12 +8,6 @@ interface Item {
   qty: number;
 }
 
-type CartItem = {
-  item: MenuItem;
-  option: Item[];
-  spice: Item;
-};
-
 type ShoppingCartProviderProps = {
   children: ReactNode;
 };
@@ -54,7 +48,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
   function openCart() {
     setIsOpen(true);
-    console.log(isOpen);
   }
 
   function closeCart() {

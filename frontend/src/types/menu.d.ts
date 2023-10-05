@@ -13,3 +13,9 @@ interface MenuSection {
   imageAltText: string;
   items: MenuItem[];
 }
+
+type CartItem = {
+  item: MenuItem;
+  option: Item[];
+  spice: Item;
+};
