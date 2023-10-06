@@ -66,17 +66,14 @@ export const Navbar = () => {
               </div>
 
               <div className="-mr-2 flex items-center">
-                <div className="relative">
-                  <FaShoppingCart
-                    className="h-8 w-8 cursor-pointer rounded-lg text-black/70 hover:text-black"
-                    onClick={openCart}
-                  />
+                <button className="relative" onClick={openCart}>
+                  <FaShoppingCart className="h-8 w-8 cursor-pointer rounded-lg text-black/70 hover:text-black" />
                   {cartQuantity > 0 && (
                     <div className="rounded-full bg-lime-700 flex justify-center items-center h-5 w-5 text-sm text-white absolute top-3.5 left-3.5">
                       {cartQuantity}
                     </div>
                   )}
-                </div>
+                </button>
                 {/* Mobile menu button */}
                 <Disclosure.Button className="md:hidden relative inline-flex items-center justify-center rounded-md p-2 text-black focus:outline-none focus:ring-0 focus:ring-inset">
                   <span className="absolute -inset-0.5" />
