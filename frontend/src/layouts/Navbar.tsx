@@ -3,6 +3,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartContext";
+import { FaShoppingCart } from "react-icons/fa";
 
 const routes = [
   {
@@ -66,12 +67,12 @@ export const Navbar = () => {
 
               <div className="-mr-2 flex items-center">
                 <div className="relative">
-                  <HiOutlineShoppingCart
+                  <FaShoppingCart
                     className="h-8 w-8 cursor-pointer rounded-lg text-black/70 hover:text-black"
                     onClick={openCart}
                   />
                   {cartQuantity > 0 && (
-                    <div className="rounded-full bg-lime-700 flex justify-center items-center h-6 w-6 text-sm text-white absolute top-5 right-5">
+                    <div className="rounded-full bg-lime-700 flex justify-center items-center h-5 w-5 text-sm text-white absolute top-3.5 left-3.5">
                       {cartQuantity}
                     </div>
                   )}

@@ -20,13 +20,26 @@ export const ShoppingCartList = ({
                 <div className="ml-4 flex flex-1 flex-col">
                   <div>
                     <div className="flex justify-between text-base font-medium text-gray-900">
-                      <h3>{menuItem.name}</h3>
-                      <p className="ml-4">{menuItem.price}</p>
-                    </div>
-                    {options.map((option) => (
-                      <p className="mt-1 text-sm text-gray-500">
-                        {option.qty}x {option.name}
+                      <h3>
+                        {item.quantity}x {menuItem.name}
+                      </h3>
+                      <p className="ml-4">
+                        ${(menuItem.price * item.quantity).toFixed(2)}
                       </p>
+                    </div>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {item.specialInstructions &&
+                        `Note: ${item.specialInstructions}`}
+                    </p>
+                    {options.map((option) => (
+                      <div className="flex justify-between text-sm">
+                        <p className="mt-1 text-gray-500">
+                          {option.qty}x {option.name}
+                        </p>
+                        <p className="ml-4 text-gray-900 font-medium">
+                          {option.name.includes("+$0.50") && "$0.50"}
+                        </p>
+                      </div>
                     ))}
                     <p className="mt-1 text-sm text-gray-500">{spice.name}</p>
                   </div>
@@ -36,16 +49,7 @@ export const ShoppingCartList = ({
                         type="button"
                         className="font-medium text-lime-600 hover:text-lime-500"
                       >
-                        Edit
-                      </button>
-                    </div>
-
-                    <div className="flex">
-                      <button
-                        type="button"
-                        className="font-medium text-lime-600 hover:text-lime-500"
-                      >
-                        Remove
+                        Edit/Remove
                       </button>
                     </div>
                   </div>

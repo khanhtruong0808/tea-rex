@@ -11,7 +11,7 @@ type CartProps = {
 };
 
 export default function Cart({ isOpen }: CartProps) {
-  const { cartItems, clearCart, closeCart } = useShoppingCart();
+  const { cartItems, closeCart } = useShoppingCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -25,7 +25,7 @@ export default function Cart({ isOpen }: CartProps) {
   };
 
   const subtotal = cart.reduce((acc: number, item) => {
-    const itemPrice = Number(item.item.price);
+    const itemPrice = Number(item.item.price) * item.quantity;
 
     const optionsTotal = item.option.reduce(
       (optionAccumulator: number, option) => {
@@ -77,7 +77,7 @@ export default function Cart({ isOpen }: CartProps) {
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-lg font-medium text-gray-900">
-                          Shopping cart
+                          Your order ({cart.length})
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -91,7 +91,6 @@ export default function Cart({ isOpen }: CartProps) {
                           </button>
                         </div>
                       </div>
-
                       {/* hidden/shown using CSS to conserve state, not sure if this be implemented this way*/}
                       <ShoppingCartList
                         cartItems={cart}

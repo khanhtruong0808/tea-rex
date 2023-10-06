@@ -13,7 +13,13 @@ type ShoppingCartProviderProps = {
 };
 
 type ShoppingCartContext = {
-  addToCart: (item: MenuItem, option: Item[], spice: Item) => void;
+  addToCart: (
+    item: MenuItem,
+    option: Item[],
+    spice: Item,
+    specialInstructions: string,
+    quantity: number
+  ) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -34,8 +40,17 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
   const cartQuantity = cartItems.length;
 
-  function addToCart(item: MenuItem, option: Item[], spice: Item) {
-    const newCartItems: CartItem[] = [...cartItems, { item, option, spice }];
+  function addToCart(
+    item: MenuItem,
+    option: Item[],
+    spice: Item,
+    specialInstructions: string,
+    quantity: number
+  ) {
+    const newCartItems: CartItem[] = [
+      ...cartItems,
+      { item, option, spice, specialInstructions, quantity },
+    ];
     setCartItems(newCartItems);
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
   }
