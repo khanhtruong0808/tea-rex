@@ -65,11 +65,11 @@ export const Navbar = () => {
                 </div>
               </div>
 
-              <div className="-mr-2 flex items-center">
+              <div className="flex items-center">
                 <button className="relative" onClick={openCart}>
-                  <FaShoppingCart className="h-8 w-8 cursor-pointer rounded-lg text-black/70 hover:text-black" />
+                  <FaShoppingCart className="h-6 w-6 md:h-8 md:w-8 cursor-pointer rounded-lg text-black/70 hover:text-black mr-2" />
                   {cartQuantity > 0 && (
-                    <div className="rounded-full bg-lime-700 flex justify-center items-center h-5 w-5 text-sm text-white absolute top-3.5 left-3.5">
+                    <div className="rounded-full bg-lime-700 flex justify-center items-center md:h-5 md:w-5 h-4 w-4 text-sm text-white absolute top-3 left-3 md:top-3.5 md:left-3.5">
                       {cartQuantity}
                     </div>
                   )}
