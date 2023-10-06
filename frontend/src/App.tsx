@@ -32,17 +32,15 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/payment-result" element={<PaymentResult />} />
         <Route path="*" element={<div>404</div>} />
-      </Route>,
-    ),
+      </Route>
+    )
   );
 
   return (
-    
-      <QueryClientProvider client={queryClient}>
-        <Toaster />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    
+    <QueryClientProvider client={queryClient}>
+      <Toaster />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 

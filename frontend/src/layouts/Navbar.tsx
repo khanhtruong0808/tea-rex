@@ -2,7 +2,7 @@ import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { HiOutlineShoppingCart } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
-import { useShoppingCart } from "../components/ShoppingCartContext";
+import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { FaShoppingCart } from "react-icons/fa";
 
 const routes = [

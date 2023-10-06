@@ -6,7 +6,7 @@ import { MenuSection } from "../components/MenuSection";
 import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
-import { useShoppingCart } from "../components/ShoppingCartContext";
+import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
 

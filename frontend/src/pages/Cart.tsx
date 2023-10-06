@@ -1,4 +1,4 @@
-import { useShoppingCart } from "../components/ShoppingCartContext";
+import { useShoppingCart } from "../components/ShoppingCartProvider";
 import Stripe from "../components/Stripe";
 import RewardsSystemForm from "../components/forms/RewardsSystemForm";
 import { Fragment, useState } from "react";
