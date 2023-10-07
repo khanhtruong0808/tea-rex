@@ -1,6 +1,8 @@
-import { ReactNode, createContext, useContext, useState } from "react";
-import Cart from "../pages/Cart";
-import useRewards from "../components/RewardsContext";
+// REQUIRED FOR USING HMR WITH REACT CONTEXT
+// SEE https://github.com/vitejs/vite/issues/3301#issuecomment-1080030773
+// FOR MORE INFORMATION
+
+import { createContext } from "react";
 
 interface Item {
   id?: number;
@@ -9,18 +11,14 @@ interface Item {
   qty: number;
 }
 
-type CartItem = {
-  item: MenuItem;
-  option: Item[];
-  spice: Item;
-};
-
-type ShoppingCartProviderProps = {
-  children: ReactNode;
-};
-
 type ShoppingCartContext = {
-  addToCart: (item: MenuItem, option: Item[], spice: Item) => void;
+  addToCart: (
+    item: MenuItem,
+    option: Item[],
+    spice: Item,
+    specialInstructions: string,
+    quantity: number
+  ) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
@@ -32,85 +30,4 @@ type ShoppingCartContext = {
   hasBeverages: boolean;
 };
 
-const ShoppingCartContext = createContext({} as ShoppingCartContext);
-
-export function useShoppingCart() {
-  return useContext(ShoppingCartContext);
-}
-
-export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const [discount, setDiscount] = useState(0);
-  const [hasBeverages, setHasBeverages] = useState(false);
-  const {
-    handleRevertPendingPoints,
-    setTotalBeverageAmount,
-    totalBeverageAmount,
-  } = useRewards();
-
-  const cartQuantity = cartItems.length;
-
-  function updateDiscount(newDiscount: number) {
-    setDiscount(newDiscount);
-  }
-
-  function addToCart(item: MenuItem, option: Item[], spice: Item) {
-    const newCartItems: CartItem[] = [...cartItems, { item, option, spice }];
-    setCartItems(newCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
-    if (item.menuType == "beverage") {
-      setTotalBeverageAmount(
-        (totalBeverageAmount) => totalBeverageAmount + item.price
-      );
-    }
-    if (totalBeverageAmount > 0) {
-      setHasBeverages(true);
-    }
-  }
-
-  function clearCart() {
-    const newCartItems: CartItem[] = [];
-    setCartItems(newCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
-    setTotalBeverageAmount(0);
-  }
-
-  function openCart() {
-    setIsOpen(true);
-    console.log(isOpen);
-  }
-
-  function closeCart() {
-    setIsOpen(false);
-    handleRevertPendingPoints()
-      .then((isSuccessful) => {
-        if (isSuccessful) {
-          updateDiscount(0);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during handleRevertPendingPoints", error);
-      });
-  }
-
-  return (
-    <ShoppingCartContext.Provider
-      value={{
-        addToCart,
-        clearCart,
-        openCart,
-        closeCart,
-        cartItems,
-        updateDiscount,
-        cartQuantity,
-        isOpen,
-        discount,
-        hasBeverages,
-      }}
-    >
-      {children}
-      <Cart isOpen={isOpen} />
-    </ShoppingCartContext.Provider>
-  );
-}
+export const ShoppingCartContext = createContext({} as ShoppingCartContext);

@@ -13,7 +13,7 @@ import GoogleMap from "../GoogleMap";
 import { Printer } from "../Printer";
 import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
-import { useShoppingCart } from "../ShoppingCartContext";
+import { useShoppingCart } from "../ShoppingCartProvider";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",

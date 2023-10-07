@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
 import { GlobalDialog } from "./GlobalDialog";
 import { Navbar } from "./Navbar";
-import { ShoppingCartProvider } from "../components/ShoppingCartContext";
+import { ShoppingCartProvider } from "../components/ShoppingCartProvider";
 import { RewardsProvider } from "../components/RewardsContext";
 
 const Layout = () => {
