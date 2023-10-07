@@ -22,9 +22,12 @@ type ShoppingCartContext = {
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
+  updateDiscount: (newDiscount: number) => void;
   cartQuantity: number;
   cartItems: CartItem[];
   isOpen: boolean;
+  discount: number;
+  hasBeverages: boolean;
 };
 
 export const ShoppingCartContext = createContext({} as ShoppingCartContext);

@@ -7,7 +7,7 @@ const Rewards = () => {
         </h1>
       </div>
       <div className="flex justify-evenly">
-        <div className="justify-center md:flex pt-2 border-t-2 border-black justify-center">
+        <div className="md:flex pt-2 border-t-2 border-black justify-center">
           <div className="pt-10 flex-col mr-2">
             <h3 className="text-center text-3xl pb-4 font-semibold">
               How they work

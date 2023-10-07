@@ -11,6 +11,9 @@ import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
 import GoogleMap from "../GoogleMap";
 import { Printer } from "../Printer";
+import useAlert from "../AlertMessageContext";
+import useRewards from "../RewardsContext";
+import { useShoppingCart } from "../ShoppingCartProvider";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -52,6 +55,10 @@ const PaymentForm = ({
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
+  const { handleAddPoints } = useRewards();
+  const { showAlert } = useAlert();
+  const { hasBeverages } = useShoppingCart();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -63,7 +70,7 @@ const PaymentForm = ({
     const cardNumberElement = elements.getElement(CardNumberElement);
 
     if (!cardNumberElement) {
-      console.error("CardNumberElement not found!");
+      showAlert("No card number found!", "error");
       return;
     }
 
@@ -89,7 +96,15 @@ const PaymentForm = ({
         const responseData = await response.json();
 
         if (responseData.success) {
-          Printer();
+          //Printer(); //if enabled during development, payments will go through but you will get a backend error:
+          /*
+          Error:  undefined Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+          /*
+          1. You might have mismatching versions of React and the renderer (such as React DOM)
+          2. You might be breaking the Rules of Hooks
+          3. You might have more than one copy of React in the same app
+          See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. 
+          */
           console.log("successful payment");
           navigate("/payment-result", {
             state: {
@@ -101,7 +116,7 @@ const PaymentForm = ({
           console.log(responseData);
         }
       } catch (backendError: any) {
-        console.error("Error: ", backendError.response);
+        console.error("Error: ", backendError.response, backendError.message);
       }
     } else {
       console.log(error.message);
@@ -109,40 +124,8 @@ const PaymentForm = ({
     }
 
     //update the points on the rewardsMember
-    if (isRewardsMember) {
-      let newPoints = Math.floor(0.1 * totalAmount); //points are just 10% of the total amount, may change later
-      try {
-        let response = await fetch(
-          config.baseApiUrl + "/rewards-member-check",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ phoneNumber }),
-
-          },
-        );
-
-        let data = await response.json();
-
-        if (data && data.exists) {
-          newPoints = data.points + newPoints;
-        }
-
-        response = await fetch(config.baseApiUrl + "/rewards-member-update", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ phoneNumber, newPoints }),
-        });
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        console.error(
-          `Could not update points for the rewards member! ${errorMessage}`
-        );
-      }
+    if (isRewardsMember && hasBeverages) {
+      handleAddPoints(totalAmount / 100);
     }
   };
 
@@ -164,7 +147,8 @@ const PaymentForm = ({
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-2 border border-gray-200 rounded w-full" />
+            className="p-2 border border-gray-200 rounded w-full"
+          />
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">

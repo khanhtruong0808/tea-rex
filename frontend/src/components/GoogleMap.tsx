@@ -22,7 +22,7 @@ const mark = new Marker({
 
 const showInMapClicked = () => {
   window.open(
-    "https://www.google.com/maps/place/Tea+Rex/@38.4093492,-121.4811902,17z/data=!3m1!4b1!4m6!3m5!1s0x809ac8efe05de4f3:0x43044f5f27b8ce91!8m2!3d38.409345!4d-121.4786099!16s%2Fg%2F11b6_k79zm",
+    "https://www.google.com/maps/place/Tea+Rex/@38.4093492,-121.4811902,17z/data=!3m1!4b1!4m6!3m5!1s0x809ac8efe05de4f3:0x43044f5f27b8ce91!8m2!3d38.409345!4d-121.4786099!16s%2Fg%2F11b6_k79zm"
   );
 };
 

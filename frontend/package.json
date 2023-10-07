@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
     "@headlessui/react": "^1.7.14",
     "@heroicons/react": "^2.0.18",
+    "@mui/material": "^5.14.12",
     "@react-google-maps/api": "^2.18.1",
     "@stripe/react-stripe-js": "^2.2.0",
     "@stripe/stripe-js": "^2.1.2",

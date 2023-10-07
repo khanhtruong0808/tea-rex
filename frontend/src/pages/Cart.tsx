@@ -4,6 +4,7 @@ import RewardsSystemForm from "../components/forms/RewardsSystemForm";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { AlertProvider } from "../components/AlertMessageContext";
 import { ShoppingCartList } from "../components/ShoppingCartList";
 
 type CartProps = {
@@ -11,15 +12,12 @@ type CartProps = {
 };
 
 export default function Cart({ isOpen }: CartProps) {
-  const { cartItems, closeCart } = useShoppingCart();
+  const { cartItems, closeCart, discount, updateDiscount } = useShoppingCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [discount, setDiscount] = useState(0);
   const cart = cartItems;
-  const updateDiscount = (newDiscount: number) => {
-    setDiscount(newDiscount);
-  };
+
   const handleCancel = () => {
     setIsCheckingOut(false);
   };
@@ -102,22 +100,24 @@ export default function Cart({ isOpen }: CartProps) {
                         } bg-white h-full`}
                       >
                         <div className="w-full p-5">
-                          <Stripe
-                            totalAmount={Number(total.toFixed(2)) * 100}
-                            onCancelCheckout={handleCancel}
-                            isRewardsMember={isRewardsMember}
-                            phoneNumber={phoneNumber}
-                          />
+                          <AlertProvider>
+                            <Stripe
+                              totalAmount={Number(total.toFixed(2)) * 100}
+                              onCancelCheckout={handleCancel}
+                              isRewardsMember={isRewardsMember}
+                              phoneNumber={phoneNumber}
+                            />
+                          </AlertProvider>
                         </div>
                         <div className="w-full p-5">
-                          <RewardsSystemForm
-                            subtotal={Number(subtotal.toFixed(2))}
-                            total={total}
-                            currDiscount={discount}
-                            updateDiscount={updateDiscount}
-                            setIsRewardsMember={setIsRewardsMember}
-                            setRewardsMemberPhoneNumber={setPhoneNumber}
-                          />
+                          <AlertProvider>
+                            <RewardsSystemForm
+                              subtotal={Number(subtotal.toFixed(2))}
+                              total={total}
+                              setIsRewardsMember={setIsRewardsMember}
+                              setRewardsMemberPhoneNumber={setPhoneNumber}
+                            />
+                          </AlertProvider>
                         </div>
                       </div>
                     </div>

@@ -3,6 +3,7 @@ import Footer from "./Footer";
 import { GlobalDialog } from "./GlobalDialog";
 import { Navbar } from "./Navbar";
 import { ShoppingCartProvider } from "../components/ShoppingCartProvider";
+import { RewardsProvider } from "../components/RewardsContext";
 
 const Layout = () => {
   return (

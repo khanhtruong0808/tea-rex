@@ -7,6 +7,8 @@ const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
+
+
 const bcryptPassword = require("bcrypt");
 app.use(cors()); // change later
 app.use(express.json());
@@ -191,8 +193,15 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
       });
       return;
     }
+
+    if (member.pendingPoints == 0) {
+      console.log("no pending points to revert");
+      return;
+    }
+    
     const newPointsBalance = member.points + member.pendingPoints;
 
+    console.log("reverting points");
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: {
@@ -299,10 +308,11 @@ app.put("/rewards-member-spend", async (req, res) => {
     console.log(`Member points: ${member.points}`);
 
     if (member.points <= 0) {
-      console.log("You have no points to spend!!!");
       newPoints = 0; //this is to prevent negative points
+      return res.status(400).json({
+        error: "No points to spend!",
+      })
     } else if (spentPoints > member.points) {
-      console.log("Not enough points to spend the specified amount.");
       return res.status(400).json({
         error: "Not enough points to spend the specified amount.",
       });
@@ -378,9 +388,17 @@ app.delete("/rewards-member-delete", async (req, res) => {
 app.post("/payment", cors(), async (req, res) => {
   const { amount, id } = req.body;
 
-  if (!amount || !id) {
+  if (amount === undefined || !id) {
     return res.status(400).json({ message: "Amount and ID are required." });
   }
+
+  if (amount === 0) {
+    return res.json({
+      message: "Payment successful. Amount is zero.",
+      success: true,
+    });
+  }
+
   try {
     const payment = await stripe.paymentIntents.create({
       amount,
@@ -390,7 +408,7 @@ app.post("/payment", cors(), async (req, res) => {
       confirm: true,
       return_url: process.env.RETURN_URL || "http://localhost:5173",
     });
-
+    console.log("Payment successful!");
     res.json({
       clientSecret: payment.client_secret,
       message: "Payment successful",
@@ -407,4 +425,3 @@ app.post("/payment", cors(), async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
 });
-
