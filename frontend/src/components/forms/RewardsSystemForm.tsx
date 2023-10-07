@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { config } from "../../config";
 import { useShoppingCart } from "../ShoppingCartContext";
+import useAlert from "../AlertMessageContext";
+import useRewards from "../RewardsContext";
 
 /*  
 	NOTES: ---------------------------------------------------------------
-	test phone numbers: 44444444444444444
+	test phone numbers:   44444444444444444
                       	444444444
 	phoneNumber = cleanPhoneNumber(phoneNumber); must be added before grabbing a phone number from the database. 
 	Phone numbers are stored as 4444444444, not (444) 444-4444
@@ -14,25 +16,30 @@ import { useShoppingCart } from "../ShoppingCartContext";
 interface RewardsSystemProps {
   subtotal: number;
   total: number;
-  currDiscount: number;
-  updateDiscount: (newDiscount: number) => void;
   setIsRewardsMember: React.Dispatch<React.SetStateAction<boolean>>;
   setRewardsMemberPhoneNumber: (rewardsMemberPhoneNumber: string) => void;
 }
 const RewardsSystem = ({
   subtotal,
   total,
-  currDiscount,
-  updateDiscount,
   setIsRewardsMember,
   setRewardsMemberPhoneNumber,
 }: RewardsSystemProps) => {
-  const { cartItems } = useShoppingCart();
+  const { cartItems, updateDiscount, discount } = useShoppingCart();
+  const {
+    setContextPhoneNumber,
+    handleAddPoints,
+    handleRevertPendingPoints,
+    setPoints,
+    setSpentPoints,
+    spentPoints,
+    points,
+    totalBeverageAmount,
+  } = useRewards();
+  let { showAlert } = useAlert();
+
   const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
-  const [points, setPoints] = useState(0);
   const [spendingPoints, setSpendingPoints] = useState(10); //default spend points is 10
-  const [spentPoints, setSpentPoints] = useState(0);
-  const [addPoints, setAddPoints] = useState(10); //default add points is 10 DELETE THIS LATER BEFORE FINAL DEPLOYMENT!!!!
   let [phoneNumber, setPhoneNumber] = useState("");
 
   const formatPhoneNumber = (input: string) => {
@@ -60,18 +67,30 @@ const RewardsSystem = ({
   };
 
   const applyBeverageDiscount = (points: number) => {
+    let totalBeverageAmountTemp = 0;
+
     const totalBeverageDiscount = cartItems.reduce((acc: number, item) => {
-      if (item.item.menuType == "beverage") {
-        const beverageDiscount =
-          item.item.price * (Math.min(points, 100) / 100);
-        return acc + beverageDiscount;
+      if (item.item.menuType === "beverage") {
+        return acc + item.item.price * (Math.min(points, 100) / 100);
       }
       return acc;
     }, 0);
+
+    console.log("Total beverage amount: " + totalBeverageAmount);
     return totalBeverageDiscount;
   };
 
+  const checkForBeverages = () => {
+    for (const item of cartItems) {
+      if (item.item.menuType == "beverage") {
+        return true;
+      }
+    }
+    return false;
+  };
+
   //This function only triggers when the user does a reload or exits the window, not when the user clicks on a new tab on the website.
+
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
       if (spentPoints > 0) {
@@ -92,78 +111,42 @@ const RewardsSystem = ({
 
   const cancelShowingRewardsInfo = () => {
     setIsShowingRewardsInfo(false);
+    handleRevertPendingPoints();
   };
 
   const handlePhoneChange = (e: { target: { value: string } }) => {
     if (e.target.value.replace(/\D/g, "").length <= 10) {
       setPhoneNumber(formatPhoneNumber(e.target.value));
+      setContextPhoneNumber(cleanPhoneNumber(e.target.value));
     }
   };
 
-  const handleRevertPendingPoints = async () => {
-    phoneNumber = cleanPhoneNumber(phoneNumber);
-
-    try {
-      let response = await fetch(
-        config.baseApiUrl + "/rewards-member-revert-pending",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ phoneNumber }),
-        }
-      );
-
-      const data = await response.json();
-      if (data && data.points) {
-        setPoints(data.points);
-        setSpentPoints(0);
-        updateDiscount(0);
-      } else {
-        console.error("Failed to revert pending points!");
-      }
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      console.error(`Error while reverting pending points: ${errorMessage}`);
-    }
-  };
-
-  const handleAddPoints = async () => {
-    phoneNumber = cleanPhoneNumber(phoneNumber);
-    let newPoints = points! + addPoints; //change add points to be a percentage of the subTotal
-    try {
-      let response = await fetch(config.baseApiUrl + "/rewards-member-update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phoneNumber, newPoints }),
-      });
-
-      const data = await response.json();
-
-      if (data) {
-        setPoints(data.points);
-        setSpentPoints(0);
-      } else {
-        console.error("No data!");
-        return;
-      }
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      console.log(`Failed to add free points!: ${errorMessage}`);
-    }
+  const handleAddPointsClick = () => {
+    handleAddPoints(totalBeverageAmount);
   };
 
   const handleSpendPoints = async () => {
-    if (subtotal === currDiscount) {
-      console.log("You are already getting food for free!!");
+    if (subtotal === discount) {
+      showAlert("You are already getting the drinks for free!", "error");
       return;
     }
 
+    console.log(totalBeverageAmount);
+    console.log(discount);
+    if (totalBeverageAmount != 0) {
+      if (totalBeverageAmount === discount) {
+        showAlert("You are already getting the drinks for free!", "error");
+        return;
+      }
+    }
+
     if (points === 0) {
-      console.log("Not enough points!");
+      showAlert("Not enough points!", "error");
+      return;
+    }
+
+    if (!checkForBeverages()) {
+      showAlert("No beverages in cart!", "error");
       return;
     }
 
@@ -185,6 +168,9 @@ const RewardsSystem = ({
 
       if (data) {
         if (data.points !== undefined && data.pendingPoints !== undefined) {
+          console.log(data.pendingPoints);
+          const potentialDiscount = applyBeverageDiscount(data.pendingPoints);
+
           setPoints(data.points);
           setSpentPoints(data.pendingPoints);
 
@@ -192,15 +178,19 @@ const RewardsSystem = ({
             `Points left: ${data.points}, Pending points: ${data.pendingPoints}`
           );
 
-          const potentialDiscount = applyBeverageDiscount(data.pendingPoints);
-          if (potentialDiscount >= subtotal) {
-            updateDiscount(subtotal);
+          if (potentialDiscount >= totalBeverageAmount) {
+            console.log("updating with total beverage amount!!");
+
+            updateDiscount(totalBeverageAmount);
           } else {
+            console.log("updating potential discount!!");
             updateDiscount(potentialDiscount);
           }
 
           if (total - potentialDiscount > 0) {
-            console.log(`You are potentially saving $${potentialDiscount}!`);
+            console.log(
+              `You are potentially saving $${Number(discount).toFixed(2)}!`
+            );
           }
         } else {
           console.error(
@@ -220,11 +210,11 @@ const RewardsSystem = ({
 
   const handleSubmit = async () => {
     if (!phoneNumber) {
-      console.error("Phone number is empty or undefined");
+      showAlert("Phone number is empty or undefined", "error");
       return;
     }
     if (phoneNumber.length < 14) {
-      console.error("Not enough numbers");
+      showAlert("Not enough numbers", "error");
       return;
     }
 
@@ -242,6 +232,7 @@ const RewardsSystem = ({
       let data = await response.json();
 
       if (data && data.exists) {
+        handleRevertPendingPoints();
         setPoints(data.points);
         setIsShowingRewardsInfo(true);
         setIsRewardsMember(true);
@@ -269,7 +260,7 @@ const RewardsSystem = ({
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
-      console.log(`Error: ${errorMessage}`);
+      console.error(`Error: ${errorMessage}`);
     }
   };
 
@@ -313,7 +304,7 @@ const RewardsSystem = ({
               </button>
             </div>
             <button
-              onClick={handleAddPoints}
+              onClick={handleAddPointsClick}
               className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block"
             >
               Add points THIS IS A TESTING BUTTON DELETE LATER!!!!

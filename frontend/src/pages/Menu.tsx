@@ -97,7 +97,7 @@ const Menu = () => {
   const handleCartFunction = (
     selectedItem: MenuItem,
     selectedOption: Item[],
-    selectedSpiceLevel: Item,
+    selectedSpiceLevel: Item
   ) => {
     const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
@@ -106,7 +106,7 @@ const Menu = () => {
       x.name === "Extra 2nd Sauce +$0.50" ||
       x.name === "Extra 3rd Sauce +$0.50"
         ? (x.price = 0.5)
-        : x,
+        : x
     );
 
     newOptionArr.map((x) => x.qty + 1);
@@ -122,7 +122,7 @@ const Menu = () => {
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity } : x,
+        x.name === sauceName ? { ...exist, qty: quantity } : x
       );
       setSelectedOption(newSelectedOption);
     } else {
@@ -345,7 +345,7 @@ const Menu = () => {
                     handleCartFunction(
                       selectedItem,
                       selectedOption,
-                      selectedSpiceLevel,
+                      selectedSpiceLevel
                     )
                   }
                 >
@@ -428,7 +428,7 @@ const Menu = () => {
                     handleCartFunction(
                       selectedItem,
                       selectedOption,
-                      selectedSpiceLevel,
+                      selectedSpiceLevel
                     )
                   }
                 >
@@ -490,12 +490,12 @@ const Menu = () => {
             ))
           : data.find(
               (menuSection: MenuSection) =>
-                menuSection.name === selectedCategory,
+                menuSection.name === selectedCategory
             ) && (
               <MenuSection
                 menuSection={data.find(
                   (menuSection: MenuSection) =>
-                    menuSection.name === selectedCategory,
+                    menuSection.name === selectedCategory
                 )}
                 handleAddToCart={handleAddToCart}
               />
