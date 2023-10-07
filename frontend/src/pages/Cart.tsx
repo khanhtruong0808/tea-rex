@@ -1,18 +1,30 @@
 import { useShoppingCart } from "../components/ShoppingCartProvider";
-import Stripe from "../components/Stripe";
 import RewardsSystemForm from "../components/forms/RewardsSystemForm";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AlertProvider } from "../components/AlertMessageContext";
 import { ShoppingCartList } from "../components/ShoppingCartList";
+import PaymentForm from "../components/forms/PaymentForm";
 
 type CartProps = {
   isOpen: boolean;
 };
 
 export default function Cart({ isOpen }: CartProps) {
-  const { cartItems, closeCart, discount, updateDiscount } = useShoppingCart();
+  const {
+    cartItems,
+    addToCart,
+    closeCart,
+    discount,
+    updateSubtotal,
+    updateTax,
+    updateFinaltotal,
+    subtotal,
+    tax,
+    finaltotal,
+    isExternalTaxSet,
+  } = useShoppingCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -22,12 +34,10 @@ export default function Cart({ isOpen }: CartProps) {
     setIsCheckingOut(false);
   };
 
-  const subtotal = cart.reduce((acc: number, item) => {
+  const newSubtotal = cart.reduce((acc: number, item) => {
     const itemPrice = Number(item.item.price) * item.quantity;
-
     const optionsTotal = item.option.reduce(
       (optionAccumulator: number, option) => {
-        console.log(option);
         const optionPrice = option.price
           ? Number(option.price) * option.qty
           : 0;
@@ -35,13 +45,21 @@ export default function Cart({ isOpen }: CartProps) {
       },
       0
     );
-
     return acc + itemPrice + optionsTotal;
   }, 0);
 
-  const adjustedSubtotal = subtotal - discount;
-  const tax = adjustedSubtotal * 0.0875;
-  const total = adjustedSubtotal + tax;
+  useEffect(() => {
+    if (!isExternalTaxSet) {
+      updateSubtotal(newSubtotal);
+      updateTax((subtotal - discount) * 0.0875);
+      console.log("setting here too");
+      updateFinaltotal(subtotal - discount + tax);
+    }
+  }, [addToCart, discount]);
+
+  useEffect(() => {
+    updateFinaltotal(subtotal - discount + tax);
+  }, [subtotal, discount, tax]);
 
   return (
     <Transition.Root show={isOpen} as={Fragment}>
@@ -101,9 +119,8 @@ export default function Cart({ isOpen }: CartProps) {
                       >
                         <div className="w-full p-5">
                           <AlertProvider>
-                            <Stripe
-                              totalAmount={Number(total.toFixed(2)) * 100}
-                              onCancelCheckout={handleCancel}
+                            <PaymentForm
+                              cancelCheckout={handleCancel}
                               isRewardsMember={isRewardsMember}
                               phoneNumber={phoneNumber}
                             />
@@ -113,7 +130,7 @@ export default function Cart({ isOpen }: CartProps) {
                           <AlertProvider>
                             <RewardsSystemForm
                               subtotal={Number(subtotal.toFixed(2))}
-                              total={total}
+                              total={subtotal}
                               setIsRewardsMember={setIsRewardsMember}
                               setRewardsMemberPhoneNumber={setPhoneNumber}
                             />
@@ -139,7 +156,7 @@ export default function Cart({ isOpen }: CartProps) {
                       ) : null}
                       <div className="flex justify-between text-lg font-medium text-gray-900">
                         <p>Total</p>
-                        <p>${total.toFixed(2)}</p>
+                        <p>${finaltotal.toFixed(2)}</p>
                       </div>
                       {!isCheckingOut && (
                         <div className="mt-6">

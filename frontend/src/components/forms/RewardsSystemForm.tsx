@@ -25,7 +25,8 @@ const RewardsSystem = ({
   setIsRewardsMember,
   setRewardsMemberPhoneNumber,
 }: RewardsSystemProps) => {
-  const { cartItems, updateDiscount, discount } = useShoppingCart();
+  const { cartItems, updateDiscount, discount, totalBeverageAmount } =
+    useShoppingCart();
   const {
     setContextPhoneNumber,
     handleAddPoints,
@@ -34,7 +35,6 @@ const RewardsSystem = ({
     setSpentPoints,
     spentPoints,
     points,
-    totalBeverageAmount,
   } = useRewards();
   let { showAlert } = useAlert();
 
@@ -178,6 +178,9 @@ const RewardsSystem = ({
             `Points left: ${data.points}, Pending points: ${data.pendingPoints}`
           );
 
+          console.log("Potential discount: " + potentialDiscount);
+          console.log("Total beverage amount: " + totalBeverageAmount);
+
           if (potentialDiscount >= totalBeverageAmount) {
             console.log("updating with total beverage amount!!");
 
@@ -185,12 +188,6 @@ const RewardsSystem = ({
           } else {
             console.log("updating potential discount!!");
             updateDiscount(potentialDiscount);
-          }
-
-          if (total - potentialDiscount > 0) {
-            console.log(
-              `You are potentially saving $${Number(discount).toFixed(2)}!`
-            );
           }
         } else {
           console.error(
