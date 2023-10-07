@@ -23,16 +23,30 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [hasBeverages, setHasBeverages] = useState(false);
-  const {
-    handleRevertPendingPoints,
-    setTotalBeverageAmount,
-    totalBeverageAmount,
-  } = useRewards();
+  const [totalBeverageAmount, setTotalBeverageAmount] = useState(0);
+  const [tax, setTax] = useState(0);
+  const [subtotal, setSubtotal] = useState(0);
+  const [finaltotal, setFinalTotal] = useState(0);
+  const [isExternalTaxSet, setExternalTax] = useState(false);
+
+  const { handleRevertPendingPoints } = useRewards();
 
   const cartQuantity = cartItems.length;
 
   function updateDiscount(newDiscount: number) {
     setDiscount(newDiscount);
+  }
+
+  function updateSubtotal(newSubtotal: number) {
+    setSubtotal(newSubtotal);
+  }
+
+  function updateFinaltotal(newFinaltotal: number) {
+    setFinalTotal(Number(newFinaltotal.toFixed(2)));
+  }
+
+  function updateTax(newTax: number) {
+    setTax(newTax);
   }
 
   function addToCart(
@@ -50,7 +64,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     if (item.menuType == "beverage") {
       setTotalBeverageAmount(
-        (totalBeverageAmount) => totalBeverageAmount + item.price
+        (totalBeverageAmount) => totalBeverageAmount + Number(item.price)
       );
     }
     if (totalBeverageAmount > 0) {
@@ -95,6 +109,15 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         isOpen,
         discount,
         hasBeverages,
+        updateTax,
+        updateSubtotal,
+        updateFinaltotal,
+        setExternalTax,
+        tax,
+        subtotal,
+        finaltotal,
+        totalBeverageAmount,
+        isExternalTaxSet,
       }}
     >
       {children}

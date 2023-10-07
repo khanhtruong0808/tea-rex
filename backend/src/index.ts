@@ -6,9 +6,10 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
-
-
+//const stripe = require("stripe")(`${process.env.VITE_STRIPE_SECRET_KEY}`);
+const stripe = require("stripe")(
+  "sk_test_51NoVQjEUsn4T1wuaSicH3D3jOu8prqhXp7lXuczgGFD1k4dd8QzsAzSCVtICPhIuXhG5QNoY04lLgcjtdbTCfZS100VsaE911S"
+);
 const bcryptPassword = require("bcrypt");
 app.use(cors()); // change later
 app.use(express.json());
@@ -119,7 +120,6 @@ app.post("/login", async (req, res) => {
     where: { username },
   });
 
-
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials" });
   }
@@ -130,7 +130,6 @@ app.post("/login", async (req, res) => {
   }
 
   res.status(200).json({ message: "Login successful" });
-
 });
 
 app.post("/rewards-member-add", async (req, res) => {
@@ -198,7 +197,7 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
       console.log("no pending points to revert");
       return;
     }
-    
+
     const newPointsBalance = member.points + member.pendingPoints;
 
     console.log("reverting points");
@@ -311,7 +310,7 @@ app.put("/rewards-member-spend", async (req, res) => {
       newPoints = 0; //this is to prevent negative points
       return res.status(400).json({
         error: "No points to spend!",
-      })
+      });
     } else if (spentPoints > member.points) {
       return res.status(400).json({
         error: "Not enough points to spend the specified amount.",
@@ -417,6 +416,49 @@ app.post("/payment", cors(), async (req, res) => {
   } catch (error: any) {
     res.json({
       message: "Payment failed " + error.message,
+      success: false,
+    });
+  }
+});
+
+app.post("/calculate-tax", async (req, res) => {
+  const { amount, zipCode } = req.body;
+  try {
+    const calculation = await stripe.tax.calculations.create({
+      currency: "usd",
+      line_items: [
+        {
+          amount: amount,
+          reference: "L1",
+        },
+      ],
+      customer_details: {
+        address: {
+          postal_code: zipCode,
+          country: "US",
+        },
+        address_source: "billing",
+      },
+      expand: ["line_items.data.tax_breakdown"],
+    });
+
+    if (calculation) {
+      console.log(calculation);
+      res.json({
+        message: "calculation successful",
+        tax: calculation.tax_amount_exclusive,
+        totalAmount: calculation.amount_total,
+        success: true,
+      });
+    } else {
+      res.json({
+        message: "Could not fetch tax data!",
+        success: true,
+      });
+    }
+  } catch (error: any) {
+    res.json({
+      message: error.message,
       success: false,
     });
   }

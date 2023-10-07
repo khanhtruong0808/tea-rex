@@ -24,7 +24,7 @@ const AlertMessage: React.FC<AlertMessageProps> = ({
   const severityColor: AlertColor | undefined =
     convertToAlertColor(severityProp);
   return (
-    <div className="m-4">
+    <div className="fixed inset-0 flex items-center justify-center">
       <Alert severity={severityColor}>{message}</Alert>
     </div>
   );

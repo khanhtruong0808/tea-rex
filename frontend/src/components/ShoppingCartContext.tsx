@@ -23,11 +23,20 @@ type ShoppingCartContext = {
   openCart: () => void;
   closeCart: () => void;
   updateDiscount: (newDiscount: number) => void;
+  updateTax: (newTax: number) => void;
+  updateSubtotal: (newSubtotal: number) => void;
+  updateFinaltotal: (newFinaltotal: number) => void;
+  setExternalTax: (setExternalTax: boolean) => void;
   cartQuantity: number;
   cartItems: CartItem[];
   isOpen: boolean;
   discount: number;
   hasBeverages: boolean;
+  tax: number;
+  subtotal: number;
+  finaltotal: number;
+  totalBeverageAmount: number;
+  isExternalTaxSet: boolean;
 };
 
 export const ShoppingCartContext = createContext({} as ShoppingCartContext);
