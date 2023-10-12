@@ -454,6 +454,7 @@ app.post("/calculate-tax", async (req, res) => {
       });
     }
   } catch (error: any) {
+    console.log("error with taxDATA " + error.message);
     res.json({
       message: error.message,
       success: false,
