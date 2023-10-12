@@ -14,6 +14,7 @@ import { Printer } from "../Printer";
 import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -73,10 +74,14 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   } = useShoppingCart();
 
   useEffect(() => {
-    if (taxData && taxData.success) {
-      setExternalTax(true);
-      updateTax(100);
-      setIsTaxUpdated(true);
+    if (taxData) {
+      if (taxData.success) {
+        setExternalTax(true);
+        updateTax(100); // change later to actual tax data value
+        setIsTaxUpdated(true);
+      } else {
+        console.error("Error with tax data: " + taxData.message);
+      }
     }
   }, [taxData]);
 
@@ -91,8 +96,6 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       return;
     }
     const submitPayment = async () => {
-      console.log("submitting payment...");
-
       if (!stripe || !elements) {
         console.error("Stripe has not initialized yet.");
         return;
@@ -131,6 +134,33 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
               id: paymentMethod.id,
             }),
           });
+
+          const responseData = await response.json();
+
+          if (responseData.success) {
+            //Printer(); //if enabled during development, payments will go through but you will get a backend error:
+            /*
+          Error:  undefined Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+          /*
+          1. You might have mismatching versions of React and the renderer (such as React DOM)
+          2. You might be breaking the Rules of Hooks
+          3. You might have more than one copy of React in the same app
+          See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. 
+          */
+            console.log("Successful payment");
+            navigate("/payment-result", {
+              state: {
+                success: responseData.success,
+              },
+            });
+          } else {
+            console.log("Failed payment");
+            navigate("/payment-result", {
+              state: {
+                success: responseData.success,
+              },
+            });
+          }
         } catch (error) {
           console.error("Error during fetch operation: ", error);
         }
@@ -138,6 +168,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       setIsSubmitting(false);
     };
 
+    console.log("submitting...");
     submitPayment();
     setIsTaxUpdated(false);
   }, [isSubmitting, isTaxUpdated]);
@@ -170,7 +201,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
 
     //update the points on the rewardsMember
     if (isRewardsMember && hasBeverages) {
-      handleAddPoints(Math.round(finaltotal / 100));
+      handleAddPoints(Math.floor(finaltotal / 10));
     }
   };
 
