@@ -13,7 +13,7 @@ import DeliveryOption from "../components/DeliveryOption";
 const sauceChoices = [
   "Salt & Pepper On Side",
   "Sauce on the Side",
-  "Extra 2nd Sauce +$0.50",
+  "Extra 2nd Sauce",
   "Ranch",
   "Sweet Red Chili",
   "Orange Sauce",
@@ -21,8 +21,8 @@ const sauceChoices = [
   "Hoisin Sauce",
   "Garlic Sauce",
   "Spicy on Side",
-  "Extra 1st Sauce +$0.50",
-  "Extra 3rd Sauce +$0.50",
+  "Extra 1st Sauce",
+  "Extra 3rd Sauce",
   "Sweet & Sour",
   "Teriyaki",
   "Spicy Mayo",
@@ -48,28 +48,28 @@ const cupChoices = [
 ];
 
 const bobaChoices = [
-  "Aloe Vera +$0.85",
-  "Crystal Boba +$0.85",
-  "Honey +$0.85",
-  "Coffee Jelly +$0.85",
-  "Lychee Jelly +$0.85",
-  "Strawberry Jelly +$0.85",
-  "Oreo Crumbles +$0.85",
-  "Mango Pop +$0.85",
-  "Str Pop +$0.85",
-  "Chunk: Mango +$0.85",
-  "Extra Toppings +$0.85",
-  "Boba +$0.85",
-  "Chia Seed +$0.85",
-  "Egg Pudding +$0.85",
-  "Grass Jelly +$0.85",
-  "Mango Jelly +$0.85",
-  "Rainbow Jelly +$0.85",
-  "Green Apple Pop +$0.85",
-  "PF Pop +$0.85",
-  "Rainbow Poping +$0.85",
-  "Red Bean +$0.85",
-  "Mix +$0.85",
+  "Aloe Vera",
+  "Crystal Boba",
+  "Honey",
+  "Coffee Jelly",
+  "Lychee Jelly",
+  "Strawberry Jelly",
+  "Oreo Crumbles",
+  "Mango Pop",
+  "Str Pop",
+  "Chunk: Mango",
+  "Extra Toppings",
+  "Boba",
+  "Chia Seed",
+  "Egg Pudding",
+  "Grass Jelly",
+  "Mango Jelly",
+  "Rainbow Jelly",
+  "Green Apple Pop",
+  "PF Pop",
+  "Rainbow Poping",
+  "Red Bean",
+  "Mix",
   // Add more boba choices here
 ];
 
@@ -232,12 +232,17 @@ const Menu = () => {
 
   const renderChoices = (choices: string[]) => {
     return choices.map((choice: string, index: number) => (
-      <label key={index} className="inline-flex items-center">
+      <label
+        key={index}
+        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
+      >
         <input
           type="checkbox"
-          className="form-checkbox h-5 w-5 text-gray-600"
+          className="form-checkbox absolute opacity-0 h-6 w-6"
         />
-        <span className="ml-2 text-gray-700">{choice}</span>
+        <div className="flex items-center p-4">
+          <span className="text-gray-700">{choice}</span>
+        </div>
       </label>
     ));
   };
@@ -296,7 +301,7 @@ const Menu = () => {
                 Choice of Sauce
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (up to 1 max)
+                  (+$0.50 per sauce)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -317,27 +322,28 @@ const Menu = () => {
               <h3 className="mb-2 text-lg font-bold">
                 Spicy
                 <span className="text-sm font-normal text-gray-400">
-                  {" "}
                   (up to 1 max)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
               <div className="grid grid-cols-2 gap-2">
                 {spicyChoices.map((choice, index) => (
-                  <div
+                  <label
                     key={index}
-                    className="flex w-3/4 items-center rounded-lg border border-gray-300 p-0"
+                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
                   >
                     <input
                       type="checkbox"
-                      className="form-checkbox h-4 w-4 text-gray-600"
+                      className="form-checkbox absolute opacity-0 h-6 w-6"
                       checked={selectedSpiceLevel.name === choice}
                       onChange={() =>
                         handleSpiceOptionChange({ name: choice, qty: 1 })
                       }
                     />
-                    <span className="ml-2 text-gray-700">{choice}</span>
-                  </div>
+                    <div className="flex items-center p-4">
+                      <span className="text-gray-700">{choice}</span>
+                    </div>
+                  </label>
                 ))}
               </div>
             </div>
@@ -391,7 +397,7 @@ const Menu = () => {
                 Add Boba Jelly
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 3)
+                  (+$0.85 per selection, 3 max)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -405,7 +411,7 @@ const Menu = () => {
                 Ice Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 1)
+                  (Please select 1)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -417,7 +423,7 @@ const Menu = () => {
                 Sugar Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 1)
+                  (Please select 1)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
