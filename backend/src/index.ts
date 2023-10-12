@@ -6,7 +6,7 @@ import bcrypt from "bcrypt";
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")(`${process.env.VITE_STRIPE_SECRET_KEY}`);
+const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
 const bcryptPassword = require("bcrypt");
 app.use(cors()); // change later
 app.use(express.json());
