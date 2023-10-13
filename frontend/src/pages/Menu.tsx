@@ -76,6 +76,7 @@ const bobaChoices = [
 const iceChoices = [
   "No Ice",
   "Less Ice",
+  "Normal Ice",
   "More Ice",
   // Add more ice choices here
 ];
@@ -117,6 +118,19 @@ const Menu = () => {
     name: "mild",
     qty: 1,
   });
+  const [selectedCupSize, setSelectedCupSize] = useState<Item>({
+    name: "16 oz",
+    qty: 1,
+  });
+  const [selectedIceLevel, setSelectedIceLevel] = useState<Item>({
+    name: "Normal Ice",
+    qty: 1,
+  });
+  const [selectedSugarLevel, setSelectedSugarLevel] = useState<Item>({
+    name: "100% Sugar",
+    qty: 1,
+  });
+  const [selectedToppings, setSelectedToppings] = useState<Item[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
 
   // category selected on sidebar
@@ -186,22 +200,14 @@ const Menu = () => {
   ) => {
     const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
-    newOptionArr.map((x) =>
-      x.name === "Extra 1st Sauce +$0.50" ||
-      x.name === "Extra 2nd Sauce +$0.50" ||
-      x.name === "Extra 3rd Sauce +$0.50"
-        ? (x.price = 0.5)
-        : x
-    );
-
     newOptionArr.map((x) => x.qty + 1);
 
     addToCart(
       selectedItem,
       newOptionArr,
-      selectedSpiceLevel,
       specialInstructions,
-      quantity
+      quantity,
+      selectedSpiceLevel
     );
 
     // reset modal form state for next item to be added
@@ -213,21 +219,77 @@ const Menu = () => {
     handleCloseModal();
   };
 
+  const handleCart = (selectedItem: MenuItem, selectedToppings: Item[]) => {
+    const newArr = [
+      ...selectedToppings,
+      selectedCupSize,
+      selectedIceLevel,
+      selectedSugarLevel,
+    ];
+
+    addToCart(selectedItem, newArr, specialInstructions, quantity);
+
+    // reset modal form state for next item to be added
+    setQuantity(1);
+    setSelectedCupSize({ name: "16 oz", qty: 1 });
+    setSelectedIceLevel({ name: "Normal Ice", qty: 1 });
+    setSelectedSugarLevel({ name: "100% Sugar", qty: 1 });
+    setSpecialInstructions("");
+    setSelectedToppings([]);
+
+    handleCloseModal();
+  };
+
   const collectAllOptionQuantity = (sauceName: string, quantity: number) => {
     const exist = selectedOption.find((x) => x.name === sauceName);
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity } : x
+        x.name === sauceName ? { ...exist, qty: quantity, price: 0.5 } : x
       );
       setSelectedOption(newSelectedOption);
     } else {
       const newSelectedOption = [
         ...selectedOption,
-        { name: sauceName, qty: 1 },
+        { name: sauceName, qty: 1, price: 0.5 },
       ];
       setSelectedOption(newSelectedOption);
     }
+  };
+
+  const handleCupSize = (name: string, qty: number) => {
+    if (name === "24 oz +$0.50") {
+      setSelectedCupSize({ name: name, qty: qty, price: 0.5 });
+    } else if (name === "Hot +$1.00") {
+      setSelectedCupSize({ name: name, qty: qty, price: 1.0 });
+    } else {
+      setSelectedCupSize({ name: name, qty: qty });
+    }
+  };
+
+  const handleIceLevel = (name: string, qty: number) => {
+    setSelectedIceLevel({ name: name, qty: qty });
+  };
+
+  const handleSugarLevel = (name: string, qty: number) => {
+    setSelectedSugarLevel({ name: name, qty: qty });
+  };
+
+  const handleToppings = (name: string, qty: number) => {
+    if (name.includes("oz") || name.includes("Hot")) {
+      handleCupSize(name, qty);
+    } else if (name.includes("Ice")) {
+      handleIceLevel(name, qty);
+    } else if (name.includes("Sugar")) {
+      handleSugarLevel(name, qty);
+    } else {
+      setSelectedToppings([
+        ...selectedToppings,
+        { name: name, qty: qty, price: 0.85 },
+      ]);
+    }
+
+    console.log(selectedToppings);
   };
 
   const renderChoices = (choices: string[]) => {
@@ -239,6 +301,7 @@ const Menu = () => {
         <input
           type="checkbox"
           className="form-checkbox absolute opacity-0 h-6 w-6"
+          onClick={() => handleToppings(choice, 1)}
         />
         <div className="flex items-center p-4">
           <span className="text-gray-700">{choice}</span>
@@ -448,13 +511,7 @@ const Menu = () => {
                 <button
                   className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
-                  onClick={() =>
-                    handleCartFunction(
-                      selectedItem,
-                      selectedOption,
-                      selectedSpiceLevel
-                    )
-                  }
+                  onClick={() => handleCart(selectedItem, selectedToppings)}
                 >
                   Add to Cart
                 </button>

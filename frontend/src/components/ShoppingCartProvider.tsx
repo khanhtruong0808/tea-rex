@@ -1,7 +1,8 @@
-import { ReactNode, useContext, useState } from "react";
-import Cart from "../pages/Cart";
+import { ReactNode, useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "./ShoppingCartContext";
 import useRewards from "../components/RewardsContext";
+import SlideOver from "./SlideOver";
+import { stringify } from "querystring";
 
 interface Item {
   id?: number;
@@ -20,6 +21,15 @@ export function useShoppingCart() {
 
 export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const ls = localStorage.getItem("cartItems");
+
+    const items = ls !== null ? JSON.parse(ls) : [];
+
+    setCartItems(items);
+  }, []);
+
   const [isOpen, setIsOpen] = useState(false);
   const [discount, setDiscount] = useState(0);
   const [hasBeverages, setHasBeverages] = useState(false);
@@ -52,16 +62,26 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   function addToCart(
     item: MenuItem,
     option: Item[],
-    spice: Item,
     specialInstructions: string,
-    quantity: number
+    quantity: number,
+    spice?: Item
   ) {
-    const newCartItems: CartItem[] = [
-      ...cartItems,
-      { item, option, spice, specialInstructions, quantity },
-    ];
-    setCartItems(newCartItems);
-    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    if (spice !== null) {
+      const newCartItems: CartItem[] = [
+        ...cartItems,
+        { item, option, spice, specialInstructions, quantity },
+      ];
+      setCartItems(newCartItems);
+      localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    } else {
+      const newCartItems: CartItem[] = [
+        ...cartItems,
+        { item, option, specialInstructions, quantity },
+      ];
+      setCartItems(newCartItems);
+      localStorage.setItem("cartItems", JSON.stringify(newCartItems));
+    }
+
     if (item.menuType == "beverage") {
       setTotalBeverageAmount(
         (totalBeverageAmount) => totalBeverageAmount + Number(item.price)
@@ -70,6 +90,13 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     if (totalBeverageAmount > 0) {
       setHasBeverages(true);
     }
+  }
+
+  function removeItem(item: MenuItem) {
+    const newCartItems: CartItem[] = cartItems.filter((x) => x.item !== item);
+
+    setCartItems(newCartItems);
+    localStorage.setItem("cartItems", JSON.stringify(newCartItems));
   }
 
   function clearCart() {
@@ -101,6 +128,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       value={{
         updateDiscount,
         addToCart,
+        removeItem,
         clearCart,
         openCart,
         closeCart,
@@ -121,7 +149,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       }}
     >
       {children}
-      <Cart isOpen={isOpen} />
+      <SlideOver />
     </ShoppingCartContext.Provider>
   );
 }

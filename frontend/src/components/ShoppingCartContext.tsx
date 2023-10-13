@@ -15,10 +15,11 @@ type ShoppingCartContext = {
   addToCart: (
     item: MenuItem,
     option: Item[],
-    spice: Item,
     specialInstructions: string,
-    quantity: number
+    quantity: number,
+    spice?: Item
   ) => void;
+  removeItem: (item: MenuItem) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
