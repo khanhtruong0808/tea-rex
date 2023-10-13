@@ -9,6 +9,7 @@ import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
   "Salt & Pepper On Side",
@@ -124,16 +125,29 @@ const Menu = () => {
 
   const { addToCart } = useShoppingCart();
 
+
   if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <img
-          src="dino-sprite.png"
-          alt="Bouncing Dinosaur"
-          className="w-40 animate-bounce text-center"
+  return (
+    <div className="h-screen relative flex flex-col items-center justify-center">
+      <img
+        src="tearex.png"
+        alt="tearex.png"
+        className="w-90 animate-pulse text-center ml-10"
+      />
+      <div
+        className="absolute inset-y-0 left-0 flex items-center justify-center animate-pulse"
+        style={{ top: '-80px', left: '560px', transform: 'rotate(-65deg)' }} // Rotate by -55 degrees
+      >
+        <PulseLoader
+          color={"#000000"}
+          loading={isLoading}
+          size={25}
+          margin={20}
         />
       </div>
-    );
+    </div>
+  );
+
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
