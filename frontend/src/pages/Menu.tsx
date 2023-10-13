@@ -135,7 +135,7 @@ const Menu = () => {
       />
       <div
         className="relative flex items-center justify-center animate-pulse"
-        style={{ top: '-580px', left: '-180px', transform: 'rotate(-65deg)' }} 
+        style={{ top: '-580px', left: '-180px', transform: 'rotate(-65deg)' }}
       >
         <PulseLoader
           color={"#000000"}
