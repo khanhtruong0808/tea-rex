@@ -9,6 +9,7 @@ import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
+import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
   "Salt & Pepper On Side",
@@ -104,6 +105,7 @@ const Menu = () => {
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
 
+
   const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const openDialog = useDialog((state) => state.openDialog);
   const closeDialog = useDialog((state) => state.closeDialog);
@@ -125,15 +127,26 @@ const Menu = () => {
   const { addToCart } = useShoppingCart();
 
   if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <img
-          src="dino-sprite.png"
-          alt="Bouncing Dinosaur"
-          className="w-40 animate-bounce text-center"
+  return (
+    <div className="h-screen relative flex flex-col items-center justify-center">
+      <img
+        src="tearex.png"
+        alt="tearex.png"
+        className="transform w-85 text-center ml-20 animate-pulse"
+      />
+      <div className="absolute inset-0 flex items-center justify-center transform animate-pulse"
+      style={{ top: '-75px', left: '-307px', transform: 'rotate(-70deg)' }}>
+        
+        <PulseLoader
+          color={"#000000"}
+          loading={isLoading}
+          size={25}
+          margin={20}
         />
       </div>
-    );
+    </div>
+  );
+
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
