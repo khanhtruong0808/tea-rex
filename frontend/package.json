@@ -34,6 +34,7 @@
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.15.0",
     "react-spinner": "^0.2.7",
+    "react-spinners": "^0.13.8",
     "stripe": "^13.9.0",
     "styled-components": "^6.0.8",
     "swiper": "^9.2.4",
