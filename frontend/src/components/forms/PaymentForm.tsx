@@ -56,6 +56,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const elements = useElements();
   const navigate = useNavigate();
   const [zipCode, setZipCode] = useState("");
+  const [name, setName] = useState("");
   const [taxData, setTaxData] = useState<TaxData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTaxUpdated, setIsTaxUpdated] = useState(false);
@@ -89,7 +90,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     console.log("Updated tax: " + tax);
     console.log("Updated final total: " + (subtotal - discount + tax));
     updateFinaltotal(subtotal - discount + tax);
-  }, [tax]); // tax as a dependency
+  }, [tax]);
 
   useEffect(() => {
     if (!isSubmitting || !isTaxUpdated) {
@@ -102,9 +103,19 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       }
 
       const cardNumberElement = elements.getElement(CardNumberElement);
+      const expirationNumberElement = elements.getElement(CardExpiryElement);
+      const cardCvcElement = elements.getElement(CardCvcElement);
 
       if (!cardNumberElement) {
-        showAlert("No card number found!", "error");
+        showAlert("Please enter the card number.", "error");
+        return;
+      }
+      if (!expirationNumberElement) {
+        showAlert("Please enter the expiration date.", "error");
+        return;
+      }
+      if (!cardCvcElement) {
+        showAlert("Please enter the CVC.", "error");
         return;
       }
       setExternalTax(true);
@@ -224,6 +235,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             type="text"
             placeholder="Name on Card"
             className="p-2 border border-gray-200 rounded w-full"
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         {/* Card Number */}
@@ -269,19 +281,19 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             onChange={(e) => setZipCode(e.target.value)}
           />
         </div>
+        <div className="flex mt-4 space-x-2">
+          <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
+            Pay
+          </button>
+          <button
+            type="button"
+            className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            onClick={cancelCheckout}
+          >
+            Cancel
+          </button>
+        </div>
       </fieldset>
-      <div className="flex mt-4 space-x-2">
-        <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
-          Pay
-        </button>
-        <button
-          type="button"
-          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
-          onClick={cancelCheckout}
-        >
-          Cancel
-        </button>
-      </div>
     </form>
   );
 };

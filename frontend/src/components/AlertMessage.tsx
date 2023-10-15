@@ -1,6 +1,5 @@
 import React from "react";
 import Alert from "@mui/material/Alert";
-
 type AlertColor = "error" | "warning" | "info" | "success";
 
 interface AlertMessageProps {
@@ -23,8 +22,9 @@ const AlertMessage: React.FC<AlertMessageProps> = ({
 
   const severityColor: AlertColor | undefined =
     convertToAlertColor(severityProp);
+
   return (
-    <div className="fixed inset-0 flex items-center justify-center">
+    <div className="animate-fade-left fixed top-0 right-0 mr-8">
       <Alert severity={severityColor}>{message}</Alert>
     </div>
   );
