@@ -49,7 +49,6 @@ export default function Cart() {
     if (!isExternalTaxSet) {
       updateSubtotal(newSubtotal);
       updateTax((subtotal - discount) * 0.0875);
-      console.log("setting here too");
       updateFinaltotal(subtotal - discount + tax);
     }
   }, [addToCart, discount]);

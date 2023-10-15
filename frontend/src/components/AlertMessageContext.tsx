@@ -32,7 +32,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({
       timeoutId = setTimeout(() => {
         setIsShowing(false);
         setAlertMessage(null);
-      }, 3000);
+      }, 1500);
     }
 
     return () => clearTimeout(timeoutId);
