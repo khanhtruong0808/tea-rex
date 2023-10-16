@@ -3,10 +3,13 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import session from "express-session";
+import jwt from 'jsonwebtoken';
+
 
 declare module 'express-session' {
   interface Session {
     user: {
+      id: number;
       username: string;
     };
     authorized: boolean;
@@ -15,6 +18,7 @@ declare module 'express-session' {
   }
 }
 
+const jwtSecretKey = 'testsecretkey';
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -33,9 +37,9 @@ app.use(
     cookie:{
       maxAge: 3600,
       secure: false,
-      sameSite: 'none', 
-      httpOnly: true,
-      domain: 'http://localhost:5000',
+      //sameSite: 'none', 
+      //httpOnly: true,
+      
     }
   })
 );
@@ -45,7 +49,7 @@ app.post('/login', async (req, res) => {
   const user = await prisma.user.findUnique({
     where: { username },
   });
-
+  console.log(req.session.user);
   if (!user) {
     return res.status(401).json();
   }
@@ -55,11 +59,14 @@ app.post('/login', async (req, res) => {
   }
 
   if (user) {
-    req.session.user = user;
-    req.session.authorized = true;
-    //res.redirect('/menu-section');
-    console.log(req.session.user);
-    res.json(req.session.user);
+    const payload = {
+      userId: user.id,
+      username: user.username,
+    };
+
+    const token = jwt.sign(payload, jwtSecretKey, {expiresIn: '1h'});
+
+    res.json({token});
   } else {
     console.log('no user data.');
     res.status(401).json();
@@ -67,14 +74,27 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/login', async (req, res) => {
-  
-  if(req.session.user){
+  const sessionData = req.session;
+  const userId = sessionData.user;
+
+  console.log(userId);
+  if(req.session.authorized){
     res.json(req.session.user);
   } else {
     res.status(401).json();
   }
 });
 
+// log out route
+app.get('/logout', (req, res) => {
+  req.session?.destroy((err) => {
+    if (err) {
+      console.error( err);
+      return res.status(500).send();
+    }
+    res.redirect('/login');
+  });
+});
 
 // Menu Section Routes
 app.get("/menu-section", async (req, res) => {
