@@ -9,6 +9,8 @@ import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
+import { useNavigate } from "react-router-dom";
+import axios from 'axios';
 import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
@@ -137,6 +139,19 @@ const Menu = () => {
   // category selected on sidebar
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    
+    const token = localStorage.getItem("token");
+
+    if(token) {
+      adminModeStore.setState({ isAdmin: true});
+    }
+    //const isAdmin = localStorage.getItem("isAdmin") === "true";
+    //adminModeStore.setState({ isAdmin });
+  }, []);
+
+
   const { addToCart } = useShoppingCart();
 
   if (isLoading)
@@ -168,8 +183,23 @@ const Menu = () => {
 
   const handleLogout = () => {
     // Clear the admin mode state
+
     adminModeStore.setState({ isAdmin: false });
-    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("token");
+    fetch('/logout', {
+      method: 'GET',
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          navigate('/Admin');
+        } else {
+    
+        }
+      })
+      .catch((error) => {
+  
+      });
+
   };
 
   const handleAddToCart = (item: MenuItem) => {
