@@ -9,6 +9,7 @@ import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
+import axios from 'axios';
 
 const sauceChoices = [
   "Salt & Pepper On Side",
@@ -103,8 +104,6 @@ const Menu = () => {
     queryFn: () =>
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
-
-  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const openDialog = useDialog((state) => state.openDialog);
   const closeDialog = useDialog((state) => state.closeDialog);
 
@@ -121,6 +120,29 @@ const Menu = () => {
 
   // category selected on sidebar
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    fetch(config.baseApiUrl + '/login', {
+      method: 'GET',
+      credentials: 'include', 
+    })
+      .then((response: Response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      })
+      .then((data: any) => {
+        console.log(data);
+        setIsAdmin(data.isAdmin);
+        adminModeStore.setState({ isAdmin: data.isAdmin });
+      })
+      .catch((error: Error) => {
+      });
+  }, []);
 
   const { addToCart } = useShoppingCart();
 

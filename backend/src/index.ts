@@ -2,14 +2,79 @@ import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import session from "express-session";
+
+declare module 'express-session' {
+  interface Session {
+    user: {
+      username: string;
+    };
+    authorized: boolean;
+    isAdmin: boolean;
+
+  }
+}
 
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 5000;
 const stripe = require("stripe")(`${process.env.VITE_STRIPE_SECRET_KEY}`);
-const bcryptPassword = require("bcrypt");
-app.use(cors()); // change later
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true,
+})); // change later
 app.use(express.json());
+
+app.use(
+  session({
+    secret: 'testsecretkey',
+    resave: true,
+    saveUninitialized: true,
+    cookie:{
+      maxAge: 3600,
+      secure: false,
+      sameSite: 'none', 
+      httpOnly: true,
+      domain: 'http://localhost:5000',
+    }
+  })
+);
+
+app.post('/login', async (req, res) => {
+  const { username, password} = req.body;
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+
+  if (!user) {
+    return res.status(401).json();
+  }
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return res.status(401).json();
+  }
+
+  if (user) {
+    req.session.user = user;
+    req.session.authorized = true;
+    //res.redirect('/menu-section');
+    console.log(req.session.user);
+    res.json(req.session.user);
+  } else {
+    console.log('no user data.');
+    res.status(401).json();
+  }
+});
+
+app.get('/login', async (req, res) => {
+  
+  if(req.session.user){
+    res.json(req.session.user);
+  } else {
+    res.status(401).json();
+  }
+});
+
 
 // Menu Section Routes
 app.get("/menu-section", async (req, res) => {
@@ -78,15 +143,6 @@ app.put("/menu-item/:id", async (req, res) => {
   res.json(menuItem);
 });
 
-// session. Do later
-/*app.use(
-  session({
-    secret: 'test-secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
-)*/
-
 // make the exisiting password into hashed passwords.
 // call only once.
 async function updateHashedPasswords() {
@@ -110,24 +166,7 @@ async function updateHashedPasswords() {
   }
 }
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
 
-  const user = await prisma.user.findUnique({
-    where: { username },
-  });
-
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  res.status(200).json({ message: "Login successful" });
-});
 
 app.post("/rewards-member-add", async (req, res) => {
   const { phoneNumber, points } = req.body;

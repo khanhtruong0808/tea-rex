@@ -5,12 +5,13 @@ import { config } from "../config";
 import adminModeStore from "../utils/adminModeStore";
 
 function Login() {
+  
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
+  
   const navigate = useNavigate();
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,10 +28,11 @@ function Login() {
     setUsernameError("");
     setPasswordError("");
     setMessage("");
-
-    const isAdmin = localStorage.getItem("isAdmin") === "true";
-    adminModeStore.setState({ isAdmin });
+    
+    //const isAdmin = localStorage.getItem("isAdmin") === "true";
+    //adminModeStore.setState({ isAdmin });
   }, []);
+
 
   // Sign in button handler.
   const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -50,40 +52,39 @@ function Login() {
       setPasswordError("please enter a password");
       return;
     }
-    /*const response = await axios.post(config.baseApiUrl + '/login', {
-      headers: 
-      {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ username, password }),
-    });*/
+ 
     try {
       const response = await axios.post(
         config.baseApiUrl + "/login",
         {
-          username, // Send username
-          password, // Send password
+          username, 
+          password, 
         },
         {
           headers: {
             "Content-Type": "application/json",
           },
-        },
+        }
       );
-      if (response.status === 200) {
-        // if success, redirect to the menu page.
-        adminModeStore.setState({ isAdmin: true });
-        localStorage.setItem("isAdmin", "true");
-        setUsernameError("");
-        setPasswordError("");
-        navigate("/menu");
-      } else if (response.status === 401) {
-        setMessage("invlaid credential");
+      if (response.status === 200){
+        const responseData = response.data;
+        const user = responseData.username;
+        console.log(user);
+        if (user) {
+          adminModeStore.setState({ isAdmin: true });
+          setUsernameError("");
+          setPasswordError("");
+          navigate("/menu");
+        }
+      }
+      else (response.status === 401);{
+        setMessage("invalid credential");
       }
     } catch (error) {
       setMessage("Login failed: Invalid credentials");
     }
-  };
+  }
+  
   return (
     <div className="flex h-screen items-center justify-center rounded-md">
       <form
