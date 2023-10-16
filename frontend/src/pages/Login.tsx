@@ -29,6 +29,11 @@ function Login() {
     setPasswordError("");
     setMessage("");
     
+    const token = localStorage.getItem("token");
+
+    if(token) {
+      adminModeStore.setState({ isAdmin: true});
+    }
     //const isAdmin = localStorage.getItem("isAdmin") === "true";
     //adminModeStore.setState({ isAdmin });
   }, []);
@@ -67,15 +72,11 @@ function Login() {
         }
       );
       if (response.status === 200){
-        const responseData = response.data;
-        const user = responseData.username;
-        console.log(user);
-        if (user) {
-          adminModeStore.setState({ isAdmin: true });
-          setUsernameError("");
-          setPasswordError("");
-          navigate("/menu");
-        }
+        localStorage.setItem("token", response.data.token);
+        adminModeStore.setState({ isAdmin: true });
+        setUsernameError("");
+        setPasswordError("");
+        navigate("/menu");
       }
       else (response.status === 401);{
         setMessage("invalid credential");
