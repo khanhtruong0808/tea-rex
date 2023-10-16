@@ -66,20 +66,6 @@ const RewardsSystem = ({
     return ("" + input).replace(/\D/g, "");
   };
 
-  const applyBeverageDiscount = (points: number) => {
-    let totalBeverageAmountTemp = 0;
-
-    const totalBeverageDiscount = cartItems.reduce((acc: number, item) => {
-      if (item.item.menuType === "beverage") {
-        return acc + item.item.price * (Math.min(points, 100) / 100);
-      }
-      return acc;
-    }, 0);
-
-    console.log("Total beverage amount: " + totalBeverageAmount);
-    return totalBeverageDiscount;
-  };
-
   const checkForBeverages = () => {
     for (const item of cartItems) {
       if (item.item.menuType == "beverage") {
@@ -125,7 +111,7 @@ const RewardsSystem = ({
     handleAddPoints(totalBeverageAmount);
   };
 
-  const handleSpendPoints = async () => {
+  async function handleSpendPoints(spendPoint: number) {
     if (subtotal === discount) {
       showAlert("You are already getting the drinks for free!", "error");
       return;
@@ -151,7 +137,6 @@ const RewardsSystem = ({
     }
 
     phoneNumber = cleanPhoneNumber(phoneNumber);
-
     try {
       let response = await fetch(
         config.baseApiUrl + "/rewards-member-pend-spend",
@@ -168,9 +153,7 @@ const RewardsSystem = ({
 
       if (data) {
         if (data.points !== undefined && data.pendingPoints !== undefined) {
-          console.log(data.pendingPoints);
-          const potentialDiscount = applyBeverageDiscount(data.pendingPoints);
-
+          const potentialDiscount = data.pendingPoints * 0.1; //each point is 10 cents off
           setPoints(data.points);
           setSpentPoints(data.pendingPoints);
 
@@ -203,7 +186,7 @@ const RewardsSystem = ({
       const errorMessage = (error as Error).message;
       console.error(`Failed to pend points for spending: ${errorMessage}`);
     }
-  };
+  }
 
   const handleSubmit = async () => {
     if (!phoneNumber) {
@@ -288,10 +271,10 @@ const RewardsSystem = ({
             Spend points! Discount only applies to beverages!
             <div className="flex mt-4 space-x-2">
               <button
-                onClick={handleSpendPoints}
+                onClick={() => handleSpendPoints(10)}
                 className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block"
               >
-                Spend points
+                Spend 10 points
               </button>
               <button
                 onClick={cancelShowingRewardsInfo}

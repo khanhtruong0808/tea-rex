@@ -14,6 +14,7 @@ import { Printer } from "../Printer";
 import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
+import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const CARD_OPTIONS = {
   iconStyle: "solid",
@@ -55,6 +56,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const elements = useElements();
   const navigate = useNavigate();
   const [zipCode, setZipCode] = useState("");
+  const [name, setName] = useState("");
   const [taxData, setTaxData] = useState<TaxData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTaxUpdated, setIsTaxUpdated] = useState(false);
@@ -73,10 +75,14 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   } = useShoppingCart();
 
   useEffect(() => {
-    if (taxData && taxData.success) {
-      setExternalTax(true);
-      updateTax(100);
-      setIsTaxUpdated(true);
+    if (taxData) {
+      if (taxData.success) {
+        setExternalTax(true);
+        updateTax(100); // change later to actual tax data value
+        setIsTaxUpdated(true);
+      } else {
+        console.error("Error with tax data: " + taxData.message);
+      }
     }
   }, [taxData]);
 
@@ -84,24 +90,32 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     console.log("Updated tax: " + tax);
     console.log("Updated final total: " + (subtotal - discount + tax));
     updateFinaltotal(subtotal - discount + tax);
-  }, [tax]); // tax as a dependency
+  }, [tax]);
 
   useEffect(() => {
     if (!isSubmitting || !isTaxUpdated) {
       return;
     }
     const submitPayment = async () => {
-      console.log("submitting payment...");
-
       if (!stripe || !elements) {
         console.error("Stripe has not initialized yet.");
         return;
       }
 
       const cardNumberElement = elements.getElement(CardNumberElement);
+      const expirationNumberElement = elements.getElement(CardExpiryElement);
+      const cardCvcElement = elements.getElement(CardCvcElement);
 
       if (!cardNumberElement) {
-        showAlert("No card number found!", "error");
+        showAlert("Please enter the card number.", "error");
+        return;
+      }
+      if (!expirationNumberElement) {
+        showAlert("Please enter the expiration date.", "error");
+        return;
+      }
+      if (!cardCvcElement) {
+        showAlert("Please enter the CVC.", "error");
         return;
       }
       setExternalTax(true);
@@ -131,6 +145,33 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
               id: paymentMethod.id,
             }),
           });
+
+          const responseData = await response.json();
+
+          if (responseData.success) {
+            //Printer(); //if enabled during development, payments will go through but you will get a backend error:
+            /*
+          Error:  undefined Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
+          /*
+          1. You might have mismatching versions of React and the renderer (such as React DOM)
+          2. You might be breaking the Rules of Hooks
+          3. You might have more than one copy of React in the same app
+          See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. 
+          */
+            console.log("Successful payment");
+            navigate("/payment-result", {
+              state: {
+                success: responseData.success,
+              },
+            });
+          } else {
+            console.log("Failed payment");
+            navigate("/payment-result", {
+              state: {
+                success: responseData.success,
+              },
+            });
+          }
         } catch (error) {
           console.error("Error during fetch operation: ", error);
         }
@@ -138,6 +179,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       setIsSubmitting(false);
     };
 
+    console.log("submitting...");
     submitPayment();
     setIsTaxUpdated(false);
   }, [isSubmitting, isTaxUpdated]);
@@ -170,7 +212,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
 
     //update the points on the rewardsMember
     if (isRewardsMember && hasBeverages) {
-      handleAddPoints(Math.round(finaltotal / 100));
+      handleAddPoints(Math.floor(finaltotal / 10));
     }
   };
 
@@ -193,6 +235,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             type="text"
             placeholder="Name on Card"
             className="p-2 border border-gray-200 rounded w-full"
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         {/* Card Number */}
@@ -238,19 +281,19 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             onChange={(e) => setZipCode(e.target.value)}
           />
         </div>
+        <div className="flex mt-4 space-x-2">
+          <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
+            Pay
+          </button>
+          <button
+            type="button"
+            className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            onClick={cancelCheckout}
+          >
+            Cancel
+          </button>
+        </div>
       </fieldset>
-      <div className="flex mt-4 space-x-2">
-        <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
-          Pay
-        </button>
-        <button
-          type="button"
-          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
-          onClick={cancelCheckout}
-        >
-          Cancel
-        </button>
-      </div>
     </form>
   );
 };

@@ -11,11 +11,12 @@ import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
   "Salt & Pepper On Side",
   "Sauce on the Side",
-  "Extra 2nd Sauce +$0.50",
+  "Extra 2nd Sauce",
   "Ranch",
   "Sweet Red Chili",
   "Orange Sauce",
@@ -23,8 +24,8 @@ const sauceChoices = [
   "Hoisin Sauce",
   "Garlic Sauce",
   "Spicy on Side",
-  "Extra 1st Sauce +$0.50",
-  "Extra 3rd Sauce +$0.50",
+  "Extra 1st Sauce",
+  "Extra 3rd Sauce",
   "Sweet & Sour",
   "Teriyaki",
   "Spicy Mayo",
@@ -50,34 +51,35 @@ const cupChoices = [
 ];
 
 const bobaChoices = [
-  "Aloe Vera +$0.85",
-  "Crystal Boba +$0.85",
-  "Honey +$0.85",
-  "Coffee Jelly +$0.85",
-  "Lychee Jelly +$0.85",
-  "Strawberry Jelly +$0.85",
-  "Oreo Crumbles +$0.85",
-  "Mango Pop +$0.85",
-  "Str Pop +$0.85",
-  "Chunk: Mango +$0.85",
-  "Extra Toppings +$0.85",
-  "Boba +$0.85",
-  "Chia Seed +$0.85",
-  "Egg Pudding +$0.85",
-  "Grass Jelly +$0.85",
-  "Mango Jelly +$0.85",
-  "Rainbow Jelly +$0.85",
-  "Green Apple Pop +$0.85",
-  "PF Pop +$0.85",
-  "Rainbow Poping +$0.85",
-  "Red Bean +$0.85",
-  "Mix +$0.85",
+  "Aloe Vera",
+  "Crystal Boba",
+  "Honey",
+  "Coffee Jelly",
+  "Lychee Jelly",
+  "Strawberry Jelly",
+  "Oreo Crumbles",
+  "Mango Pop",
+  "Str Pop",
+  "Chunk: Mango",
+  "Extra Toppings",
+  "Boba",
+  "Chia Seed",
+  "Egg Pudding",
+  "Grass Jelly",
+  "Mango Jelly",
+  "Rainbow Jelly",
+  "Green Apple Pop",
+  "PF Pop",
+  "Rainbow Poping",
+  "Red Bean",
+  "Mix",
   // Add more boba choices here
 ];
 
 const iceChoices = [
   "No Ice",
   "Less Ice",
+  "Normal Ice",
   "More Ice",
   // Add more ice choices here
 ];
@@ -119,6 +121,19 @@ const Menu = () => {
     name: "mild",
     qty: 1,
   });
+  const [selectedCupSize, setSelectedCupSize] = useState<Item>({
+    name: "16 oz",
+    qty: 1,
+  });
+  const [selectedIceLevel, setSelectedIceLevel] = useState<Item>({
+    name: "Normal Ice",
+    qty: 1,
+  });
+  const [selectedSugarLevel, setSelectedSugarLevel] = useState<Item>({
+    name: "100% Sugar",
+    qty: 1,
+  });
+  const [selectedToppings, setSelectedToppings] = useState<Item[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
 
   // category selected on sidebar
@@ -140,15 +155,28 @@ const Menu = () => {
   const { addToCart } = useShoppingCart();
 
   if (isLoading)
-    return (
-      <div className="flex h-screen items-center justify-center">
-        <img
-          src="dino-sprite.png"
-          alt="Bouncing Dinosaur"
-          className="w-40 animate-bounce text-center"
+  return (
+    <div className="relative flex flex-col items-center justify-center">
+      <img
+        src="tearex.png"
+        alt="tearex.png"
+        className="w-90 animate-pulse text-center ml-10"
+      />
+      <div
+        className="relative flex items-center justify-center animate-pulse"
+        style={{ top: '-580px', left: '-180px', transform: 'rotate(-65deg)' }} // not mobile friendly yet
+      >
+        <PulseLoader
+          color={"#000000"}
+          loading={isLoading}
+          size={25}
+          margin={20}
         />
       </div>
-    );
+    </div>
+  );
+
+
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
@@ -216,22 +244,14 @@ const Menu = () => {
   ) => {
     const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
-    newOptionArr.map((x) =>
-      x.name === "Extra 1st Sauce +$0.50" ||
-      x.name === "Extra 2nd Sauce +$0.50" ||
-      x.name === "Extra 3rd Sauce +$0.50"
-        ? (x.price = 0.5)
-        : x
-    );
-
     newOptionArr.map((x) => x.qty + 1);
 
     addToCart(
       selectedItem,
       newOptionArr,
-      selectedSpiceLevel,
       specialInstructions,
-      quantity
+      quantity,
+      selectedSpiceLevel
     );
 
     // reset modal form state for next item to be added
@@ -243,31 +263,93 @@ const Menu = () => {
     handleCloseModal();
   };
 
+  const handleCart = (selectedItem: MenuItem, selectedToppings: Item[]) => {
+    const newArr = [
+      ...selectedToppings,
+      selectedCupSize,
+      selectedIceLevel,
+      selectedSugarLevel,
+    ];
+
+    addToCart(selectedItem, newArr, specialInstructions, quantity);
+
+    // reset modal form state for next item to be added
+    setQuantity(1);
+    setSelectedCupSize({ name: "16 oz", qty: 1 });
+    setSelectedIceLevel({ name: "Normal Ice", qty: 1 });
+    setSelectedSugarLevel({ name: "100% Sugar", qty: 1 });
+    setSpecialInstructions("");
+    setSelectedToppings([]);
+
+    handleCloseModal();
+  };
+
   const collectAllOptionQuantity = (sauceName: string, quantity: number) => {
     const exist = selectedOption.find((x) => x.name === sauceName);
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity } : x
+        x.name === sauceName ? { ...exist, qty: quantity, price: 0.5 } : x
       );
       setSelectedOption(newSelectedOption);
     } else {
       const newSelectedOption = [
         ...selectedOption,
-        { name: sauceName, qty: 1 },
+        { name: sauceName, qty: 1, price: 0.5 },
       ];
       setSelectedOption(newSelectedOption);
     }
   };
 
+  const handleCupSize = (name: string, qty: number) => {
+    if (name === "24 oz +$0.50") {
+      setSelectedCupSize({ name: name, qty: qty, price: 0.5 });
+    } else if (name === "Hot +$1.00") {
+      setSelectedCupSize({ name: name, qty: qty, price: 1.0 });
+    } else {
+      setSelectedCupSize({ name: name, qty: qty });
+    }
+  };
+
+  const handleIceLevel = (name: string, qty: number) => {
+    setSelectedIceLevel({ name: name, qty: qty });
+  };
+
+  const handleSugarLevel = (name: string, qty: number) => {
+    setSelectedSugarLevel({ name: name, qty: qty });
+  };
+
+  const handleToppings = (name: string, qty: number) => {
+    if (name.includes("oz") || name.includes("Hot")) {
+      handleCupSize(name, qty);
+    } else if (name.includes("Ice")) {
+      handleIceLevel(name, qty);
+    } else if (name.includes("Sugar")) {
+      handleSugarLevel(name, qty);
+    } else {
+      setSelectedToppings([
+        ...selectedToppings,
+        { name: name, qty: qty, price: 0.85 },
+      ]);
+    }
+
+    console.log(selectedToppings);
+  };
+
   const renderChoices = (choices: string[]) => {
     return choices.map((choice: string, index: number) => (
-      <label key={index} className="inline-flex items-center">
+      <label
+        key={index}
+        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
+      >
         <input
           type="checkbox"
-          className="form-checkbox h-5 w-5 text-gray-600"
+          className="form-checkbox absolute opacity-0 h-6 w-6"
+          onClick={() => handleToppings(choice, 1)}
         />
-        <span className="ml-2 text-gray-700">{choice}</span>
+        <div className="flex items-center p-4">
+          <span className="text-gray-700">{choice}</span>
+        </div>
       </label>
     ));
   };
@@ -326,7 +408,7 @@ const Menu = () => {
                 Choice of Sauce
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (up to 1 max)
+                  (+$0.50 per sauce)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -347,27 +429,28 @@ const Menu = () => {
               <h3 className="mb-2 text-lg font-bold">
                 Spicy
                 <span className="text-sm font-normal text-gray-400">
-                  {" "}
                   (up to 1 max)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
               <div className="grid grid-cols-2 gap-2">
                 {spicyChoices.map((choice, index) => (
-                  <div
+                  <label
                     key={index}
-                    className="flex w-3/4 items-center rounded-lg border border-gray-300 p-0"
+                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
                   >
                     <input
                       type="checkbox"
-                      className="form-checkbox h-4 w-4 text-gray-600"
+                      className="form-checkbox absolute opacity-0 h-6 w-6"
                       checked={selectedSpiceLevel.name === choice}
                       onChange={() =>
                         handleSpiceOptionChange({ name: choice, qty: 1 })
                       }
                     />
-                    <span className="ml-2 text-gray-700">{choice}</span>
-                  </div>
+                    <div className="flex items-center p-4">
+                      <span className="text-gray-700">{choice}</span>
+                    </div>
+                  </label>
                 ))}
               </div>
             </div>
@@ -421,7 +504,7 @@ const Menu = () => {
                 Add Boba Jelly
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 3)
+                  (+$0.85 per selection, 3 max)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -435,7 +518,7 @@ const Menu = () => {
                 Ice Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 1)
+                  (Please select 1)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -447,7 +530,7 @@ const Menu = () => {
                 Sugar Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Please select up to 1)
+                  (Please select 1)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -472,13 +555,7 @@ const Menu = () => {
                 <button
                   className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
-                  onClick={() =>
-                    handleCartFunction(
-                      selectedItem,
-                      selectedOption,
-                      selectedSpiceLevel
-                    )
-                  }
+                  onClick={() => handleCart(selectedItem, selectedToppings)}
                 >
                   Add to Cart
                 </button>

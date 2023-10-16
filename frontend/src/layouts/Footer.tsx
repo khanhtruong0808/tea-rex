@@ -39,13 +39,13 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="h-64 gap-30 bg-gradient-to-bl from-amber-600 to-amber-500">
+    <div className="bg-gradient-to-bl from-amber-600 to-amber-500 sticky left-0 right-0 top-0 z-20">
       <div>
-        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 container mx-auto h-48 pt-10">
+        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 container mx-auto pt-10">
           {footInfo.map((footInfo) => (
             <li
               key={footInfo.name}
-              className="flex justify-center sm:block gap-1 break-after-column"
+              className="flex justify-left lg:justify-center sm:block gap-1 break-after-column xl:h-20 lg:pl-20 pl-5"
             >
               <p className="text-xl font-semibold">{footInfo.name}</p>
               <p>{footInfo.hours}</p>
@@ -55,7 +55,7 @@ const Footer = () => {
           ))}
         </ul>
       </div>
-      <ul className="flex justify-center items-center gap-6">
+      <ul className="flex justify-center items-center gap-6 lg:h-1">
         {footIcons.map((footIcons) => (
           <NavLink
             to={footIcons.path}
@@ -69,7 +69,7 @@ const Footer = () => {
         ))}
       </ul>
       <ul className="flex justify-end gap-1 mx-2">
-        <p>
+        <p className="pt-1">
           <AiOutlineCopyrightCircle />
         </p>
         <p>2023 Tea Rex</p>
