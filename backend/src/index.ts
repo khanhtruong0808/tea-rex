@@ -3,10 +3,10 @@ import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import session from "express-session";
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { config } from "./config";
 
-
-declare module 'express-session' {
+declare module "express-session" {
   interface Session {
     user: {
       id: number;
@@ -14,38 +14,35 @@ declare module 'express-session' {
     };
     authorized: boolean;
     isAdmin: boolean;
-
   }
 }
 
-const jwtSecretKey = 'testsecretkey';
+const jwtSecretKey = "testsecretkey";
 const prisma = new PrismaClient();
 const app = express();
-const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")(`${process.env.VITE_STRIPE_SECRET_KEY}`);
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true,
-})); // change later
+const stripe = require("stripe")(config.stripeSecret);
+app.use(
+  cors({
+    origin: config.originUrl,
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 app.use(
   session({
-    secret: 'testsecretkey',
+    secret: config.sessionSecret,
     resave: true,
     saveUninitialized: true,
-    cookie:{
+    cookie: {
       maxAge: 3600,
-      secure: false,
-      //sameSite: 'none', 
-      //httpOnly: true,
-      
-    }
+      secure: config.NODE_ENV === "production" ? true : false,
+    },
   })
 );
 
-app.post('/login', async (req, res) => {
-  const { username, password} = req.body;
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
   const user = await prisma.user.findUnique({
     where: { username },
   });
@@ -64,21 +61,21 @@ app.post('/login', async (req, res) => {
       username: user.username,
     };
 
-    const token = jwt.sign(payload, jwtSecretKey, {expiresIn: '1h'});
+    const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
 
-    res.json({token});
+    res.json({ token });
   } else {
-    console.log('no user data.');
+    console.log("no user data.");
     res.status(401).json();
   }
 });
 
-app.get('/login', async (req, res) => {
+app.get("/login", async (req, res) => {
   const sessionData = req.session;
   const userId = sessionData.user;
 
   console.log(userId);
-  if(req.session.authorized){
+  if (req.session.authorized) {
     res.json(req.session.user);
   } else {
     res.status(401).json();
@@ -86,13 +83,13 @@ app.get('/login', async (req, res) => {
 });
 
 // log out route
-app.get('/logout', (req, res) => {
+app.get("/logout", (req, res) => {
   req.session?.destroy((err) => {
     if (err) {
-      console.error( err);
+      console.error(err);
       return res.status(500).send();
     }
-    res.redirect('/login');
+    res.redirect("/login");
   });
 });
 
@@ -185,8 +182,6 @@ async function updateHashedPasswords() {
     await prisma.$disconnect();
   }
 }
-
-
 
 app.post("/rewards-member-add", async (req, res) => {
   const { phoneNumber, points } = req.body;
@@ -521,6 +516,6 @@ app.post("/calculate-tax", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Listening on port ${config.port}`);
 });
