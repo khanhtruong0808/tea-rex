@@ -16,6 +16,7 @@ const routes = [
   },
   { name: "Gallery", path: "/gallery" },
   { name: "Contact Us", path: "/contact" },
+  { name: "FAQ", path: "/FAQ" },
 ];
 
 export const Navbar = () => {

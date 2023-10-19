@@ -10,7 +10,7 @@ import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios';
+import axios from "axios";
 import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
@@ -141,42 +141,38 @@ const Menu = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    
     const token = localStorage.getItem("token");
 
-    if(token) {
-      adminModeStore.setState({ isAdmin: true});
+    if (token) {
+      adminModeStore.setState({ isAdmin: true });
     }
     //const isAdmin = localStorage.getItem("isAdmin") === "true";
     //adminModeStore.setState({ isAdmin });
   }, []);
 
-
   const { addToCart } = useShoppingCart();
 
   if (isLoading)
-  return (
-    <div className="relative flex flex-col items-center justify-center">
-      <img
-        src="tearex.png"
-        alt="tearex.png"
-        className="w-90 animate-pulse text-center ml-10"
-      />
-      <div
-        className="relative flex items-center justify-center animate-pulse"
-        style={{ top: '-580px', left: '-180px', transform: 'rotate(-65deg)' }} // not mobile friendly yet
-      >
-        <PulseLoader
-          color={"#000000"}
-          loading={isLoading}
-          size={25}
-          margin={20}
+    return (
+      <div className="relative flex flex-col items-center justify-center">
+        <img
+          src="tearex.png"
+          alt="tearex.png"
+          className="w-90 animate-pulse text-center ml-10"
         />
+        <div
+          className="relative flex items-center justify-center animate-pulse"
+          style={{ top: "-580px", left: "-180px", transform: "rotate(-65deg)" }} // not mobile friendly yet
+        >
+          <PulseLoader
+            color={"#000000"}
+            loading={isLoading}
+            size={25}
+            margin={20}
+          />
+        </div>
       </div>
-    </div>
-  );
-
-
+    );
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
@@ -186,20 +182,16 @@ const Menu = () => {
 
     adminModeStore.setState({ isAdmin: false });
     localStorage.removeItem("token");
-    fetch('/logout', {
-      method: 'GET',
+    fetch("/logout", {
+      method: "GET",
     })
       .then((response) => {
         if (response.status === 200) {
-          navigate('/Admin');
+          navigate("/Admin");
         } else {
-    
         }
       })
-      .catch((error) => {
-  
-      });
-
+      .catch((error) => {});
   };
 
   const handleAddToCart = (item: MenuItem) => {
@@ -340,7 +332,7 @@ const Menu = () => {
     return choices.map((choice: string, index: number) => (
       <label
         key={index}
-        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
+        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300 focus-within:border-2"
       >
         <input
           type="checkbox"
@@ -378,7 +370,7 @@ const Menu = () => {
           <h3 className="mb-2 text-lg font-bold">Quantity:</h3>
           <div className="flex items-center">
             <button
-              className="rounded-l bg-gray-200 px-6 py-2 font-bold text-gray-800 hover:bg-gray-400"
+              className="rounded-l bg-yellow-400 px-6 py-2 font-bold text-white hover:bg-gray-400"
               onClick={() => setQuantity(Math.max(quantity - 1, 1))}
             >
               {" "}
@@ -393,7 +385,7 @@ const Menu = () => {
               className="w-20 text-center"
             />
             <button
-              className="rounded-r bg-gray-200 px-6 py-2 font-bold text-gray-800 hover:bg-gray-400"
+              className="rounded-r bg-green-400 px-6 py-2 font-bold text-white hover:bg-gray-400"
               onClick={() => setQuantity(quantity + 1)}
             >
               +
@@ -429,7 +421,8 @@ const Menu = () => {
               <h3 className="mb-2 text-lg font-bold">
                 Spicy
                 <span className="text-sm font-normal text-gray-400">
-                  (up to 1 max)
+                  {" "}
+                  (Please select 1)
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
@@ -437,7 +430,7 @@ const Menu = () => {
                 {spicyChoices.map((choice, index) => (
                   <label
                     key={index}
-                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
+                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300 focus-within:border-2"
                   >
                     <input
                       type="checkbox"
@@ -469,7 +462,7 @@ const Menu = () => {
               </div>
               <div className="flex content-center justify-center">
                 <button
-                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  className="mt-3 rounded-full bg-green-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
                   onClick={() =>
                     handleCartFunction(
