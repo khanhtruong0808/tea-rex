@@ -430,7 +430,11 @@ const Menu = () => {
                 {spicyChoices.map((choice, index) => (
                   <label
                     key={index}
-                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300 focus-within:border-2"
+                    className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+                      selectedSpiceLevel.name === choice
+                        ? "border-2 border-orange-300"
+                        : "border border-transparent hover:border-gray-300"
+                    }`}
                   >
                     <input
                       type="checkbox"
@@ -546,7 +550,7 @@ const Menu = () => {
               </div>
               <div className="flex content-center justify-center">
                 <button
-                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  className="mt-3 rounded-full bg-green-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
                   onClick={() => handleCart(selectedItem, selectedToppings)}
                 >
