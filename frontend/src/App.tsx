@@ -28,7 +28,6 @@ function App() {
         <Route path="/admin" element={<Login />} />
         <Route path="/registration" element={<Registration />} />
         <Route index element={<Home />} />
-        <Route path="/rewards" element={<Rewards />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/menu" element={<Menu />} />

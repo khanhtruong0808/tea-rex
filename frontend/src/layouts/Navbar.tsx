@@ -10,10 +10,6 @@ const routes = [
     name: "Home",
     path: "/",
   },
-  {
-    name: "Rewards",
-    path: "/rewards",
-  },
   { name: "Gallery", path: "/gallery" },
   { name: "Contact Us", path: "/contact" },
   { name: "FAQ", path: "/FAQ" },
