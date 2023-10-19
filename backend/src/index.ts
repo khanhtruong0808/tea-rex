@@ -36,7 +36,7 @@ app.use(
     saveUninitialized: true,
     cookie: {
       maxAge: 3600,
-      secure: config.NODE_ENV === "production" ? true : false,
+      secure: config.secure ? true : false,
     },
   })
 );
