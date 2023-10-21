@@ -28,11 +28,11 @@ export const Navbar = () => {
           <div className="mx-auto max-w-8xl px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 md:h-20 xl:h-24 items-center justify-between">
               <div className="flex items-center">
-                <NavLink reloadDocument to="/" className="shrink-0">
+                <NavLink to="/" className="shrink-0">
                   <img
                     src="tea-rex-sign.png"
                     alt=""
-                    className="h-12 md:h-16 lg:h-20 xl:h-24 w-full"
+                    className="h-12 md:h-16 lg:h-20 xl:h-24 w-auto"
                   />
                 </NavLink>
               </div>
@@ -42,7 +42,6 @@ export const Navbar = () => {
                     <NavLink
                       to={route.path}
                       key={route.name}
-                      reloadDocument
                       className="whitespace-nowrap font-navbar text-2xl xl:text-3xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100"
                     >
                       {route.name}
@@ -54,7 +53,6 @@ export const Navbar = () => {
                 <div className="flex items-center">
                   <NavLink
                     to="/menu"
-                    reloadDocument
                     className="block whitespace-nowrap rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white transition hover:scale-110 xl:block xl:px-6 xl:py-3"
                   >
                     ORDER NOW
@@ -91,7 +89,7 @@ export const Navbar = () => {
                 <NavLink
                   to={route.path}
                   key={route.name}
-                  reloadDocument
+                  preventScrollReset={true}
                   className="font-navbar block rounded-md px-3 text-2xl font-bold hover:text-white hover:bg-lime-700"
                 >
                   {route.name}
@@ -100,7 +98,6 @@ export const Navbar = () => {
               <div className="py-1"></div>
               <NavLink
                 to="/menu"
-                reloadDocument
                 className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
               >
                 ORDER NOW
