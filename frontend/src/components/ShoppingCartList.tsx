@@ -18,6 +18,15 @@ export const ShoppingCartList = ({
           {cartItems.map((item, index) => {
             const menuItem = item.item;
             const options = item.option;
+            const sortedOptions = options.sort((a: any, b: any) => {
+              if (a.qty < b.qty) {
+                return -1;
+              }
+              if (a.qty > b.qty) {
+                return 1;
+              }
+              return 0;
+            });
             return (
               <li key={index} className="flex py-6">
                 <div className="ml-4 flex flex-1 flex-col">
@@ -34,10 +43,18 @@ export const ShoppingCartList = ({
                       {item.specialInstructions &&
                         `Note: ${item.specialInstructions}`}
                     </p>
-                    {options.map((option) => (
-                      <div className="flex justify-between text-sm">
+                    {item.spice !== undefined && (
+                      <p className="mt-1 text-sm text-gray-500">
+                        {item.spice.name}
+                      </p>
+                    )}
+                    {sortedOptions.map((option) => (
+                      <div
+                        className="flex justify-between text-sm"
+                        key={option.name}
+                      >
                         <p className="mt-1 text-gray-500">
-                          {option.qty}x {option.name}
+                          {option.qty !== -1 && `${option.qty}x`} {option.name}
                         </p>
                         {option.price !== undefined && (
                           <p className="ml-4 text-gray-900 font-medium">
@@ -46,11 +63,6 @@ export const ShoppingCartList = ({
                         )}
                       </div>
                     ))}
-                    {item.spice !== undefined && (
-                      <p className="mt-1 text-sm text-gray-500">
-                        {item.spice.name}
-                      </p>
-                    )}
                   </div>
                   <div className="flex flex-1 items-end justify-between text-sm mt-4">
                     <div className="flex">

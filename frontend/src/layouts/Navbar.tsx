@@ -32,7 +32,7 @@ export const Navbar = () => {
                   <img
                     src="tea-rex-sign.png"
                     alt=""
-                    className="h-12 md:h-16 lg:h-20 xl:h-24"
+                    className="h-12 md:h-16 lg:h-20 xl:h-24 w-full"
                   />
                 </NavLink>
               </div>

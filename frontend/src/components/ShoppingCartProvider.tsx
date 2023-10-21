@@ -2,7 +2,6 @@ import { ReactNode, useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "./ShoppingCartContext";
 import useRewards from "../components/RewardsContext";
 import SlideOver from "./SlideOver";
-import { stringify } from "querystring";
 
 interface Item {
   id?: number;
