@@ -21,6 +21,8 @@ const jwtSecretKey = "testsecretkey";
 const prisma = new PrismaClient();
 const app = express();
 const stripe = require("stripe")(config.stripeSecret);
+const emailUsername = config.emailUsername;
+const emailPassword = config.emailPassword;
 const nodemailer = require("nodemailer");
 
 app.use(
@@ -104,8 +106,8 @@ app.post("/send-mail", async (req, res) => {
       auth: {
         // user: "replace with tea-rex gmail user",
         // pass: "replace with tea-rex gmail password",
-        user: "cristopher2@ethereal.email",
-        pass: "eCzFPN6YbsaBMmQXdY",
+        user: emailUsername,
+        pass: emailPassword,
       },
     });
 

@@ -88,7 +88,7 @@ export default function Cart() {
               {" "}
               No items in cart!{" "}
             </p>
-            <img src="sad-tea-rex-empty-cart-4.png" alt="Empty Cart" />
+            <img src="sad-tea-rex-empty-cart.png" alt="Empty Cart" />
           </div>
         )}
         <div className={`${isCheckingOut ? "" : "hidden"} bg-white h-full`}>
