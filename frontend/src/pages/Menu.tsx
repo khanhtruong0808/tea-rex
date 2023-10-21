@@ -118,19 +118,19 @@ const Menu = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState({
     name: "",
-    qty: 1,
+    qty: -1,
   });
   const [selectedCupSize, setSelectedCupSize] = useState<Item>({
     name: "",
-    qty: 1,
+    qty: -1,
   });
   const [selectedIceLevel, setSelectedIceLevel] = useState<Item>({
     name: "",
-    qty: 1,
+    qty: -1,
   });
   const [selectedSugarLevel, setSelectedSugarLevel] = useState<Item>({
     name: "",
-    qty: 1,
+    qty: -1,
   });
   const [selectedToppings, setSelectedToppings] = useState<Item[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
@@ -211,10 +211,10 @@ const Menu = () => {
 
     // reset modal form state for next item to be added
     setQuantity(1);
-    setSelectedSpiceLevel({ name: "", qty: 1 });
-    setSelectedCupSize({ name: "", qty: 1 });
-    setSelectedIceLevel({ name: "", qty: 1 });
-    setSelectedSugarLevel({ name: "", qty: 1 });
+    setSelectedSpiceLevel({ name: "", qty: -1 });
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
     setSelectedToppings([]);
     setSpecialInstructions("");
     setSelectedOption([]);
@@ -275,10 +275,10 @@ const Menu = () => {
 
     // reset modal form state for next item to be added
     setQuantity(1);
-    setSelectedSpiceLevel({ name: "", qty: 1 });
-    setSelectedCupSize({ name: "", qty: 1 });
-    setSelectedIceLevel({ name: "", qty: 1 });
-    setSelectedSugarLevel({ name: "", qty: 1 });
+    setSelectedSpiceLevel({ name: "", qty: -1 });
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
     setSelectedToppings([]);
     setSpecialInstructions("");
     setSelectedOption([]);
@@ -320,9 +320,9 @@ const Menu = () => {
 
     // reset modal form state for next item to be added
     setQuantity(1);
-    setSelectedCupSize({ name: "", qty: 1 });
-    setSelectedIceLevel({ name: "", qty: 1 });
-    setSelectedSugarLevel({ name: "", qty: 1 });
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
     setSpecialInstructions("");
     setSelectedToppings([]);
 
@@ -349,24 +349,24 @@ const Menu = () => {
   // function to add cup size with associated price
   const handleCupSize = (name: string, qty: number) => {
     if (name === "24 oz +$0.50") {
-      setSelectedCupSize({ name: name, qty: qty, price: 0.5 });
+      setSelectedCupSize({ name: name, qty: -1, price: 0.5 });
     } else if (name === "Hot +$1.00") {
-      setSelectedCupSize({ name: name, qty: qty, price: 1.0 });
+      setSelectedCupSize({ name: name, qty: -1, price: 1.0 });
     } else {
-      setSelectedCupSize({ name: name, qty: qty });
+      setSelectedCupSize({ name: name, qty: -1 });
     }
   };
 
   const handleToppings = (name: string, qty: number) => {
     if (name.includes("oz") || name.includes("Hot")) {
       setSizeError(false);
-      handleCupSize(name, qty);
+      handleCupSize(name, -1);
     } else if (name.includes("Ice")) {
       setIceError(false);
-      setSelectedIceLevel({ name: name, qty: qty });
+      setSelectedIceLevel({ name: name, qty: -1 });
     } else if (name.includes("Sugar")) {
       setSugarError(false);
-      setSelectedSugarLevel({ name: name, qty: qty });
+      setSelectedSugarLevel({ name: name, qty: -1 });
     } else {
       const exist = selectedToppings.find((x) => x.name === name);
       // if toppings exist, remove it from the array
@@ -379,7 +379,7 @@ const Menu = () => {
         // else add it to the array
         const newSelectedToppings = [
           ...selectedToppings,
-          { name: name, qty: qty, price: 0.85 },
+          { name: name, qty: 1, price: 0.85 },
         ];
         setSelectedToppings(newSelectedToppings);
       }
@@ -401,7 +401,7 @@ const Menu = () => {
           <input
             type="checkbox"
             className="form-checkbox absolute opacity-0 h-6 w-6"
-            onChange={() => handleToppings(choice, 1)}
+            onChange={() => handleToppings(choice, -1)}
             checked={selected}
           />
           <div className="flex items-center p-4">
@@ -549,7 +549,7 @@ const Menu = () => {
                         type="checkbox"
                         className="form-checkbox absolute opacity-0 h-6 w-6"
                         checked={selected}
-                        onChange={() => handleSpiceLevelChange(choice, 1)}
+                        onChange={() => handleSpiceLevelChange(choice, -1)}
                       />
                       <div className="flex items-center p-4">
                         <span className="text-gray-700">{choice}</span>
