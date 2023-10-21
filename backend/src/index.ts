@@ -21,6 +21,8 @@ const jwtSecretKey = "testsecretkey";
 const prisma = new PrismaClient();
 const app = express();
 const stripe = require("stripe")(config.stripeSecret);
+const nodemailer = require("nodemailer");
+
 app.use(
   cors({
     origin: config.originUrl,
@@ -91,6 +93,39 @@ app.get("/logout", (req, res) => {
     }
     res.redirect("/login");
   });
+});
+
+app.post("/send-mail", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      // host: "smtp.gmail.com",
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        // user: "replace with tea-rex gmail user",
+        // pass: "replace with tea-rex gmail password",
+        user: "cristopher2@ethereal.email",
+        pass: "eCzFPN6YbsaBMmQXdY",
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: `${req.body.from}" <replacewithtearexgmail@gmail.com>`,
+      to: req.body.to,
+      subject: req.body.subject,
+      text: req.body.text,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    res.json({
+      success: true,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
 });
 
 // Menu Section Routes
@@ -245,13 +280,12 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
     }
 
     if (member.pendingPoints == 0) {
-      console.log("no pending points to revert");
+      console.log("No pending points to revert");
       return;
     }
 
     const newPointsBalance = member.points + member.pendingPoints;
 
-    console.log("reverting points");
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: {
@@ -404,9 +438,9 @@ app.put("/rewards-member-revert", async (req, res) => {
 
     const revertedPoints = member.points + spentPoints;
     console.log("PhoneNumber: ", phoneNumber);
-    console.log("Received spentPoints: ", spentPoints);
-    console.log("Member's Current Points: ", member.points);
-    console.log("Reverted Points: ", revertedPoints);
+    console.log("Current spent points: ", spentPoints);
+    console.log("Member's current points: ", member.points);
+    console.log("Reverted points: ", revertedPoints);
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: { points: revertedPoints },

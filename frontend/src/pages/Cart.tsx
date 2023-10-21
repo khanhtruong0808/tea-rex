@@ -21,6 +21,7 @@ export default function Cart() {
     tax,
     finaltotal,
     isExternalTaxSet,
+    isEmpty,
   } = useShoppingCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
@@ -64,6 +65,7 @@ export default function Cart() {
           <Dialog.Title className="text-lg font-medium text-gray-900">
             Your order ({cart.length})
           </Dialog.Title>
+
           <div className="ml-3 flex h-7 items-center">
             <button
               type="button"
@@ -76,20 +78,28 @@ export default function Cart() {
             </button>
           </div>
         </div>
+
         {/* hidden/shown using CSS to conserve state, not sure if this be implemented this way*/}
         <ShoppingCartList
           cartItems={cart}
           className={isCheckingOut ? "hidden" : ""}
         />
+        {isEmpty && (
+          <div className="flex flex-col justify-center items-center mt-10 flex-grow">
+            <p className="text-xl font-medium text-gray-900">
+              {" "}
+              No items in cart!{" "}
+            </p>
+            <img src="sad-tea-rex-empty-cart-4.png" alt="Empty Cart" />
+          </div>
+        )}
         <div className={`${isCheckingOut ? "" : "hidden"} bg-white h-full`}>
           <div className="w-full p-5">
-            <AlertProvider>
-              <PaymentForm
-                cancelCheckout={handleCancel}
-                isRewardsMember={isRewardsMember}
-                phoneNumber={phoneNumber}
-              />
-            </AlertProvider>
+            <PaymentForm
+              cancelCheckout={handleCancel}
+              isRewardsMember={isRewardsMember}
+              phoneNumber={phoneNumber}
+            />
           </div>
           <div className="w-full p-5">
             <AlertProvider>
@@ -103,6 +113,7 @@ export default function Cart() {
           </div>
         </div>
       </div>
+
       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
         <div className="flex justify-between text-sm font-medium text-gray-600">
           <p>Subtotal</p>

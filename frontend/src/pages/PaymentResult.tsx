@@ -3,7 +3,6 @@ import { useLocation } from "react-router-dom";
 function PaymentResult() {
   const location = useLocation();
   const paymentSuccess = location.state?.success;
-  //const paymentSuccess = true;
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

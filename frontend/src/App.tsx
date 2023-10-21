@@ -9,7 +9,6 @@ import Contact from "./pages/Contact";
 import Gallery from "./pages/Gallery";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
-import Rewards from "./pages/Rewards";
 import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import PaymentResult from "./pages/PaymentResult";
