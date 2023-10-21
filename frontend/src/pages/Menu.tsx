@@ -324,32 +324,67 @@ const Menu = () => {
         { name: name, qty: qty, price: 0.85 },
       ]);
     }
-
-    console.log(selectedToppings);
   };
 
-  const renderChoices = (choices: string[]) => {
-    return choices.map((choice: string, index: number) => (
-      <label
-        key={index}
-        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300 focus-within:border-2"
-      >
-        <input
-          type="checkbox"
-          className="form-checkbox absolute opacity-0 h-6 w-6"
-          onClick={() => handleToppings(choice, 1)}
-        />
-        <div className="flex items-center p-4">
-          <span className="text-gray-700">{choice}</span>
-        </div>
-      </label>
-    ));
+  const renderChoices = (choices: string[], selectedValue: string) => {
+    return choices.map((choice: string, index: number) => {
+      const selected = selectedValue === choice;
+      return (
+        <label
+          key={index}
+          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+            selected
+              ? "border-2 border-orange-300"
+              : "border border-transparent hover:border-gray-300"
+          }`}
+        >
+          <input
+            type="checkbox"
+            className="form-checkbox absolute opacity-0 h-6 w-6"
+            onClick={() => handleToppings(choice, 1)}
+            checked={selected}
+          />
+          <div className="flex items-center p-4">
+            <span className="text-gray-700">{choice}</span>
+          </div>
+        </label>
+      );
+    });
   };
 
-  const renderCupChoices = () => renderChoices(cupChoices);
-  const renderBobaChoices = () => renderChoices(bobaChoices);
-  const renderIceChoices = () => renderChoices(iceChoices);
-  const renderSugarChoices = () => renderChoices(sugarChoices);
+  const renderToppings = (toppings: string[]) => {
+    return toppings.map((choice: string, index: number) => {
+      const selected = selectedToppings.some((x: any) => x.name === choice);
+      return (
+        <label
+          key={index}
+          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+            selected
+              ? "border-2 border-orange-300"
+              : "border border-transparent hover:border-gray-300"
+          }`}
+        >
+          <input
+            type="checkbox"
+            className="form-checkbox absolute opacity-0 h-6 w-6"
+            onClick={() => handleToppings(choice, 1)}
+            checked={selected}
+          />
+          <div className="flex items-center p-4">
+            <span className="text-gray-700">{choice}</span>
+          </div>
+        </label>
+      );
+    });
+  };
+
+  const renderCupChoices = () =>
+    renderChoices(cupChoices, selectedCupSize.name);
+  const renderBobaChoices = () => renderToppings(bobaChoices);
+  const renderIceChoices = () =>
+    renderChoices(iceChoices, selectedIceLevel.name);
+  const renderSugarChoices = () =>
+    renderChoices(sugarChoices, selectedSugarLevel.name);
 
   const selectedItemDetails = selectedItem && (
     <>
@@ -427,28 +462,31 @@ const Menu = () => {
               </h3>
               <hr className="mb-4 border-gray-300" />
               <div className="grid grid-cols-2 gap-2">
-                {spicyChoices.map((choice, index) => (
-                  <label
-                    key={index}
-                    className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
-                      selectedSpiceLevel.name === choice
-                        ? "border-2 border-orange-300"
-                        : "border border-transparent hover:border-gray-300"
-                    }`}
-                  >
-                    <input
-                      type="checkbox"
-                      className="form-checkbox absolute opacity-0 h-6 w-6"
-                      checked={selectedSpiceLevel.name === choice}
-                      onChange={() =>
-                        handleSpiceOptionChange({ name: choice, qty: 1 })
-                      }
-                    />
-                    <div className="flex items-center p-4">
-                      <span className="text-gray-700">{choice}</span>
-                    </div>
-                  </label>
-                ))}
+                {spicyChoices.map((choice, index) => {
+                  const selected = selectedSpiceLevel.name === choice;
+                  return (
+                    <label
+                      key={index}
+                      className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+                        selected
+                          ? "border-2 border-orange-300"
+                          : "border border-transparent hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-checkbox absolute opacity-0 h-6 w-6"
+                        checked={selected}
+                        onChange={() =>
+                          handleSpiceOptionChange({ name: choice, qty: 1 })
+                        }
+                      />
+                      <div className="flex items-center p-4">
+                        <span className="text-gray-700">{choice}</span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 

@@ -144,13 +144,6 @@ export default function Cart() {
               Continue Shopping
               <span aria-hidden="true"> &rarr;</span>
             </button>
-            <button
-              type="button"
-              className="font-medium text-lime-600 hover:text-lime-500"
-              onClick={clearCart}
-            >
-              clear{" "}
-            </button>
           </p>
         </div>
       </div>
