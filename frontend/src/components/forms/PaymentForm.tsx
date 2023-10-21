@@ -16,7 +16,7 @@ import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 
-const CARD_OPTIONS = {
+const STRIPE_OPTIONS = {
   iconStyle: "solid",
   style: {
     base: {
@@ -30,11 +30,11 @@ const CARD_OPTIONS = {
         color: "#000",
         backgroundColor: "transparent",
       },
-      "::placeholder": { color: "#87bbfd" },
+      "::placeholder": { color: "#4a5568" },
+      borderColor: "#df1b41",
     },
     invalid: {
-      iconColor: "#ffc7ee",
-      color: "#ffc7ee",
+      iconColor: "#df1b41",
     },
   },
   showIcon: true,
@@ -57,11 +57,18 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const navigate = useNavigate();
   const [zipCode, setZipCode] = useState("");
   const [name, setName] = useState("");
+  const [cardError, setCardError] = useState(false);
+  const [cvcError, setCvcError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [expiryError, setExpiryError] = useState(false);
+  const [zipError, setZipError] = useState(false);
+  const [isCardComplete, setIsCardComplete] = useState(false);
+  const [isExpiryComplete, setIsExpiryComplete] = useState(false);
+  const [isCvcComplete, setIsCvcComplete] = useState(false);
   const [taxData, setTaxData] = useState<TaxData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTaxUpdated, setIsTaxUpdated] = useState(false);
   const { handleAddPoints } = useRewards();
-  const { showAlert } = useAlert();
   const {
     clearCart,
     closeCart,
@@ -74,6 +81,26 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     finaltotal,
     setExternalTax,
   } = useShoppingCart();
+
+  const validations = [
+    {
+      condition: zipCode.length < 5,
+      type: "zip",
+    },
+    {
+      condition: name.length === 0,
+      type: "name",
+    },
+    {
+      condition: !isCardComplete,
+      type: "card",
+    },
+    { condition: !isCvcComplete, type: "cvc" },
+    {
+      condition: !isExpiryComplete,
+      type: "expiry",
+    },
+  ];
 
   useEffect(() => {
     if (taxData) {
@@ -105,21 +132,12 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       }
 
       const cardNumberElement = elements.getElement(CardNumberElement);
-      const expirationNumberElement = elements.getElement(CardExpiryElement);
-      const cardCvcElement = elements.getElement(CardCvcElement);
 
       if (!cardNumberElement) {
-        showAlert("Please enter the card number.", "error");
+        console.error("CardNumberElement not found!");
         return;
       }
-      if (!expirationNumberElement) {
-        showAlert("Please enter the expiration date.", "error");
-        return;
-      }
-      if (!cardCvcElement) {
-        showAlert("Please enter the CVC.", "error");
-        return;
-      }
+
       setExternalTax(true);
       // Temporary Commenting this out to not confuse people -KT
       // const updatedTax = 100;
@@ -190,9 +208,37 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let formInvalid = false;
+    for (const validation of validations) {
+      if (validation.condition) {
+        formInvalid = true;
+        switch (validation.type) {
+          case "card": {
+            setCardError(true);
+            break;
+          }
+          case "name": {
+            setNameError(true);
+            break;
+          }
+          case "expiry": {
+            setExpiryError(true);
+            break;
+          }
+          case "cvc": {
+            setCvcError(true);
+            break;
+          }
+          case "zip": {
+            setZipError(true);
+            break;
+          }
+        }
+      }
+    }
 
-    if (zipCode.length < 5) {
-      showAlert("Please enter a zip code", "error");
+    if (formInvalid) {
+      console.error("Form is invalid");
       return;
     }
 
@@ -238,9 +284,19 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-2 border border-gray-200 rounded w-full"
-            onChange={(e) => setName(e.target.value)}
+            className={`p-3 ${
+              nameError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (e.target.value.length > 0) {
+                setNameError(false);
+              }
+            }}
           />
+          {nameError && (
+            <p className="text-sm text-red-500">Please enter a name!</p>
+          )}
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -248,26 +304,69 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             Card Number
           </label>
           <CardNumberElement
-            options={CARD_OPTIONS as StripeCardNumberElementOptions}
-            className="p-2 border border-gray-200 rounded w-full"
+            options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
+            className={`p-3 ${
+              cardError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
+            onChange={(e) => {
+              setIsCardComplete(e.complete);
+              if (e.complete) {
+                setCardError(false);
+              }
+            }}
           />
+          {cardError && (
+            <p className="text-sm text-red-500"> Please enter a card number!</p>
+          )}
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
         {/* Expiration Date, CVV*/}
         <div className="mb-4 w-full flex">
           {/* Expiration Date */}
-          <div className="flex-grow mr-3">
+          <div className="flex-grow mr-1">
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Expiration Date
             </label>
-            <CardExpiryElement className="p-3 border border-gray-200 rounded w-full" />
+            <CardExpiryElement
+              options={STRIPE_OPTIONS}
+              className={`p-3 ${
+                expiryError
+                  ? "border-2 border-red-500"
+                  : "border border-gray-200"
+              } rounded w-full`}
+              onChange={(e) => {
+                setIsExpiryComplete(e.complete);
+                if (e.complete) {
+                  setExpiryError(false);
+                }
+              }}
+            />
+            {expiryError && (
+              <p className="text-sm text-red-500">
+                Please enter an expiration date!
+              </p>
+            )}
           </div>
           {/* CVV */}
           <div className="flex-grow">
             <label className="block text-sm font-medium text-gray-600 mb-2 ">
               CVC
             </label>
-            <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />
+            <CardCvcElement
+              options={STRIPE_OPTIONS}
+              className={`p-3 ${
+                cvcError ? "border-2 border-red-500" : "border border-gray-200"
+              } rounded w-full`}
+              onChange={(e) => {
+                setIsCvcComplete(e.complete);
+                if (e.complete) {
+                  setCvcError(false);
+                }
+              }}
+            />
+            {cvcError && (
+              <p className="text-sm text-red-500">Please enter the CVC!</p>
+            )}
           </div>
         </div>
         {/* ZIP */}
@@ -277,13 +376,23 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           </label>
           <input
             type="text"
-            className="p-2 border border-gray-200 rounded w-full"
+            className={`p-3 ${
+              zipError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
             placeholder="ZIP"
             pattern="\d{5}"
             maxLength={5}
             inputMode="numeric"
-            onChange={(e) => setZipCode(e.target.value)}
+            onChange={(e) => {
+              setZipCode(e.target.value);
+              if (e.target.value.length == 5) {
+                setZipError(false);
+              }
+            }}
           />
+          {zipError && (
+            <p className="text-sm text-red-500">Please enter a zip code!</p>
+          )}
         </div>
         <div className="flex mt-4 space-x-2">
           <button

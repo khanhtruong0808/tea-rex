@@ -38,6 +38,7 @@ type ShoppingCartContext = {
   finaltotal: number;
   totalBeverageAmount: number;
   isExternalTaxSet: boolean;
+  isEmpty: boolean;
 };
 
 export const ShoppingCartContext = createContext({} as ShoppingCartContext);

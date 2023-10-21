@@ -30,6 +30,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   }, []);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isEmpty, setIsEmpty] = useState(true);
   const [discount, setDiscount] = useState(0);
   const [hasBeverages, setHasBeverages] = useState(false);
   const [totalBeverageAmount, setTotalBeverageAmount] = useState(0);
@@ -80,7 +81,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       setCartItems(newCartItems);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     }
-
+    setIsEmpty(false);
     if (item.menuType == "beverage") {
       setTotalBeverageAmount(
         (totalBeverageAmount) => totalBeverageAmount + Number(item.price)
@@ -93,8 +94,10 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
   function removeItem(item: MenuItem) {
     const newCartItems: CartItem[] = cartItems.filter((x) => x.item !== item);
-
     setCartItems(newCartItems);
+    if (newCartItems.length === 0) {
+      setIsEmpty(true);
+    }
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
   }
 
@@ -103,6 +106,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     setCartItems(newCartItems);
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     setTotalBeverageAmount(0);
+    setIsEmpty(true);
   }
 
   function openCart() {
@@ -145,6 +149,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         finaltotal,
         totalBeverageAmount,
         isExternalTaxSet,
+        isEmpty,
       }}
     >
       {children}
