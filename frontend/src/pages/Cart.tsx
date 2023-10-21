@@ -11,7 +11,6 @@ export default function Cart() {
   const {
     cartItems,
     addToCart,
-    clearCart,
     closeCart,
     discount,
     updateSubtotal,
@@ -26,13 +25,12 @@ export default function Cart() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const cart = cartItems;
 
   const handleCancel = () => {
     setIsCheckingOut(false);
   };
 
-  const newSubtotal = cart.reduce((acc: number, item) => {
+  const newSubtotal = cartItems.reduce((acc: number, item) => {
     const itemPrice = Number(item.item.price) * item.quantity;
     const optionsTotal = item.option.reduce(
       (optionAccumulator: number, option) => {
@@ -63,7 +61,7 @@ export default function Cart() {
       <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
         <div className="flex items-start justify-between">
           <Dialog.Title className="text-lg font-medium text-gray-900">
-            Your order ({cart.length})
+            Your order ({cartItems.length})
           </Dialog.Title>
 
           <div className="ml-3 flex h-7 items-center">
@@ -81,7 +79,7 @@ export default function Cart() {
 
         {/* hidden/shown using CSS to conserve state, not sure if this be implemented this way*/}
         <ShoppingCartList
-          cartItems={cart}
+          cartItems={cartItems}
           className={isCheckingOut ? "hidden" : ""}
         />
         {isEmpty && (
@@ -137,7 +135,7 @@ export default function Cart() {
           <div className="mt-6">
             <button
               onClick={() => setIsCheckingOut(true)}
-              disabled={cart.length === 0}
+              disabled={cartItems.length === 0}
               className="w-full flex items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:bg-opacity-50 disabled:cursor-not-allowed disabled:hover-none"
             >
               Checkout
@@ -154,13 +152,6 @@ export default function Cart() {
             >
               Continue Shopping
               <span aria-hidden="true"> &rarr;</span>
-            </button>
-            <button
-              type="button"
-              className="font-medium text-lime-600 hover:text-lime-500"
-              onClick={clearCart}
-            >
-              clear{" "}
             </button>
           </p>
         </div>

@@ -71,6 +71,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const { handleAddPoints } = useRewards();
   const {
     clearCart,
+    closeCart,
     hasBeverages,
     updateFinaltotal,
     updateTax,
@@ -105,7 +106,8 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     if (taxData) {
       if (taxData.success) {
         setExternalTax(true);
-        updateTax(100); // change later to actual tax data value
+        // Temporary Commenting this out to not confuse people -KT
+        // updateTax(100); // change later to actual tax data value
         setIsTaxUpdated(true);
       } else {
         console.error("Error with tax data: " + taxData.message);
@@ -137,10 +139,10 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       }
 
       setExternalTax(true);
-      const updatedTax = 100; /*
-          this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
-      */
-      updateTax(updatedTax);
+      // Temporary Commenting this out to not confuse people -KT
+      // const updatedTax = 100;
+      // this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
+      // updateTax(updatedTax);
 
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
@@ -165,6 +167,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           });
 
           const responseData = await response.json();
+          closeCart();
 
           if (responseData.success) {
             //Printer(); //if enabled during development, payments will go through but you will get a backend error:
@@ -177,6 +180,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. 
           */
             console.log("Successful payment");
+            clearCart();
             navigate("/payment-result", {
               state: {
                 success: responseData.success,
@@ -391,8 +395,34 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           )}
         </div>
         <div className="flex mt-4 space-x-2">
-          <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
-            Pay
+          <button
+            className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            ) : (
+              "Pay"
+            )}
           </button>
           <button
             type="button"
