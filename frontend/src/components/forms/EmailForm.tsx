@@ -7,6 +7,8 @@ function isNotValidEmail(email: string) {
   return !regex.test(email);
 }
 
+type ValidationErrorType = "email" | "first_name" | "last_name" | "message";
+
 export default function EmailForm() {
   const [userEmail, setUserEmail] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
@@ -18,7 +20,7 @@ export default function EmailForm() {
   const [messageError, setMessageError] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const validations = [
+  const validations: { condition: boolean; type: ValidationErrorType }[] = [
     {
       condition: isNotValidEmail(userEmail),
       type: "email",
@@ -33,6 +35,16 @@ export default function EmailForm() {
     },
     { condition: userMessage.length === 0, type: "message" },
   ];
+
+  const errorSetters: Record<
+    ValidationErrorType,
+    React.Dispatch<React.SetStateAction<boolean>>
+  > = {
+    email: setEmailError,
+    first_name: setFirstNameError,
+    last_name: setLastNameError,
+    message: setMessageError,
+  };
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -52,29 +64,12 @@ export default function EmailForm() {
     for (const validation of validations) {
       if (validation.condition) {
         formInvalid = true;
-        switch (validation.type) {
-          case "email": {
-            setEmailError(true);
-            break;
-          }
-          case "first_name": {
-            setFirstNameError(true);
-            break;
-          }
-          case "last_name": {
-            setLastNameError(true);
-            break;
-          }
-          case "message": {
-            setMessageError(true);
-            break;
-          }
-        }
+        errorSetters[validation.type](true);
       }
     }
 
     if (formInvalid) {
-      console.error("Invalid form!");
+      console.error("Form is invalid!");
       return;
     }
 

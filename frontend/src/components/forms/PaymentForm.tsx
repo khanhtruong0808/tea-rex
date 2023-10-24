@@ -9,9 +9,8 @@ import {
 } from "@stripe/react-stripe-js";
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
-import GoogleMap from "../GoogleMap";
+import Map from "../Map";
 import { Printer } from "../Printer";
-import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
 import { AiOutlineConsoleSql } from "react-icons/ai";
@@ -50,6 +49,7 @@ interface TaxData {
   success: boolean;
   message?: string;
 }
+type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry";
 
 const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const stripe = useStripe();
@@ -82,7 +82,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     setExternalTax,
   } = useShoppingCart();
 
-  const validations = [
+  const validations: { condition: boolean; type: ValidationErrorType }[] = [
     {
       condition: zipCode.length < 5,
       type: "zip",
@@ -101,6 +101,17 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       type: "expiry",
     },
   ];
+
+  const errorSetters: Record<
+    ValidationErrorType,
+    React.Dispatch<React.SetStateAction<boolean>>
+  > = {
+    zip: setZipError,
+    name: setNameError,
+    card: setCardError,
+    cvc: setCvcError,
+    expiry: setExpiryError,
+  };
 
   useEffect(() => {
     if (taxData) {
@@ -212,28 +223,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     for (const validation of validations) {
       if (validation.condition) {
         formInvalid = true;
-        switch (validation.type) {
-          case "card": {
-            setCardError(true);
-            break;
-          }
-          case "name": {
-            setNameError(true);
-            break;
-          }
-          case "expiry": {
-            setExpiryError(true);
-            break;
-          }
-          case "cvc": {
-            setCvcError(true);
-            break;
-          }
-          case "zip": {
-            setZipError(true);
-            break;
-          }
-        }
+        errorSetters[validation.type](true);
       }
     }
 
@@ -273,7 +263,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           <label className="block text-sm font-semibold text-gray-600 mb-2">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <GoogleMap width="100%" />
+            <Map width="100%" />
           </label>
         </div>
         {/* Name */}
