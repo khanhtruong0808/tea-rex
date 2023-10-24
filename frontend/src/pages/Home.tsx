@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import GoogleMap from "../components/GoogleMap";
+import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
 
@@ -37,7 +37,7 @@ const galleryItems = [
 
 const Home: React.FC = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null,
+    null
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
           </h2>
         </div>
         <div className="flex justify-center mr-10">
-          <GoogleMap width="90%" />
+          <Map width="90%" />
         </div>
       </div>
       {/* Top Ten Items Section */}
