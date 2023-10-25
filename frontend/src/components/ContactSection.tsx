@@ -11,7 +11,7 @@ export default function ContactSection() {
           heading="Contact us here"
           subheading="Give us some feedback!"
         />
-        <div className="flex space-x-6">
+        <div className="flex flex-col lg:flex-row justify-center mx-auto space-y-6 lg:space-y-0 lg:space-x-6">
           <ContactInfoItem
             icon={<MdLocalPhone style={{ fontSize: "50px" }} />}
             text="+916-XXX-XXXX"

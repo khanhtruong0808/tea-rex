@@ -19,7 +19,7 @@ const restaurantPics = [
 
 const Gallery = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null,
+    null
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {

@@ -1,6 +1,7 @@
 import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useEffect } from "react";
 
 interface MapProps {
   width?: string;
@@ -35,6 +36,18 @@ const Map: React.FC<MapProps> = ({ width }) => {
     width: width || defaultContainerStyle.width,
   };
 
+  const InvalidateSize: React.FC = () => {
+    const map = useMap();
+
+    useEffect(() => {
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 100);
+    }, []);
+
+    return null;
+  };
+
   return (
     <MapContainer
       center={storeLoc}
@@ -46,6 +59,7 @@ const Map: React.FC<MapProps> = ({ width }) => {
         zIndex: 1,
       }}
     >
+      <InvalidateSize />
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
