@@ -104,7 +104,7 @@ export default function EmailForm() {
       <div className="flex flex-col items-center justify-center mb-5 w-3/4 mx-auto">
         <fieldset className="border border-gray-300 p-4 m-12 rounded-md w-full">
           {isSubmitted ? (
-            <p className="text-xl"> You query has been submitted! </p>
+            <p className="text-xl"> Your query has been submitted! </p>
           ) : (
             <>
               <div className="mb-4 w-full flex">

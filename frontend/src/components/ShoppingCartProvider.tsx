@@ -111,6 +111,9 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
   function openCart() {
     setIsOpen(true);
+    if (cartItems.length > 0) {
+      setIsEmpty(false);
+    }
   }
 
   function closeCart() {

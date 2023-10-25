@@ -95,11 +95,11 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       condition: !isCardComplete,
       type: "card",
     },
-    { condition: !isCvcComplete, type: "cvc" },
     {
       condition: !isExpiryComplete,
       type: "expiry",
     },
+    { condition: !isCvcComplete, type: "cvc" },
   ];
 
   const errorSetters: Record<
@@ -152,7 +152,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       setExternalTax(true);
       // Temporary Commenting this out to not confuse people -KT
       // const updatedTax = 100;
-      // this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
+      // TODO: this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
       // updateTax(updatedTax);
 
       const { error, paymentMethod } = await stripe.createPaymentMethod({
