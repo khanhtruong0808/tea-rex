@@ -9,14 +9,13 @@ import {
 } from "@stripe/react-stripe-js";
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
-import GoogleMap from "../GoogleMap";
+import Map from "../Map";
 import { Printer } from "../Printer";
-import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
 import { AiOutlineConsoleSql } from "react-icons/ai";
 
-const CARD_OPTIONS = {
+const STRIPE_OPTIONS = {
   iconStyle: "solid",
   style: {
     base: {
@@ -30,11 +29,11 @@ const CARD_OPTIONS = {
         color: "#000",
         backgroundColor: "transparent",
       },
-      "::placeholder": { color: "#87bbfd" },
+      "::placeholder": { color: "#4a5568" },
+      borderColor: "#df1b41",
     },
     invalid: {
-      iconColor: "#ffc7ee",
-      color: "#ffc7ee",
+      iconColor: "#df1b41",
     },
   },
   showIcon: true,
@@ -50,19 +49,29 @@ interface TaxData {
   success: boolean;
   message?: string;
 }
+type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry";
 
 const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [zipCode, setZipCode] = useState("");
+  const [name, setName] = useState("");
+  const [cardError, setCardError] = useState(false);
+  const [cvcError, setCvcError] = useState(false);
+  const [nameError, setNameError] = useState(false);
+  const [expiryError, setExpiryError] = useState(false);
+  const [zipError, setZipError] = useState(false);
+  const [isCardComplete, setIsCardComplete] = useState(false);
+  const [isExpiryComplete, setIsExpiryComplete] = useState(false);
+  const [isCvcComplete, setIsCvcComplete] = useState(false);
   const [taxData, setTaxData] = useState<TaxData | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isTaxUpdated, setIsTaxUpdated] = useState(false);
   const { handleAddPoints } = useRewards();
-  const { showAlert } = useAlert();
   const {
     clearCart,
+    closeCart,
     hasBeverages,
     updateFinaltotal,
     updateTax,
@@ -73,11 +82,43 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     setExternalTax,
   } = useShoppingCart();
 
+  const validations: { condition: boolean; type: ValidationErrorType }[] = [
+    {
+      condition: zipCode.length < 5,
+      type: "zip",
+    },
+    {
+      condition: name.length === 0,
+      type: "name",
+    },
+    {
+      condition: !isCardComplete,
+      type: "card",
+    },
+    {
+      condition: !isExpiryComplete,
+      type: "expiry",
+    },
+    { condition: !isCvcComplete, type: "cvc" },
+  ];
+
+  const errorSetters: Record<
+    ValidationErrorType,
+    React.Dispatch<React.SetStateAction<boolean>>
+  > = {
+    zip: setZipError,
+    name: setNameError,
+    card: setCardError,
+    cvc: setCvcError,
+    expiry: setExpiryError,
+  };
+
   useEffect(() => {
     if (taxData) {
       if (taxData.success) {
         setExternalTax(true);
-        updateTax(100); // change later to actual tax data value
+        // Temporary Commenting this out to not confuse people -KT
+        // updateTax(100); // change later to actual tax data value
         setIsTaxUpdated(true);
       } else {
         console.error("Error with tax data: " + taxData.message);
@@ -89,7 +130,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     console.log("Updated tax: " + tax);
     console.log("Updated final total: " + (subtotal - discount + tax));
     updateFinaltotal(subtotal - discount + tax);
-  }, [tax]); // tax as a dependency
+  }, [tax]);
 
   useEffect(() => {
     if (!isSubmitting || !isTaxUpdated) {
@@ -104,14 +145,15 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       const cardNumberElement = elements.getElement(CardNumberElement);
 
       if (!cardNumberElement) {
-        showAlert("No card number found!", "error");
+        console.error("CardNumberElement not found!");
         return;
       }
+
       setExternalTax(true);
-      const updatedTax = 100; /*
-          this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
-      */
-      updateTax(updatedTax);
+      // Temporary Commenting this out to not confuse people -KT
+      // const updatedTax = 100;
+      // TODO: this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
+      // updateTax(updatedTax);
 
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
@@ -136,6 +178,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           });
 
           const responseData = await response.json();
+          closeCart();
 
           if (responseData.success) {
             //Printer(); //if enabled during development, payments will go through but you will get a backend error:
@@ -148,6 +191,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           See https://reactjs.org/link/invalid-hook-call for tips about how to debug and fix this problem. 
           */
             console.log("Successful payment");
+            clearCart();
             navigate("/payment-result", {
               state: {
                 success: responseData.success,
@@ -175,9 +219,16 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    let formInvalid = false;
+    for (const validation of validations) {
+      if (validation.condition) {
+        formInvalid = true;
+        errorSetters[validation.type](true);
+      }
+    }
 
-    if (zipCode.length < 5) {
-      showAlert("Please enter a zip code", "error");
+    if (formInvalid) {
+      console.error("Form is invalid");
       return;
     }
 
@@ -212,7 +263,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           <label className="block text-sm font-semibold text-gray-600 mb-2">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <GoogleMap width="100%" />
+            <Map width="100%" />
           </label>
         </div>
         {/* Name */}
@@ -223,8 +274,19 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           <input
             type="text"
             placeholder="Name on Card"
-            className="p-2 border border-gray-200 rounded w-full"
+            className={`p-3 ${
+              nameError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
+            onChange={(e) => {
+              setName(e.target.value);
+              if (e.target.value.length > 0) {
+                setNameError(false);
+              }
+            }}
           />
+          {nameError && (
+            <p className="text-sm text-red-500">Please enter a name!</p>
+          )}
         </div>
         {/* Card Number */}
         <div className="mb-4 relative">
@@ -232,26 +294,69 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             Card Number
           </label>
           <CardNumberElement
-            options={CARD_OPTIONS as StripeCardNumberElementOptions}
-            className="p-2 border border-gray-200 rounded w-full"
+            options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
+            className={`p-3 ${
+              cardError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
+            onChange={(e) => {
+              setIsCardComplete(e.complete);
+              if (e.complete) {
+                setCardError(false);
+              }
+            }}
           />
+          {cardError && (
+            <p className="text-sm text-red-500"> Please enter a card number!</p>
+          )}
           <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
         </div>
         {/* Expiration Date, CVV*/}
         <div className="mb-4 w-full flex">
           {/* Expiration Date */}
-          <div className="flex-grow mr-3">
+          <div className="flex-grow mr-1">
             <label className="block text-sm font-medium text-gray-600 mb-2">
               Expiration Date
             </label>
-            <CardExpiryElement className="p-3 border border-gray-200 rounded w-full" />
+            <CardExpiryElement
+              options={STRIPE_OPTIONS}
+              className={`p-3 ${
+                expiryError
+                  ? "border-2 border-red-500"
+                  : "border border-gray-200"
+              } rounded w-full`}
+              onChange={(e) => {
+                setIsExpiryComplete(e.complete);
+                if (e.complete) {
+                  setExpiryError(false);
+                }
+              }}
+            />
+            {expiryError && (
+              <p className="text-sm text-red-500">
+                Please enter an expiration date!
+              </p>
+            )}
           </div>
           {/* CVV */}
           <div className="flex-grow">
             <label className="block text-sm font-medium text-gray-600 mb-2 ">
               CVC
             </label>
-            <CardCvcElement className="p-3 border border-gray-200 rounded w-full" />
+            <CardCvcElement
+              options={STRIPE_OPTIONS}
+              className={`p-3 ${
+                cvcError ? "border-2 border-red-500" : "border border-gray-200"
+              } rounded w-full`}
+              onChange={(e) => {
+                setIsCvcComplete(e.complete);
+                if (e.complete) {
+                  setCvcError(false);
+                }
+              }}
+            />
+            {cvcError && (
+              <p className="text-sm text-red-500">Please enter the CVC!</p>
+            )}
           </div>
         </div>
         {/* ZIP */}
@@ -261,27 +366,63 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           </label>
           <input
             type="text"
-            className="p-2 border border-gray-200 rounded w-full"
+            className={`p-3 ${
+              zipError ? "border-2 border-red-500" : "border border-gray-200"
+            } rounded w-full`}
             placeholder="ZIP"
             pattern="\d{5}"
             maxLength={5}
             inputMode="numeric"
-            onChange={(e) => setZipCode(e.target.value)}
+            onChange={(e) => {
+              setZipCode(e.target.value);
+              if (e.target.value.length == 5) {
+                setZipError(false);
+              }
+            }}
           />
+          {zipError && (
+            <p className="text-sm text-red-500">Please enter a zip code!</p>
+          )}
+        </div>
+        <div className="flex mt-4 space-x-2">
+          <button
+            className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <svg
+                className="animate-spin h-5 w-5 text-white mx-auto"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+            ) : (
+              "Pay"
+            )}
+          </button>
+          <button
+            type="button"
+            className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            onClick={cancelCheckout}
+          >
+            Cancel
+          </button>
         </div>
       </fieldset>
-      <div className="flex mt-4 space-x-2">
-        <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
-          Pay
-        </button>
-        <button
-          type="button"
-          className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
-          onClick={cancelCheckout}
-        >
-          Cancel
-        </button>
-      </div>
     </form>
   );
 };

@@ -2,14 +2,133 @@ import express from "express";
 import cors from "cors";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
+import session from "express-session";
+import jwt from "jsonwebtoken";
+import { config } from "./config";
 
+declare module "express-session" {
+  interface Session {
+    user: {
+      id: number;
+      username: string;
+    };
+    authorized: boolean;
+    isAdmin: boolean;
+  }
+}
+
+const jwtSecretKey = "testsecretkey";
 const prisma = new PrismaClient();
 const app = express();
-const PORT = process.env.PORT || 5000;
-const stripe = require("stripe")(`${process.env.STRIPE_SECRET_KEY}`);
-const bcryptPassword = require("bcrypt");
-app.use(cors()); // change later
+const stripe = require("stripe")(config.stripeSecret);
+const emailUsername = config.emailUsername;
+const emailPassword = config.emailPassword;
+const nodemailer = require("nodemailer");
+
+app.use(
+  cors({
+    origin: config.originUrl,
+    credentials: true,
+  })
+);
 app.use(express.json());
+
+app.use(
+  session({
+    secret: config.sessionSecret,
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 3600,
+      secure: config.secure ? true : false,
+    },
+  })
+);
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await prisma.user.findUnique({
+    where: { username },
+  });
+  console.log(req.session.user);
+  if (!user) {
+    return res.status(401).json();
+  }
+  const isPasswordValid = await bcrypt.compare(password, user.password);
+  if (!isPasswordValid) {
+    return res.status(401).json();
+  }
+
+  if (user) {
+    const payload = {
+      userId: user.id,
+      username: user.username,
+    };
+
+    const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
+
+    res.json({ token });
+  } else {
+    console.log("no user data.");
+    res.status(401).json();
+  }
+});
+
+app.get("/login", async (req, res) => {
+  const sessionData = req.session;
+  const userId = sessionData.user;
+
+  console.log(userId);
+  if (req.session.authorized) {
+    res.json(req.session.user);
+  } else {
+    res.status(401).json();
+  }
+});
+
+// log out route
+app.get("/logout", (req, res) => {
+  req.session?.destroy((err) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).send();
+    }
+    res.redirect("/login");
+  });
+});
+
+app.post("/send-mail", async (req, res) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      // host: "smtp.gmail.com",
+      host: "smtp.ethereal.email",
+      port: 587,
+      auth: {
+        // user: "replace with tea-rex gmail user",
+        // pass: "replace with tea-rex gmail password",
+        user: emailUsername,
+        pass: emailPassword,
+      },
+    });
+
+    const info = await transporter.sendMail({
+      from: `${req.body.from}" <replacewithtearexgmail@gmail.com>`,
+      to: req.body.to,
+      subject: req.body.subject,
+      text: req.body.text,
+    });
+
+    console.log("Message sent: %s", info.messageId);
+    res.json({
+      success: true,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
 
 // Menu Section Routes
 app.get("/menu-section", async (req, res) => {
@@ -78,15 +197,6 @@ app.put("/menu-item/:id", async (req, res) => {
   res.json(menuItem);
 });
 
-// session. Do later
-/*app.use(
-  session({
-    secret: 'test-secret-key',
-    resave: false,
-    saveUninitialized: true,
-  })
-)*/
-
 // make the exisiting password into hashed passwords.
 // call only once.
 async function updateHashedPasswords() {
@@ -109,25 +219,6 @@ async function updateHashedPasswords() {
     await prisma.$disconnect();
   }
 }
-
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-
-  const user = await prisma.user.findUnique({
-    where: { username },
-  });
-
-  if (!user) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-
-  res.status(200).json({ message: "Login successful" });
-});
 
 app.post("/rewards-member-add", async (req, res) => {
   const { phoneNumber, points } = req.body;
@@ -191,13 +282,12 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
     }
 
     if (member.pendingPoints == 0) {
-      console.log("no pending points to revert");
+      console.log("No pending points to revert");
       return;
     }
 
     const newPointsBalance = member.points + member.pendingPoints;
 
-    console.log("reverting points");
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: {
@@ -350,9 +440,9 @@ app.put("/rewards-member-revert", async (req, res) => {
 
     const revertedPoints = member.points + spentPoints;
     console.log("PhoneNumber: ", phoneNumber);
-    console.log("Received spentPoints: ", spentPoints);
-    console.log("Member's Current Points: ", member.points);
-    console.log("Reverted Points: ", revertedPoints);
+    console.log("Current spent points: ", spentPoints);
+    console.log("Member's current points: ", member.points);
+    console.log("Reverted points: ", revertedPoints);
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: { points: revertedPoints },
@@ -454,7 +544,7 @@ app.post("/calculate-tax", async (req, res) => {
       });
     }
   } catch (error: any) {
-    console.log("error with taxDATA " + error.message);
+    console.log("error with retrieving tax data: " + error.message);
     res.json({
       message: error.message,
       success: false,
@@ -462,6 +552,6 @@ app.post("/calculate-tax", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+app.listen(config.port, () => {
+  console.log(`Listening on port ${config.port}`);
 });

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import GoogleMap from "../components/GoogleMap";
+import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
 
@@ -37,7 +37,7 @@ const galleryItems = [
 
 const Home: React.FC = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null,
+    null
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -110,13 +110,13 @@ const Home: React.FC = () => {
         </Swiper>
       </div>
       {/* About Us & Google Map Section */}
-      <div className="display:flex; md:columns-2 sm:container sm:mx-auto">
-        <div className="flex-1">
+      <div className="flex flex-col md:flex-row sm:container sm:mx-auto">
+        <div className="flex-1 mb-4 md:mb-0">
           <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">
             About Us
           </h1>
           <div className="pt-2 border-t-2 border-black justify-center"></div>
-          <h2 className="text-center text-xl pt-3 break-after-column">
+          <h2 className="text-center text-xl pt-3">
             Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine
             in a trendy, cheerful atmosphere. We make everything with love using
             only the freshest ingredients. We offer a variety of Asian dishes,
@@ -129,8 +129,8 @@ const Home: React.FC = () => {
             order to go for a filling meal or delicious drink on the go!
           </h2>
         </div>
-        <div className="flex justify-center mr-10">
-          <GoogleMap width="90%" />
+        <div className="flex-1 flex justify-center mr-10 min-h-[300px]">
+          <Map width="90%" />
         </div>
       </div>
       {/* Top Ten Items Section */}

@@ -1,3 +1,5 @@
+import { useShoppingCart } from "./ShoppingCartProvider";
+
 interface ShoppingCartListProps {
   cartItems: CartItem[];
   className: string;
@@ -7,6 +9,8 @@ export const ShoppingCartList = ({
   cartItems,
   className,
 }: ShoppingCartListProps) => {
+  /*const [removeItem] = useShoppingCart();*/
+
   return (
     <div className={`${className} mt-8`}>
       <div className="flow-root">
@@ -14,7 +18,15 @@ export const ShoppingCartList = ({
           {cartItems.map((item, index) => {
             const menuItem = item.item;
             const options = item.option;
-            const spice = item.spice;
+            const sortedOptions = options.sort((a: any, b: any) => {
+              if (a.qty < b.qty) {
+                return -1;
+              }
+              if (a.qty > b.qty) {
+                return 1;
+              }
+              return 0;
+            });
             return (
               <li key={index} className="flex py-6">
                 <div className="ml-4 flex flex-1 flex-col">
@@ -31,23 +43,33 @@ export const ShoppingCartList = ({
                       {item.specialInstructions &&
                         `Note: ${item.specialInstructions}`}
                     </p>
-                    {options.map((option) => (
-                      <div className="flex justify-between text-sm">
+                    {item.spice !== undefined && (
+                      <p className="mt-1 text-sm text-gray-500">
+                        {item.spice.name}
+                      </p>
+                    )}
+                    {sortedOptions.map((option) => (
+                      <div
+                        className="flex justify-between text-sm"
+                        key={option.name}
+                      >
                         <p className="mt-1 text-gray-500">
-                          {option.qty}x {option.name}
+                          {option.qty !== -1 && `${option.qty}x`} {option.name}
                         </p>
-                        <p className="ml-4 text-gray-900 font-medium">
-                          {option.name.includes("+$0.50") && "$0.50"}
-                        </p>
+                        {option.price !== undefined && (
+                          <p className="ml-4 text-gray-900 font-medium">
+                            ${option.price.toFixed(2)}
+                          </p>
+                        )}
                       </div>
                     ))}
-                    <p className="mt-1 text-sm text-gray-500">{spice.name}</p>
                   </div>
                   <div className="flex flex-1 items-end justify-between text-sm mt-4">
                     <div className="flex">
                       <button
                         type="button"
                         className="font-medium text-lime-600 hover:text-lime-500"
+                        /*onClick={() => removeItem(menuItem.name)}*/
                       >
                         Edit/Remove
                       </button>

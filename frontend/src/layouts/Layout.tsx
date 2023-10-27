@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, ScrollRestoration } from "react-router-dom";
 import Footer from "./Footer";
 import { GlobalDialog } from "./GlobalDialog";
 import { Navbar } from "./Navbar";
@@ -15,6 +15,7 @@ const Layout = () => {
     <div className="bg-gray-50">
       <Elements stripe={stripePromise}>
         <ShoppingCartProvider>
+          <ScrollRestoration />
           <Navbar />
           <div className="min-h-screen">
             <Outlet />

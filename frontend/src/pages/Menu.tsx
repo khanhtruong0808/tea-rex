@@ -9,6 +9,7 @@ import adminModeStore from "../utils/adminModeStore";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { SauceSelector } from "../components/SauceSelector";
 import DeliveryOption from "../components/DeliveryOption";
+import { useNavigate } from "react-router-dom";
 import PulseLoader from "react-spinners/PulseLoader";
 
 const sauceChoices = [
@@ -77,6 +78,7 @@ const bobaChoices = [
 const iceChoices = [
   "No Ice",
   "Less Ice",
+  "Normal Ice",
   "More Ice",
   // Add more ice choices here
 ];
@@ -105,7 +107,6 @@ const Menu = () => {
       fetch(config.baseApiUrl + "/menu-section").then((res) => res.json()),
   });
 
-
   const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const openDialog = useDialog((state) => state.openDialog);
   const closeDialog = useDialog((state) => state.closeDialog);
@@ -116,47 +117,89 @@ const Menu = () => {
   const [selectedOption, setSelectedOption] = useState<Item[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [selectedSpiceLevel, setSelectedSpiceLevel] = useState({
-    name: "mild",
-    qty: 1,
+    name: "",
+    qty: -1,
   });
+  const [selectedCupSize, setSelectedCupSize] = useState<Item>({
+    name: "",
+    qty: -1,
+  });
+  const [selectedIceLevel, setSelectedIceLevel] = useState<Item>({
+    name: "",
+    qty: -1,
+  });
+  const [selectedSugarLevel, setSelectedSugarLevel] = useState<Item>({
+    name: "",
+    qty: -1,
+  });
+  const [selectedToppings, setSelectedToppings] = useState<Item[]>([]);
   const [specialInstructions, setSpecialInstructions] = useState("");
+
+  // error states
+  const [spiceError, setSpiceError] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+  const [iceError, setIceError] = useState(false);
+  const [sugarError, setSugarError] = useState(false);
 
   // category selected on sidebar
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      adminModeStore.setState({ isAdmin: true });
+    }
+    //const isAdmin = localStorage.getItem("isAdmin") === "true";
+    //adminModeStore.setState({ isAdmin });
+  }, []);
+
   const { addToCart } = useShoppingCart();
 
   if (isLoading)
-  return (
-    <div className="h-screen relative flex flex-col items-center justify-center">
-      <img
-        src="tearex.png"
-        alt="tearex.png"
-        className="transform w-85 text-center ml-20 animate-pulse"
-      />
-      <div className="absolute inset-0 flex items-center justify-center transform animate-pulse"
-      style={{ top: '-75px', left: '-307px', transform: 'rotate(-70deg)' }}>
-        
-        <PulseLoader
-          color={"#000000"}
-          loading={isLoading}
-          size={25}
-          margin={20}
+    return (
+      <div className="relative flex flex-col items-center justify-center">
+        <img
+          src="tearex.png"
+          alt="tearex.png"
+          className="w-90 animate-pulse text-center ml-10"
         />
+        <div
+          className="relative flex items-center justify-center animate-pulse"
+          style={{ top: "-580px", left: "-180px", transform: "rotate(-65deg)" }} // not mobile friendly yet
+        >
+          <PulseLoader
+            color={"#000000"}
+            loading={isLoading}
+            size={25}
+            margin={20}
+          />
+        </div>
       </div>
-    </div>
-  );
-
+    );
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
 
   const handleLogout = () => {
     // Clear the admin mode state
+
     adminModeStore.setState({ isAdmin: false });
-    localStorage.removeItem("isAdmin");
+    localStorage.removeItem("token");
+    fetch("/logout", {
+      method: "GET",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          navigate("/Admin");
+        } else {
+        }
+      })
+      .catch((error) => {});
   };
 
+  // function when clicking add to cart button
   const handleAddToCart = (item: MenuItem) => {
     setSelectedItem(item);
     setShowModal(true);
@@ -165,10 +208,20 @@ const Menu = () => {
   const handleCloseModal = () => {
     setSelectedItem(undefined);
     setShowModal(false);
-  };
 
-  const handleSpiceOptionChange = (e: Item) => {
-    setSelectedSpiceLevel(e);
+    // reset modal form state for next item to be added
+    setQuantity(1);
+    setSelectedSpiceLevel({ name: "", qty: -1 });
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
+    setSelectedToppings([]);
+    setSpecialInstructions("");
+    setSelectedOption([]);
+    setSpiceError(false);
+    setSizeError(false);
+    setIceError(false);
+    setSugarError(false);
   };
 
   const handleMobileSetSelectedCategory = (category: string) => {
@@ -192,36 +245,86 @@ const Menu = () => {
     });
   };
 
-  const handleCartFunction = (
+  const handleSpiceLevelChange = (choice: string, qty: number) => {
+    setSelectedSpiceLevel({ name: choice, qty });
+    setSpiceError(false);
+  };
+
+  // function when adding food to cart
+  const handleAddFoodToCart = (
     selectedItem: MenuItem,
     selectedOption: Item[],
     selectedSpiceLevel: Item
   ) => {
-    const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
+    if (selectedSpiceLevel.name === "") {
+      setSpiceError(true);
+      return;
+    }
 
-    newOptionArr.map((x) =>
-      x.name === "Extra 1st Sauce +$0.50" ||
-      x.name === "Extra 2nd Sauce +$0.50" ||
-      x.name === "Extra 3rd Sauce +$0.50"
-        ? (x.price = 0.5)
-        : x
-    );
+    const newOptionArr = selectedOption.filter((x) => x.qty !== 0);
 
     newOptionArr.map((x) => x.qty + 1);
 
     addToCart(
       selectedItem,
       newOptionArr,
-      selectedSpiceLevel,
       specialInstructions,
-      quantity
+      quantity,
+      selectedSpiceLevel
     );
 
     // reset modal form state for next item to be added
     setQuantity(1);
-    setSelectedSpiceLevel({ name: "mild", qty: 1 });
+    setSelectedSpiceLevel({ name: "", qty: -1 });
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
+    setSelectedToppings([]);
     setSpecialInstructions("");
     setSelectedOption([]);
+
+    handleCloseModal();
+  };
+
+  // function to handle adding beverages to cart
+  const handleAddBeverageToCart = (
+    selectedItem: MenuItem,
+    selectedToppings: Item[]
+  ) => {
+    const newArr = [
+      ...selectedToppings,
+      selectedCupSize,
+      selectedIceLevel,
+      selectedSugarLevel,
+    ];
+
+    // check if any errors and return at the end to populate each error
+    let isError = false;
+    if (selectedCupSize.name === "") {
+      setSizeError(true);
+      isError = true;
+    }
+    if (selectedIceLevel.name === "") {
+      setIceError(true);
+      isError = true;
+    }
+    if (selectedSugarLevel.name === "") {
+      setSugarError(true);
+      isError = true;
+    }
+
+    if (isError) return;
+    console.log(sizeError, selectedCupSize);
+
+    addToCart(selectedItem, newArr, specialInstructions, quantity);
+
+    // reset modal form state for next item to be added
+    setQuantity(1);
+    setSelectedCupSize({ name: "", qty: -1 });
+    setSelectedIceLevel({ name: "", qty: -1 });
+    setSelectedSugarLevel({ name: "", qty: -1 });
+    setSpecialInstructions("");
+    setSelectedToppings([]);
 
     handleCloseModal();
   };
@@ -231,39 +334,120 @@ const Menu = () => {
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity } : x
+        x.name === sauceName ? { ...exist, qty: quantity, price: 0.5 } : x
       );
       setSelectedOption(newSelectedOption);
     } else {
       const newSelectedOption = [
         ...selectedOption,
-        { name: sauceName, qty: 1 },
+        { name: sauceName, qty: 1, price: 0.5 },
       ];
       setSelectedOption(newSelectedOption);
     }
   };
 
-  const renderChoices = (choices: string[]) => {
-    return choices.map((choice: string, index: number) => (
-      <label
-        key={index}
-        className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
-      >
-        <input
-          type="checkbox"
-          className="form-checkbox absolute opacity-0 h-6 w-6"
-        />
-        <div className="flex items-center p-4">
-          <span className="text-gray-700">{choice}</span>
-        </div>
-      </label>
-    ));
+  // function to add cup size with associated price
+  const handleCupSize = (name: string, qty: number) => {
+    if (name === "24 oz +$0.50") {
+      setSelectedCupSize({ name: name, qty: -1, price: 0.5 });
+    } else if (name === "Hot +$1.00") {
+      setSelectedCupSize({ name: name, qty: -1, price: 1.0 });
+    } else {
+      setSelectedCupSize({ name: name, qty: -1 });
+    }
   };
 
-  const renderCupChoices = () => renderChoices(cupChoices);
-  const renderBobaChoices = () => renderChoices(bobaChoices);
-  const renderIceChoices = () => renderChoices(iceChoices);
-  const renderSugarChoices = () => renderChoices(sugarChoices);
+  const handleToppings = (name: string, qty: number) => {
+    if (name.includes("oz") || name.includes("Hot")) {
+      setSizeError(false);
+      handleCupSize(name, -1);
+    } else if (name.includes("Ice")) {
+      setIceError(false);
+      setSelectedIceLevel({ name: name, qty: -1 });
+    } else if (name.includes("Sugar")) {
+      setSugarError(false);
+      setSelectedSugarLevel({ name: name, qty: -1 });
+    } else {
+      const exist = selectedToppings.find((x) => x.name === name);
+      // if toppings exist, remove it from the array
+      if (exist) {
+        const newSelectedToppings = selectedToppings.filter(
+          (x) => x.name !== name
+        );
+        setSelectedToppings(newSelectedToppings);
+      } else {
+        // else add it to the array
+        const newSelectedToppings = [
+          ...selectedToppings,
+          { name: name, qty: 1, price: 0.85 },
+        ];
+        setSelectedToppings(newSelectedToppings);
+      }
+    }
+  };
+
+  const renderChoices = (choices: string[], selectedValue: string) => {
+    return choices.map((choice: string, index: number) => {
+      const selected = selectedValue === choice;
+      return (
+        <label
+          key={index}
+          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+            selected
+              ? "border-2 border-orange-300"
+              : "border border-transparent hover:border-gray-300"
+          }`}
+        >
+          <input
+            type="checkbox"
+            className="form-checkbox absolute opacity-0 h-6 w-6"
+            onChange={() => handleToppings(choice, -1)}
+            checked={selected}
+          />
+          <div className="flex items-center p-4">
+            <span className="text-gray-700">{choice}</span>
+          </div>
+        </label>
+      );
+    });
+  };
+
+  const renderToppings = (toppings: string[]) => {
+    return toppings.map((choice: string, index: number) => {
+      const selected = selectedToppings.some((x: any) => x.name === choice);
+      const disabled = selectedToppings.length >= 3 && !selected;
+      return (
+        <label
+          key={index}
+          aria-disabled={disabled}
+          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:border-none ${
+            selected
+              ? "border-2 border-orange-300"
+              : "border border-transparent hover:border-gray-300"
+          }`}
+        >
+          <input
+            type="checkbox"
+            className="form-checkbox absolute opacity-0 h-6 w-6"
+            onChange={() => handleToppings(choice, 1)}
+            checked={selected}
+            disabled={disabled}
+          />
+          <div className="flex items-center p-4">
+            <span className="text-gray-700">{choice}</span>
+          </div>
+        </label>
+      );
+    });
+  };
+
+  const renderCupChoices = () =>
+    renderChoices(cupChoices, selectedCupSize.name);
+  const renderBobaChoices = () => renderToppings(bobaChoices);
+  const renderIceChoices = () =>
+    renderChoices(iceChoices, selectedIceLevel.name);
+  const renderSugarChoices = () =>
+    renderChoices(sugarChoices, selectedSugarLevel.name);
 
   const selectedItemDetails = selectedItem && (
     <>
@@ -284,7 +468,7 @@ const Menu = () => {
           <h3 className="mb-2 text-lg font-bold">Quantity:</h3>
           <div className="flex items-center">
             <button
-              className="rounded-l bg-gray-200 px-6 py-2 font-bold text-gray-800 hover:bg-gray-400"
+              className="rounded-l bg-yellow-400 px-6 py-2 font-bold text-white hover:bg-yellow-400"
               onClick={() => setQuantity(Math.max(quantity - 1, 1))}
             >
               {" "}
@@ -299,7 +483,7 @@ const Menu = () => {
               className="w-20 text-center"
             />
             <button
-              className="rounded-r bg-gray-200 px-6 py-2 font-bold text-gray-800 hover:bg-gray-400"
+              className="rounded-r bg-green-400 px-6 py-2 font-bold text-white hover:bg-green-500"
               onClick={() => setQuantity(quantity + 1)}
             >
               +
@@ -332,32 +516,47 @@ const Menu = () => {
             </div>
 
             <div className="mt-4">
-              <h3 className="mb-2 text-lg font-bold">
+              <h3
+                className={`${
+                  spiceError ? "text-red-500 text-bold" : ""
+                } mb-2 text-lg font-bold`}
+              >
                 Spicy
                 <span className="text-sm font-normal text-gray-400">
-                  (up to 1 max)
+                  {" "}
+                  (Please select 1)
                 </span>
               </h3>
-              <hr className="mb-4 border-gray-300" />
+              <hr className="mb-2 border-gray-300" />
               <div className="grid grid-cols-2 gap-2">
-                {spicyChoices.map((choice, index) => (
-                  <label
-                    key={index}
-                    className="block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer transition border border-transparent hover:border-gray-300 focus-within:border-orange-300"
-                  >
-                    <input
-                      type="checkbox"
-                      className="form-checkbox absolute opacity-0 h-6 w-6"
-                      checked={selectedSpiceLevel.name === choice}
-                      onChange={() =>
-                        handleSpiceOptionChange({ name: choice, qty: 1 })
-                      }
-                    />
-                    <div className="flex items-center p-4">
-                      <span className="text-gray-700">{choice}</span>
-                    </div>
-                  </label>
-                ))}
+                {spiceError && (
+                  <p className="col-span-full text-red-500 text-sm">
+                    Please select a spice level.
+                  </p>
+                )}
+                {spicyChoices.map((choice, index) => {
+                  const selected = selectedSpiceLevel.name === choice;
+                  return (
+                    <label
+                      key={index}
+                      className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+                        selected
+                          ? "border-2 border-orange-300"
+                          : "border border-transparent hover:border-gray-300"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="form-checkbox absolute opacity-0 h-6 w-6"
+                        checked={selected}
+                        onChange={() => handleSpiceLevelChange(choice, -1)}
+                      />
+                      <div className="flex items-center p-4">
+                        <span className="text-gray-700">{choice}</span>
+                      </div>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
@@ -375,10 +574,10 @@ const Menu = () => {
               </div>
               <div className="flex content-center justify-center">
                 <button
-                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  className="mt-3 rounded-full bg-lime-700 px-3 py-1 font-bold text-white hover:bg-green-800"
                   id="add-to-cart"
                   onClick={() =>
-                    handleCartFunction(
+                    handleAddFoodToCart(
                       selectedItem,
                       selectedOption,
                       selectedSpiceLevel
@@ -394,15 +593,26 @@ const Menu = () => {
         {selectedItem?.menuType === "beverage" && (
           <>
             <div className="mt-4">
-              <h3 className="mb-2 text-lg font-bold">
+              <h3
+                className={`${
+                  sizeError ? "text-red-500 text-bold" : ""
+                } mb-2 text-lg font-bold`}
+              >
                 Cup Size
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
-                  (Required* Please select 1)
+                  (Please select 1)
                 </span>
               </h3>
-              <hr className="mb-4 border-gray-300" />
-              <div className="grid grid-cols-2 gap-2">{renderCupChoices()}</div>
+              <hr className="border-gray-300 mb-2" />
+              {sizeError && (
+                <p className="col-span-full text-red-500 text-sm">
+                  Please select a size.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-2 pt-2">
+                {renderCupChoices()}
+              </div>
             </div>
 
             <div className="mt-4">
@@ -420,27 +630,47 @@ const Menu = () => {
             </div>
 
             <div className="mt-4">
-              <h3 className="mb-2 text-lg font-bold">
+              <h3
+                className={`${
+                  iceError ? "text-red-500 text-bold" : ""
+                } mb-2 text-lg font-bold`}
+              >
                 Ice Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
                   (Please select 1)
                 </span>
               </h3>
-              <hr className="mb-4 border-gray-300" />
-              <div className="grid grid-cols-2 gap-2">{renderIceChoices()}</div>
+              <hr className="mb-2 border-gray-300" />
+              {iceError && (
+                <p className="col-span-full text-red-500 text-sm">
+                  Please select an ice level.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-2 mt-2">
+                {renderIceChoices()}
+              </div>
             </div>
 
             <div className="mt-4">
-              <h3 className="mb-2 text-lg font-bold">
+              <h3
+                className={`${
+                  sugarError ? "text-red-500 text-bold" : ""
+                } mb-2 text-lg font-bold`}
+              >
                 Sugar Level
                 <span className="text-sm font-normal text-gray-400">
                   {" "}
                   (Please select 1)
                 </span>
               </h3>
-              <hr className="mb-4 border-gray-300" />
-              <div className="grid grid-cols-2 gap-2">
+              <hr className="mb-2 border-gray-300" />
+              {sugarError && (
+                <p className="col-span-full text-red-500 text-sm">
+                  Please select a sugar level.
+                </p>
+              )}
+              <div className="grid grid-cols-2 gap-2 mt-2">
                 {renderSugarChoices()}
               </div>
             </div>
@@ -459,14 +689,10 @@ const Menu = () => {
               </div>
               <div className="flex content-center justify-center">
                 <button
-                  className="mt-3 rounded-full bg-gray-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
+                  className="mt-3 rounded-full bg-green-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
                   onClick={() =>
-                    handleCartFunction(
-                      selectedItem,
-                      selectedOption,
-                      selectedSpiceLevel
-                    )
+                    handleAddBeverageToCart(selectedItem, selectedToppings)
                   }
                 >
                   Add to Cart
