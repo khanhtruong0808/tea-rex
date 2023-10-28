@@ -27,7 +27,7 @@ const showInMapClicked = () => {
 
 const Map: React.FC<MapProps> = ({ width }) => {
   const defaultContainerStyle = {
-    width: "50%",
+    width: "100%",
     height: "500px",
   };
 
