@@ -98,6 +98,11 @@ export default function EmailForm() {
     } catch (error: any) {
       console.error("Problem with sending email", error.message);
     }
+
+    setUserFirstName("");
+    setUserLastName("");
+    setUserEmail("");
+    setUserMessage("");
   };
   return (
     <form onSubmit={handleSubmit} className="w-full m-8">
