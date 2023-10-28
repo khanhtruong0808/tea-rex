@@ -181,7 +181,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           closeCart();
 
           if (responseData.success) {
-            //Printer(); //if enabled during development, payments will go through but you will get a backend error:
+            Printer(); //if enabled during development, payments will go through but you will get a backend error:
             /*
           Error:  undefined Invalid hook call. Hooks can only be called inside of the body of a function component. This could happen for one of the following reasons:
           /*
