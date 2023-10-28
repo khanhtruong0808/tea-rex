@@ -7,6 +7,7 @@ const ItemStyles = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
+  flex-wrap: wrap;
   border-radius: 8px;
   margin-bottom: 2rem;
   .icon {
