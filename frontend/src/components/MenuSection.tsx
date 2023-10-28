@@ -7,6 +7,7 @@ import { ItemEditForm } from "./forms/ItemEditForm";
 import { ItemDeleteForm } from "./forms/ItemDeleteForm";
 import { ItemAddForm } from "./forms/ItemAddForm";
 import adminModeStore from "../utils/adminModeStore";
+import { MenuPhoto } from "./MenuPhoto";
 interface MenuSectionProps {
   menuSection: MenuSection;
   handleAddToCart: (item: MenuItem) => void;
@@ -125,12 +126,14 @@ export const MenuSection = ({
           )}
           {menuSection.name}
         </h2>
-
-        <img
-          className="max-w-xs sm:max-w-sm self-center object-contain"
-          src={menuSection.imageUrl}
-          alt={menuSection.imageAltText}
-        />
+        <div className="flex self-center">
+          <img
+            className="max-w-xs sm:max-w-sm self-center object-contain"
+            src={menuSection.imageUrl}
+            alt={menuSection.imageAltText}
+          />
+          {isAdmin && <MenuPhoto sectionId={menuSection.id} />}
+        </div>
       </div>
 
       {isAdmin && (
