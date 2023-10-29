@@ -21,7 +21,7 @@ const DeliveryOption = () => {
         <NavLink
           to={deliveryIcons.path}
           key={deliveryIcons.name}
-          className="flex gap-6"
+          className="flex gap-8"
         >
           <li className="flex text-6xl bg-violet-400 text-white font-bold rounded-full px-3 py-3 hover:scale-125 transition">
             {deliveryIcons.icon}
