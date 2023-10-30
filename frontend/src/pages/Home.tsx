@@ -9,16 +9,16 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 const topTenItems = [
-  { src: "top-ten-items/1.jpg", alt: "item1" },
-  { src: "top-ten-items/2.jpg", alt: "item2" },
-  { src: "top-ten-items/3.jpg", alt: "item3" },
-  { src: "top-ten-items/4.jpg", alt: "item4" },
-  { src: "top-ten-items/5.jpg", alt: "item5" },
-  { src: "top-ten-items/6.jpg", alt: "item6" },
-  { src: "top-ten-items/7.jpg", alt: "item7" },
-  { src: "top-ten-items/8.jpg", alt: "item8" },
-  { src: "top-ten-items/9.jpg", alt: "item9" },
-  { src: "top-ten-items/10.jpg", alt: "item10" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg", alt: "item1" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg", alt: "item2" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg", alt: "item3" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636250/TeaRex/TopItems/4_k3rtvb.jpg", alt: "item4" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636253/TeaRex/TopItems/5_pd1uhu.jpg", alt: "item5" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636257/TeaRex/TopItems/6_smi0wq.jpg", alt: "item6" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636260/TeaRex/TopItems/7_brrd1p.jpg", alt: "item7" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636264/TeaRex/TopItems/8_ykzm77.jpg", alt: "item8" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636267/TeaRex/TopItems/9_y5jiyc.jpg", alt: "item9" },
+  { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636272/TeaRex/TopItems/10_zsdorh.jpg", alt: "item10" },
 ];
 
 const galleryItems = [
