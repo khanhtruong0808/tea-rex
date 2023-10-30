@@ -155,29 +155,55 @@ const Menu = () => {
     //adminModeStore.setState({ isAdmin });
   }, []);
 
-  const { addToCart } = useShoppingCart();
+  const { addToCart } = useShoppingCart()
 
-  if (isLoading)
+  const [showLoading, setShowLoading] = useState(true);
+
+  // ... (the rest of your component code)
+
+  // Introduce a delay for showing the loading screen
+  useEffect(() => {
+    const loadingDelay = setTimeout(() => {
+      setShowLoading(false);
+    }, 4000); // Delay for 4 seconds
+
+    // Cleanup the timeout to prevent memory leaks
+    return () => {
+      clearTimeout(loadingDelay);
+    };
+  }, []); // Empty dependency array to run the effect once
+
+  if (showLoading) {
     return (
       <div className="relative flex flex-col items-center justify-center">
         <img
           src="tearex.png"
           alt="tearex.png"
-          className="w-90 animate-pulse text-center ml-10"
+          style={{ width: "40%" }} // Customize the size using inline styles
+          className="animate-pulse text-center ml-10" // Other classes can be used alongside inline styles
         />
-        <div
-          className="relative flex items-center justify-center animate-pulse"
-          style={{ top: "-580px", left: "-180px", transform: "rotate(-65deg)" }} // not mobile friendly yet
-        >
-          <PulseLoader
-            color={"#000000"}
-            loading={isLoading}
-            size={25}
-            margin={20}
-          />
-        </div>
+       {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE
+<div
+  className="relative flex items-center justify-center animate-pulse"
+  style={{
+    top: "-375px",
+    left: "-110px",
+    transform: "rotate(-65deg)",
+  }} // not mobile friendly yet
+>
+  <PulseLoader
+    color={"#000000"}
+    loading={true} // Show loading screen for 4 seconds
+    size={15}
+    margin={15}
+  />
+</div>
+*/}
+
       </div>
     );
+  }
+  
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
