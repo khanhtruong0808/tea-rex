@@ -151,20 +151,18 @@ const Menu = () => {
     if (token) {
       adminModeStore.setState({ isAdmin: true });
     }
-    //const isAdmin = localStorage.getItem("isAdmin") === "true";
-    //adminModeStore.setState({ isAdmin });
   }, []);
 
-  const { addToCart } = useShoppingCart()
+  const { addToCart } = useShoppingCart();
 
-  const [showLoading, setShowLoading] = useState(true);
-
-  // ... (the rest of your component code)
+  const [showLoading, setShowLoading] = useState(false);
 
   // Introduce a delay for showing the loading screen
+  // Only display the loading screen if the data is not yet loaded
+  // AND it has been loading for more than 4 seconds
   useEffect(() => {
     const loadingDelay = setTimeout(() => {
-      setShowLoading(false);
+      setShowLoading(true);
     }, 4000); // Delay for 4 seconds
 
     // Cleanup the timeout to prevent memory leaks
@@ -173,37 +171,34 @@ const Menu = () => {
     };
   }, []); // Empty dependency array to run the effect once
 
-  if (showLoading) {
+  if (showLoading && isLoading) {
     return (
       <div className="relative flex flex-col items-center justify-center">
         <img
           src="tearex.png"
           alt="tearex.png"
-          style={{ width: "40%" }} // Customize the size using inline styles
-          className="animate-pulse text-center ml-10" // Other classes can be used alongside inline styles
+          className="animate-pulse text-center ml-10 w-[40%]" // Other classes can be used alongside inline styles
         />
-       {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE
-<div
-  className="relative flex items-center justify-center animate-pulse"
-  style={{
-    top: "-375px",
-    left: "-110px",
-    transform: "rotate(-65deg)",
-  }} // not mobile friendly yet
->
-  <PulseLoader
-    color={"#000000"}
-    loading={true} // Show loading screen for 4 seconds
-    size={15}
-    margin={15}
-  />
-</div>
-*/}
-
+        {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE
+        <div
+          className="relative flex items-center justify-center animate-pulse"
+          style={{
+            top: "-375px",
+            left: "-110px",
+            transform: "rotate(-65deg)",
+          }} // not mobile friendly yet
+        >
+          <PulseLoader
+            color={"#000000"}
+            loading={true} // Show loading screen for 4 seconds
+            size={15}
+            margin={15}
+          />
+        </div> */}
       </div>
     );
   }
-  
+  if (isLoading) return null;
 
   // required for react-modal to avoid warning of accessibility
   Modal.setAppElement("body");
