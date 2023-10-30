@@ -19,7 +19,7 @@ type ShoppingCartContext = {
     quantity: number,
     spice?: Item
   ) => void;
-  removeItem: (item: MenuItem) => void;
+  removeItem: (id: number) => void;
   clearCart: () => void;
   openCart: () => void;
   closeCart: () => void;
