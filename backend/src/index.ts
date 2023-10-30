@@ -25,6 +25,7 @@ const emailUsername = config.emailUsername;
 const emailPassword = config.emailPassword;
 const nodemailer = require("nodemailer");
 
+
 app.use(
   cors({
     origin: config.originUrl,
@@ -64,7 +65,7 @@ app.post("/login", async (req, res) => {
       userId: user.id,
       username: user.username,
     };
-
+    //this should be depend on the admin
     const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
 
     res.json({ token });
@@ -95,6 +96,47 @@ app.get("/logout", (req, res) => {
     }
     res.redirect("/login");
   });
+});
+
+//Accounts route
+app.get('/hi', async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.json(users);
+  } catch (error) {
+    console.error('Error fetching users:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+app.put("/accounts/:id", async (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  const updatedUsers = await prisma.user.update({
+    where: { id: Number(id) },
+    data: { ...req.body },
+  });
+  console.log(updatedUsers)
+  res.json(updatedUsers);
+});
+
+app.delete("/accounts/:id", async (req, res) => {
+  const { id } = req.params;
+  const updatedUsers = await prisma.user.delete({
+    where: {
+      id: Number(id),
+    },
+  });
+  res.json(updatedUsers);
+});
+
+app.post("/accounts", async (req, res) => {
+  const newAccount = await prisma.user.create({
+    data: {
+      ...req.body,
+    },
+  });
+  res.json(newAccount);
 });
 
 app.post("/send-mail", async (req, res) => {

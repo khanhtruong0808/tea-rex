@@ -21,3 +21,12 @@ type CartItem = {
   quantity: number;
   spice?: Item;
 };
+
+interface account {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}
