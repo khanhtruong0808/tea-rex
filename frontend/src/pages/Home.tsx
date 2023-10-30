@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
+
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
-const topTenItems = [
+ const topTenItems = [
   { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg", alt: "item1" },
   { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg", alt: "item2" },
   { src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg", alt: "item3" },
@@ -60,6 +61,20 @@ const Home: React.FC = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [fullScreenImageUrl]);
+
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (window && containerRef.current) {
+      window.cloudinary.galleryWidget({
+        container: containerRef.current,
+        cloudName: 'dwtzyvjko',
+        aspectRatio: '16:9',
+        mediaAssets: [{tag: 'top-items' }],
+        carouselStyle: 'indicators',
+        carouselLocation: 'bottom',
+      }).render();
+    }
+  }, []);
 
   return (
     <div className="relative">
@@ -143,37 +158,8 @@ const Home: React.FC = () => {
             <div className="pt-2 border-t-2 border-black justify-center"></div>
           </div>
         </div>
-        <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
-          <Swiper
-            style={{
-              /*@ts-ignore*/
-              "--swiper-navigation-color": "#000000",
-              "--swiper-pagination-color": "#000000",
-            }}
-            breakpoints={{
-              480: { slidesPerView: 1, spaceBetween: 80 },
-              768: { slidesPerView: 2, spaceBetween: 150 },
-              1024: { slidesPerView: 3, spaceBetween: 50 },
-            }}
-            loop={true}
-            modules={[Pagination, Navigation]}
-            navigation={true}
-            pagination={{ clickable: true }}
-            // onSlideChange={() => console.log("slide change")}
-            // onSwiper={(swiper) => console.log(swiper)}
-            className="w-full h-full rounded-2xl object-center object-cover relative"
-          >
-            {topTenItems.map((item, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={item.src}
-                  alt={item.alt}
-                  className="w-full h-full cursor-pointer object-scale-down"
-                  onClick={handleImageClick}
-                ></img>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+        <div ref={containerRef} style={{ width: '1200px,', margin: 'auto'}}>
+  
         </div>
       </section>
     </div>
