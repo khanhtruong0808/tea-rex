@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import Registration from "./pages/Registration";
 import PaymentResult from "./pages/PaymentResult";
 import NotFound from "./pages/NotFound";
+import Accounts from "./pages/Accounts";
 import FAQPage from "./pages/FAQ"; // Import the FAQPage component
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
@@ -31,6 +32,7 @@ function App() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/payment-result" element={<PaymentResult />} />
+        <Route path="/account" element={<Accounts />} />
         <Route path="/faq" element={<FAQPage />} /> {/* Add FAQ page route */}
         <Route path="*" element={<NotFound />} />
       </Route>
