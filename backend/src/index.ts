@@ -24,6 +24,7 @@ const stripe = require("stripe")(config.stripeSecret);
 const emailUsername = config.emailUsername;
 const emailPassword = config.emailPassword;
 const nodemailer = require("nodemailer");
+const cloudinary = require("cloudinary").v2;
 
 app.use(
   cors({
@@ -550,6 +551,30 @@ app.post("/calculate-tax", async (req, res) => {
       success: false,
     });
   }
+});
+
+// generating cloudinary signature
+cloudinary.config({
+  cloud_name: config.cloudinaryCloudName,
+  api_key: config.cloudinaryApiKey,
+  api_secret: config.cloudinaryApiSecret,
+});
+
+app.get("/cloudinary-signature", async (req, res) => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const signature = cloudinary.utils.api_sign_request(
+    {
+      timestamp: timestamp,
+      folder: "TeaRex",
+    },
+    config.cloudinaryApiSecret
+  );
+  res.json({
+    signature: signature,
+    cloudName: config.cloudinaryCloudName,
+    apiKey: config.cloudinaryApiKey,
+    timestamp: timestamp,
+  });
 });
 
 app.listen(config.port, () => {

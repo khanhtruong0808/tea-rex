@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { config } from "../config";
 
 export function Printer() {
@@ -20,13 +19,12 @@ export function Printer() {
         ];
         spice: {
           name: string;
-          qty: number;
         };
       },
     ];
   }
 
-  const [order, setOrder] = useState<Order>({
+  const order: Order = {
     items: cartItems.map(
       (cartItem: {
         item: { price: string; name: string };
@@ -39,18 +37,21 @@ export function Printer() {
           name: option.name,
           quantity: option.qty,
         })),
-        spice: {
-          name: cartItem.spice.name,
-          quantity: cartItem.spice.qty,
-        },
       })
     ),
-  });
+  };
 
+  // adding spice option to order
   const addModifications = () => {
     for (let i = 0; i < order.items.length; i++) {
-      order.items[i].options.push(order.items[i].spice);
+      if (order.items[i].spice) {
+        order.items[i].options.push({
+          name: order.items[i].spice.name,
+          qty: 1,
+        });
+      }
     }
+    checkOrderType();
   };
 
   // 1
@@ -159,12 +160,11 @@ export function Printer() {
             modifications: item.options.map((option) => ({
               modifier: {
                 available: "true",
-                // price: 0,
                 name: option.name,
               },
               amount: option.qty,
             })),
-            note: item.spice.name,
+            note: cartItems.item.specialInstructions,
           })),
           currency: "USD",
         },
@@ -177,13 +177,13 @@ export function Printer() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        submitPrintRequest(res.id);
+        // submitPrintRequest(res.id);
       })
       .catch((err) => console.error(err));
   };
 
   const submitPrintRequest = (oid: string) => {
-    //oid = orderId
+    //oid == orderId
     const options = {
       method: "POST",
       headers: {
@@ -202,10 +202,7 @@ export function Printer() {
       .catch((err) => console.error(err));
   };
 
-  useEffect(() => {
-    addModifications();
-    checkOrderType();
-  }, []);
+  addModifications();
 
   return <div></div>;
 }

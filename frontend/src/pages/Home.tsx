@@ -129,8 +129,8 @@ const Home: React.FC = () => {
             order to go for a filling meal or delicious drink on the go!
           </h2>
         </div>
-        <div className="flex-1 flex justify-center mr-10 min-h-[300px]">
-          <Map width="90%" />
+        <div className="flex-1 flex p-0 sm:p-10 justify-center min-h-[300px]">
+          <Map />
         </div>
       </div>
       {/* Top Ten Items Section */}

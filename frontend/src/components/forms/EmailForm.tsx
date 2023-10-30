@@ -98,78 +98,111 @@ export default function EmailForm() {
     } catch (error: any) {
       console.error("Problem with sending email", error.message);
     }
+
+    setUserFirstName("");
+    setUserLastName("");
+    setUserEmail("");
+    setUserMessage("");
   };
   return (
-    <form onSubmit={handleSubmit} className="w-full m-8">
-      <div className="flex flex-col items-center justify-center mb-5 w-3/4 mx-auto">
+    <form onSubmit={handleSubmit} className="w-full mx-auto p-6">
+      <div className="flex flex-col items-center justify-center mb-5 w-full mx-auto">
         <fieldset className="border border-gray-300 p-4 m-12 rounded-md w-full">
           {isSubmitted ? (
             <p className="text-xl"> Your query has been submitted! </p>
           ) : (
             <>
-              <div className="mb-4 w-full flex">
-                <input
-                  type="text"
-                  placeholder="First name"
-                  className={`${
-                    firstNameError
-                      ? "border-2 border-red-500"
-                      : "border border-gray-200"
-                  } font-navbar flex-grow rounded mr-1`}
-                  onChange={(e) => {
-                    setUserFirstName(e.target.value);
-                    if (e.target.value.length > 0) {
-                      setFirstNameError(false);
-                    }
-                  }}
-                ></input>
-                <input
-                  type="text"
-                  placeholder="Last name"
-                  className={`${
-                    lastNameError
-                      ? "border-2 border-red-500"
-                      : "border border-gray-200"
-                  } font-navbar flex-grow rounded`}
-                  onChange={(e) => {
-                    setUserLastName(e.target.value);
-                    if (e.target.value.length > 0) {
-                      setLastNameError(false);
-                    }
-                  }}
-                ></input>
+              <div className="mb-4 flex mx-auto">
+                <div className="w-1/2 pr-1 flex flex-col">
+                  <input
+                    type="text"
+                    placeholder="First name"
+                    className={`${
+                      firstNameError
+                        ? "border-2 border-red-500"
+                        : "border border-gray-200"
+                    } font-navbar rounded mr-1 w-full`}
+                    onChange={(e) => {
+                      setUserFirstName(e.target.value);
+                      if (e.target.value.length > 0) {
+                        setFirstNameError(false);
+                      }
+                    }}
+                  />
+                  {firstNameError && (
+                    <p className="text-xs text-red-500">
+                      Please enter a first name!
+                    </p>
+                  )}
+                </div>
+                <div className="w-1/2 pr-1 flex flex-col">
+                  <input
+                    type="text"
+                    placeholder="Last name"
+                    className={`${
+                      lastNameError
+                        ? "border-2 border-red-500"
+                        : "border border-gray-200"
+                    } font-navbar rounded w-full`}
+                    onChange={(e) => {
+                      setUserLastName(e.target.value);
+                      if (e.target.value.length > 0) {
+                        setLastNameError(false);
+                      }
+                    }}
+                  />
+                  {lastNameError && (
+                    <p className="text-xs text-red-500">
+                      Please enter a last name!
+                    </p>
+                  )}
+                </div>
               </div>
-              <input
-                type="email"
-                placeholder="Enter your email address"
-                className={`${
-                  emailError
-                    ? "border-2 border-red-500"
-                    : "border border-gray-200"
-                } font-navbar  mb-4 w-full flex rounded`}
-                onChange={(e) => {
-                  setUserEmail(e.target.value);
-                  if (e.target.value.length > 0) {
-                    setEmailError(false);
-                  }
-                }}
-              />
-              <textarea
-                rows={10}
-                placeholder="Message"
-                className={`${
-                  messageError
-                    ? "border-2 border-red-500"
-                    : "border border-gray-200"
-                } font-navbar mb-2 w-full flex rounded`}
-                onChange={(e) => {
-                  setUserMessage(e.target.value);
-                  if (e.target.value.length > 0) {
-                    setMessageError(false);
-                  }
-                }}
-              />
-              <div className="flex mt-4 space-x-2">
+              <div className="pr-1 mb-4 flex flex-col">
+                <input
+                  type="text"
+                  placeholder="Enter your email address"
+                  className={`${
+                    emailError
+                      ? "border-2 border-red-500"
+                      : "border border-gray-200"
+                  } font-navbar w-full flex rounded`}
+                  onChange={(e) => {
+                    setUserEmail(e.target.value);
+                    if (e.target.value.length > 0) {
+                      setEmailError(false);
+                    }
+                  }}
+                />
+                {emailError && (
+                  <p className="text-xs text-red-500">
+                    Please enter an email address!
+                  </p>
+                )}
+              </div>
+              <div className="pr-1 mb-2 flex flex-col">
+                <textarea
+                  rows={10}
+                  placeholder="Message"
+                  className={`${
+                    messageError
+                      ? "border-2 border-red-500"
+                      : "border border-gray-200"
+                  } font-navbar w-full flex rounded`}
+                  onChange={(e) => {
+                    setUserMessage(e.target.value);
+                    if (e.target.value.length > 0) {
+                      setMessageError(false);
+                    }
+                  }}
+                />
+                {messageError && (
+                  <p className="text-xs text-red-500">
+                    Message cannot be blank!
+                  </p>
+                )}
+              </div>
+              <div className="flex mt-4 mx-auto">
                 <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
                   Submit
                 </button>
