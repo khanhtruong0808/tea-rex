@@ -15,7 +15,6 @@ interface MenuSection {
 }
 
 type CartItem = {
-  id: number,
   item: MenuItem;
   option: Item[];
   specialInstructions;

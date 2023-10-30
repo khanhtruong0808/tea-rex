@@ -9,14 +9,13 @@ export const ShoppingCartList = ({
   cartItems,
   className,
 }: ShoppingCartListProps) => {
-  const { removeItem } = useShoppingCart();
+  /*const [removeItem] = useShoppingCart();*/
 
   return (
     <div className={`${className} mt-8`}>
       <div className="flow-root">
         <ul role="list" className="-my-6 divide-y divide-gray-200">
           {cartItems.map((item, index) => {
-            const itemID = item.id;
             const menuItem = item.item;
             const options = item.option;
             const sortedOptions = options.sort((a: any, b: any) => {
@@ -69,17 +68,10 @@ export const ShoppingCartList = ({
                     <div className="flex">
                       <button
                         type="button"
-                        className="font-medium text-lime-600 hover:text-lime-500 pr-1"
+                        className="font-medium text-lime-600 hover:text-lime-500"
+                        /*onClick={() => removeItem(menuItem.name)}*/
                       >
-                        Edit
-                      </button>
-                      <p>|</p>
-                      <button
-                        type="button"
-                        className="font-medium text-lime-600 hover:text-lime-500 pl-1"
-                        onClick={() => removeItem(itemID)}
-                      >
-                        Remove
+                        Edit/Remove
                       </button>
                     </div>
                   </div>

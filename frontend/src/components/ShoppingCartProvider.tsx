@@ -4,6 +4,7 @@ import useRewards from "../components/RewardsContext";
 import SlideOver from "./SlideOver";
 
 interface Item {
+  id?: number;
   name: string;
   price?: number;
   qty: number;
@@ -37,7 +38,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [subtotal, setSubtotal] = useState(0);
   const [finaltotal, setFinalTotal] = useState(0);
   const [isExternalTaxSet, setExternalTax] = useState(false);
-  const [id, setId] = useState(0);
 
   const { handleRevertPendingPoints } = useRewards();
 
@@ -69,22 +69,20 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     if (spice !== null) {
       const newCartItems: CartItem[] = [
         ...cartItems,
-        { id, item, option, spice, specialInstructions, quantity },
+        { item, option, spice, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
-      setId(id + 1);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     } else {
       const newCartItems: CartItem[] = [
         ...cartItems,
-        { id, item, option, specialInstructions, quantity },
+        { item, option, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
-      setId(id + 1);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     }
     setIsEmpty(false);
-    if (item.menuType === "beverage") {
+    if (item.menuType == "beverage") {
       setTotalBeverageAmount(
         (totalBeverageAmount) => totalBeverageAmount + Number(item.price)
       );
@@ -94,8 +92,8 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     }
   }
 
-  function removeItem(id: number) {
-    const newCartItems: CartItem[] = cartItems.filter((x) => x.id !== id);
+  function removeItem(item: MenuItem) {
+    const newCartItems: CartItem[] = cartItems.filter((x) => x.item !== item);
     setCartItems(newCartItems);
     if (newCartItems.length === 0) {
       setIsEmpty(true);
@@ -109,7 +107,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     setTotalBeverageAmount(0);
     setIsEmpty(true);
-    setId(0);
   }
 
   function openCart() {
