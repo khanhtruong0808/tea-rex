@@ -37,7 +37,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [subtotal, setSubtotal] = useState(0);
   const [finaltotal, setFinalTotal] = useState(0);
   const [isExternalTaxSet, setExternalTax] = useState(false);
-  const [id, setId] = useState(0);
 
   const { handleRevertPendingPoints } = useRewards();
 
@@ -66,13 +65,14 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     quantity: number,
     spice?: Item,
   ) {
+    const id = Math.random().toString(36).substring(2, 10);
+
     if (spice !== null) {
       const newCartItems: CartItem[] = [
         ...cartItems,
         { id, item, option, spice, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
-      setId(id + 1);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     } else {
       const newCartItems: CartItem[] = [
@@ -80,7 +80,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         { id, item, option, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
-      setId(id + 1);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     }
     setIsEmpty(false);
@@ -94,7 +93,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     }
   }
 
-  function removeItem(id: number) {
+  function removeItem(id: string) {
     const newCartItems: CartItem[] = cartItems.filter((x) => x.id !== id);
     setCartItems(newCartItems);
     if (newCartItems.length === 0) {
@@ -109,7 +108,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     setTotalBeverageAmount(0);
     setIsEmpty(true);
-    setId(0);
   }
 
   function openCart() {
