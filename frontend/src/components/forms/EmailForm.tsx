@@ -105,15 +105,15 @@ export default function EmailForm() {
     setUserMessage("");
   };
   return (
-    <form onSubmit={handleSubmit} className="w-full mx-auto p-6">
-      <div className="flex flex-col items-center justify-center mb-5 w-full mx-auto">
-        <fieldset className="border border-gray-300 p-4 m-12 rounded-md w-full">
+    <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
+      <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
+        <fieldset className="m-12 w-full rounded-md border border-gray-300 p-4">
           {isSubmitted ? (
             <p className="text-xl"> Your query has been submitted! </p>
           ) : (
             <>
-              <div className="mb-4 flex mx-auto">
-                <div className="w-1/2 pr-1 flex flex-col">
+              <div className="mx-auto mb-4 flex">
+                <div className="flex w-1/2 flex-col pr-1">
                   <input
                     type="text"
                     placeholder="First name"
@@ -121,7 +121,7 @@ export default function EmailForm() {
                       firstNameError
                         ? "border-2 border-red-500"
                         : "border border-gray-200"
-                    } font-navbar rounded mr-1 w-full`}
+                    } font-navbar mr-1 w-full rounded`}
                     onChange={(e) => {
                       setUserFirstName(e.target.value);
                       if (e.target.value.length > 0) {
@@ -135,7 +135,7 @@ export default function EmailForm() {
                     </p>
                   )}
                 </div>
-                <div className="w-1/2 pr-1 flex flex-col">
+                <div className="flex w-1/2 flex-col pr-1">
                   <input
                     type="text"
                     placeholder="Last name"
@@ -143,7 +143,7 @@ export default function EmailForm() {
                       lastNameError
                         ? "border-2 border-red-500"
                         : "border border-gray-200"
-                    } font-navbar rounded w-full`}
+                    } font-navbar w-full rounded`}
                     onChange={(e) => {
                       setUserLastName(e.target.value);
                       if (e.target.value.length > 0) {
@@ -158,7 +158,7 @@ export default function EmailForm() {
                   )}
                 </div>
               </div>
-              <div className="pr-1 mb-4 flex flex-col">
+              <div className="mb-4 flex flex-col pr-1">
                 <input
                   type="text"
                   placeholder="Enter your email address"
@@ -166,7 +166,7 @@ export default function EmailForm() {
                     emailError
                       ? "border-2 border-red-500"
                       : "border border-gray-200"
-                  } font-navbar w-full flex rounded`}
+                  } font-navbar flex w-full rounded`}
                   onChange={(e) => {
                     setUserEmail(e.target.value);
                     if (e.target.value.length > 0) {
@@ -180,7 +180,7 @@ export default function EmailForm() {
                   </p>
                 )}
               </div>
-              <div className="pr-1 mb-2 flex flex-col">
+              <div className="mb-2 flex flex-col pr-1">
                 <textarea
                   rows={10}
                   placeholder="Message"
@@ -188,7 +188,7 @@ export default function EmailForm() {
                     messageError
                       ? "border-2 border-red-500"
                       : "border border-gray-200"
-                  } font-navbar w-full flex rounded`}
+                  } font-navbar flex w-full rounded`}
                   onChange={(e) => {
                     setUserMessage(e.target.value);
                     if (e.target.value.length > 0) {
@@ -202,8 +202,8 @@ export default function EmailForm() {
                   </p>
                 )}
               </div>
-              <div className="flex mt-4 mx-auto">
-                <button className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block">
+              <div className="mx-auto mt-4 flex">
+                <button className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block">
                   Submit
                 </button>
               </div>

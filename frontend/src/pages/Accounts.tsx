@@ -9,48 +9,48 @@ import { AccountAddForm } from "../components/forms/AccountAddForm";
 import { FiEdit3 } from "react-icons/fi";
 import useDialog from "../utils/dialogStore";
 
+const Accounts = () => {
+  const { openDialog } = useDialog();
 
-const Accounts = () =>{
-    const { openDialog } = useDialog();
-
-    const handleAccountEdit = (account: account) => {
-      openDialog({
-        title: "Edit Account Information",
-        content: <AccountEditForm account={account} />,
-      });
-    };
-
-    const handleAccountDelete = (accountId: number) => {
-      openDialog({
-        title: "Delete Account",
-        content: <AccountDeleteForm accountId={accountId} />,
-      });
-    };
-
-    const handleAccountAdd = () => {
-      openDialog({
-        title: "Create account",
-        content: <AccountAddForm/>,
-      });
-    };
-
-    const { data, isLoading } = useQuery({
-      queryKey: ["accInformation"],
-      queryFn: () =>
-        fetch(config.baseApiUrl + "/hi").then((res) => res.json()),
+  const handleAccountEdit = (account: account) => {
+    openDialog({
+      title: "Edit Account Information",
+      content: <AccountEditForm account={account} />,
     });
+  };
 
-    return (
+  const handleAccountDelete = (accountId: number) => {
+    openDialog({
+      title: "Delete Account",
+      content: <AccountDeleteForm accountId={accountId} />,
+    });
+  };
+
+  const handleAccountAdd = () => {
+    openDialog({
+      title: "Create account",
+      content: <AccountAddForm />,
+    });
+  };
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["accInformation"],
+    queryFn: () => fetch(config.baseApiUrl + "/hi").then((res) => res.json()),
+  });
+
+  return (
+    <div>
+      <h1 className="center my-4 text-2xl font-semibold">
+        List of Employee Accounts
+      </h1>
       <div>
-      <h1 className="text-2xl font-semibold my-4 center">List of Employee Accounts</h1>
-      <div>
-          <button
-            onClick={() => handleAccountAdd()}
-            className="mb-4 self-start rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
-          >
-            Create an account
-          </button>
-        </div>
+        <button
+          onClick={() => handleAccountAdd()}
+          className="mb-4 self-start rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
+        >
+          Create an account
+        </button>
+      </div>
       {isLoading ? (
         <p>Loading...</p>
       ) : (
@@ -65,8 +65,11 @@ const Accounts = () =>{
             </tr>
           </thead>
           <tbody>
-            {data.map((user: account, index : number) => (
-              <tr key={user.id} className="bg-gray-100 border-b border-gray-300">
+            {data.map((user: account, index: number) => (
+              <tr
+                key={user.id}
+                className="border-b border-gray-300 bg-gray-100"
+              >
                 <td className="p-2 text-center">{index + 1}</td>
                 <td className="p-2 text-center">{user.firstName}</td>
                 <td className="p-2 text-center">{user.lastName}</td>
@@ -91,8 +94,7 @@ const Accounts = () =>{
         </table>
       )}
     </div>
-    )
-}
+  );
+};
 
 export default Accounts;
-

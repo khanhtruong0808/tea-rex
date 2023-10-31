@@ -19,7 +19,7 @@ const restaurantPics = [
 
 const Gallery = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null
+    null,
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -44,8 +44,8 @@ const Gallery = () => {
   }, [fullScreenImageUrl]);
   return (
     <div>
-      <div className="w-9/12 max-w-xl mx-auto">
-        <h1 className="font-extrabold text-center text-6xl py-4 font-menu">
+      <div className="mx-auto w-9/12 max-w-xl">
+        <h1 className="font-menu py-4 text-center text-6xl font-extrabold">
           Our Gallery
         </h1>
       </div>
@@ -57,21 +57,21 @@ const Gallery = () => {
           <img
             src={fullScreenImageUrl}
             alt="Full Screen"
-            className="max-w-full max-h-full object-contain"
+            className="max-h-full max-w-full object-contain"
           />
         </div>
       )}
-      <div className="w-9/12 border-t-2 border-black mx-auto">
+      <div className="mx-auto w-9/12 border-t-2 border-black">
         <div className="container mx-auto my-10">
           <div>
             <h2 className="pb-3 text-3xl font-bold">
               <u>Food & Drinks</u>
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {foodPics.map((item, index) => (
               <div
-                className="rounded-sm overflow-hidden w-82 h-80 pb-full flex items-center"
+                className="w-82 pb-full flex h-80 items-center overflow-hidden rounded-sm"
                 key={index}
               >
                 <img
@@ -84,18 +84,18 @@ const Gallery = () => {
             ))}
           </div>
           <div>
-            <h2 className="pt-6 pb-3 text-3xl font-bold">
+            <h2 className="pb-3 pt-6 text-3xl font-bold">
               <u>Restaurant</u>
             </h2>
           </div>
-          <div className="grid md:grid-cols-3 gap-4">
+          <div className="grid gap-4 md:grid-cols-3">
             {restaurantPics.map((item, index) => (
               <div
-                className="bg-gray-300 rounded-sm overflow-hidden w-82 h-80 pb-full flex items-center"
+                className="w-82 pb-full flex h-80 items-center overflow-hidden rounded-sm bg-gray-300"
                 key={index}
               >
                 <img
-                  className="w-full h-full"
+                  className="h-full w-full"
                   src={item.src}
                   alt={item.alt}
                   onClick={handleImageClick}

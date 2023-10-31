@@ -37,17 +37,17 @@ const SidebarMenu = ({
   };
 
   return (
-    <div className="whitespace-nowrap text-sm lg:text-xl xl:text-2xl font-medium sticky top-28">
+    <div className="sticky top-28 whitespace-nowrap text-sm font-medium lg:text-xl xl:text-2xl">
       <Tab.Group>
-        <Tab.List className="grid grid-cols-2 rounded-lg p-1 mb-5 w-full md:w-[320px] lg:w-[425px] xl:w-[500px] bg-black/5 mx-auto">
+        <Tab.List className="mx-auto mb-5 grid w-full grid-cols-2 rounded-lg bg-black/5 p-1 md:w-[320px] lg:w-[425px] xl:w-[500px]">
           <Tab as={Fragment}>
             {({ selected }) => (
               <button
                 className={`${
                   selected
                     ? "bg-amber-400 text-amber-50"
-                    : "hover:bg-amber-400/40 hover:text-white text-black/80"
-                } text-3xl font-extrabold py-3 px-1 text-center rounded-lg outline-amber-400`}
+                    : "text-black/80 hover:bg-amber-400/40 hover:text-white"
+                } rounded-lg px-1 py-3 text-center text-3xl font-extrabold outline-amber-400`}
               >
                 Drinks
               </button>
@@ -59,21 +59,21 @@ const SidebarMenu = ({
                 className={`${
                   selected
                     ? "bg-amber-400 text-amber-50"
-                    : "hover:bg-amber-400/40 hover:text-white text-black/80"
-                } text-3xl font-extrabold py-3 px-1 text-center rounded-lg outline-amber-400`}
+                    : "text-black/80 hover:bg-amber-400/40 hover:text-white"
+                } rounded-lg px-1 py-3 text-center text-3xl font-extrabold outline-amber-400`}
               >
                 Food
               </button>
             )}
           </Tab>
         </Tab.List>
-        <Tab.Panels className="bg-amber-400/90 rounded-lg p-2 md:p-3 lg:p-4">
+        <Tab.Panels className="rounded-lg bg-amber-400/90 p-2 md:p-3 lg:p-4">
           <button
             className={`${
               selectedCategory === "all"
-                ? "text-amber-100 bg-amber-500"
-                : "hover:text-amber-100 hover:bg-amber-500"
-            } cursor-pointer uppercase mb-1 px-3 py-2 rounded-lg w-full text-left`}
+                ? "bg-amber-500 text-amber-100"
+                : "hover:bg-amber-500 hover:text-amber-100"
+            } mb-1 w-full cursor-pointer rounded-lg px-3 py-2 text-left uppercase`}
             onClick={() => setSelectedCategory("all")}
           >
             View All
@@ -85,9 +85,9 @@ const SidebarMenu = ({
                 <button
                   className={`${
                     isSelected
-                      ? "text-amber-100 bg-amber-500"
-                      : "hover:text-amber-100 hover:bg-amber-500"
-                  } cursor-pointer uppercase px-3 py-2 rounded-lg text-left`}
+                      ? "bg-amber-500 text-amber-100"
+                      : "hover:bg-amber-500 hover:text-amber-100"
+                  } cursor-pointer rounded-lg px-3 py-2 text-left uppercase`}
                   key={menuSection.name}
                   onClick={() => handleSelectCategory(menuSection.name)}
                 >
@@ -103,9 +103,9 @@ const SidebarMenu = ({
                 <button
                   className={`${
                     isSelected
-                      ? "text-amber-100 bg-amber-500"
-                      : "hover:text-amber-100 hover:bg-amber-500"
-                  } cursor-pointer uppercase px-3 py-2 rounded-lg text-left`}
+                      ? "bg-amber-500 text-amber-100"
+                      : "hover:bg-amber-500 hover:text-amber-100"
+                  } cursor-pointer rounded-lg px-3 py-2 text-left uppercase`}
                   key={menuSection.name}
                   onClick={() => handleSelectCategory(menuSection.name)}
                 >
@@ -120,7 +120,7 @@ const SidebarMenu = ({
         <button
           type="button"
           onClick={handleAddSection}
-          className="mt-4 mr-2 rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
+          className="mr-2 mt-4 rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800"
         >
           Add Menu Section
         </button>

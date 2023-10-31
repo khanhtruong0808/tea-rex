@@ -39,13 +39,13 @@ const Footer = () => {
     },
   ];
   return (
-    <div className="bg-gradient-to-bl from-amber-600 to-amber-500 sticky left-0 right-0 top-0 z-20">
+    <div className="sticky left-0 right-0 top-0 z-20 bg-gradient-to-bl from-amber-600 to-amber-500">
       <div>
-        <ul className="display:flex; grid sm:grid-cols-2 md:grid-cols-4 container mx-auto pt-10">
+        <ul className="display:flex; container mx-auto grid pt-10 sm:grid-cols-2 md:grid-cols-4">
           {footInfo.map((footInfo) => (
             <li
               key={footInfo.name}
-              className="flex justify-left lg:justify-center sm:block gap-1 break-after-column xl:h-20 lg:pl-20 pl-5"
+              className="justify-left flex break-after-column gap-1 pl-5 sm:block lg:justify-center lg:pl-20 xl:h-20"
             >
               <p className="text-xl font-semibold">{footInfo.name}</p>
               <p>{footInfo.hours}</p>
@@ -55,20 +55,20 @@ const Footer = () => {
           ))}
         </ul>
       </div>
-      <ul className="flex justify-center items-center gap-6 lg:h-1">
+      <ul className="flex items-center justify-center gap-6 lg:h-1">
         {footIcons.map((footIcons) => (
           <NavLink
             to={footIcons.path}
             key={footIcons.name}
             className="flex gap-6"
           >
-            <li className="flex text-2xl bg-lime-700 text-white font-bold rounded-full px-2 py-2 hover:scale-125 transition">
+            <li className="flex rounded-full bg-lime-700 px-2 py-2 text-2xl font-bold text-white transition hover:scale-125">
               {footIcons.icon}
             </li>
           </NavLink>
         ))}
       </ul>
-      <ul className="flex justify-end gap-1 mx-2">
+      <ul className="mx-2 flex justify-end gap-1">
         <p className="pt-1">
           <AiOutlineCopyrightCircle />
         </p>

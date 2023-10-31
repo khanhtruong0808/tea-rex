@@ -5,13 +5,13 @@ import SectionTitle from "./SectionTitle";
 
 export default function ContactSection() {
   return (
-    <div className="flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center justify-center">
       <div className="container">
         <SectionTitle
           heading="Contact us here"
           subheading="Give us some feedback!"
         />
-        <div className="flex flex-col lg:flex-row justify-center mx-auto space-y-6 lg:space-y-0 lg:space-x-6">
+        <div className="mx-auto flex flex-col justify-center space-y-6 lg:flex-row lg:space-x-6 lg:space-y-0">
           <ContactInfoItem
             icon={<MdLocalPhone style={{ fontSize: "50px" }} />}
             text="+916-XXX-XXXX"

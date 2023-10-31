@@ -5,22 +5,22 @@ function PaymentResult() {
   const paymentSuccess = location.state?.success;
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex h-screen flex-col items-center justify-center">
       {paymentSuccess ? (
-        <div className="relative flex flex-col items-center w-3/4 mb-4">
+        <div className="relative mb-4 flex w-3/4 flex-col items-center">
           <img
-            className="w-1/2 md:w-3/4 object-contain"
+            className="w-1/2 object-contain md:w-3/4"
             src={"/happy-tea-rex.png"}
           />
-          <div className="absolute center mb-10 font-description text-l md:text-3xl">
+          <div className="center font-description text-l absolute mb-10 md:text-3xl">
             Payment was successful!
           </div>
         </div>
       ) : (
         <>
-          <div className="relative flex flex-col items-center w-3/4 mb-4">
+          <div className="relative mb-4 flex w-3/4 flex-col items-center">
             <img className="w-1/2 object-contain" src={"/sad-tea-rex.png"} />
-            <div className="absolute center mb-10 font-description text-l md:text-3xl">
+            <div className="center font-description text-l absolute mb-10 md:text-3xl">
               Payment failed!
             </div>
           </div>

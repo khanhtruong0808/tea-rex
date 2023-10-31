@@ -5,50 +5,49 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDialog from "../../utils/dialogStore";
 
-
 export const AccountEditForm = ({ account }: { account: account }) => {
-    const [loading, setLoading] = useState(false);
-    const { closeDialog } = useDialog();
-  
-    const queryClient = useQueryClient();
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<account>({
-      defaultValues: {
-        username: account.username,
-        password: account.password,
-        firstName: account.firstName,
-        lastName: account.lastName,
-      },
-    });
+  const [loading, setLoading] = useState(false);
+  const { closeDialog } = useDialog();
 
-    const mutation = useMutation({
-        mutationFn: (newAccount: account) =>
-          fetch(config.baseApiUrl + `/accounts/${account.id}`, {
-            method: "PUT",
-            body: JSON.stringify(newAccount),
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }),
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["accInformation"] });
-          toast.success("Account updated");
-        },
-        onError: (err) => {
-          console.error(err);
-          toast.error("Could not edit account information");
-        },
-      });
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<account>({
+    defaultValues: {
+      username: account.username,
+      password: account.password,
+      firstName: account.firstName,
+      lastName: account.lastName,
+    },
+  });
 
-    const onSubmit: SubmitHandler<account> = async (data) => {
+  const mutation = useMutation({
+    mutationFn: (newAccount: account) =>
+      fetch(config.baseApiUrl + `/accounts/${account.id}`, {
+        method: "PUT",
+        body: JSON.stringify(newAccount),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["accInformation"] });
+      toast.success("Account updated");
+    },
+    onError: (err) => {
+      console.error(err);
+      toast.error("Could not edit account information");
+    },
+  });
+
+  const onSubmit: SubmitHandler<account> = async (data) => {
     setLoading(true);
     await mutation.mutateAsync({ ...data });
     setLoading(false);
     closeDialog();
-    }
+  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
@@ -124,12 +123,12 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       <button
         type="submit"
         className={`${
-          loading && "opacity-50 cursor-not-allowed"
-        } text-white bg-lime-700 hover:bg-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 self-start w-24`}
+          loading && "cursor-not-allowed opacity-50"
+        } mb-2 mr-2 w-24 self-start rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800`}
       >
         {loading ? (
           <svg
-            className="animate-spin h-5 w-5 text-white mx-auto"
+            className="mx-auto h-5 w-5 animate-spin text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -154,4 +153,4 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       </button>
     </form>
   );
-}
+};

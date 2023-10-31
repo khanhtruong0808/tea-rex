@@ -37,7 +37,7 @@ export const AccountAddForm = () => {
 
   const onSubmit: SubmitHandler<account> = async (data) => {
     setLoading(true);
-    await mutation.mutateAsync({ ...data,});
+    await mutation.mutateAsync({ ...data });
     setLoading(false);
     closeDialog();
   };
@@ -110,7 +110,7 @@ export const AccountAddForm = () => {
           {errors.lastName && (
             <span className="text-red-500">This field is required</span>
           )}
-        </div> 
+        </div>
       </div>
       <div>
         <label
@@ -127,19 +127,19 @@ export const AccountAddForm = () => {
           {errors.email && (
             <span className="text-red-500">This field is required</span>
           )}
-        </div> 
+        </div>
       </div>
-      
+
       <div></div>
       <button
         type="submit"
         className={`${
-          loading && "opacity-50 cursor-not-allowed"
-        } text-white bg-lime-700 hover:bg-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 self-start w-24`}
+          loading && "cursor-not-allowed opacity-50"
+        } mb-2 mr-2 w-24 self-start rounded-lg bg-lime-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-lime-800`}
       >
         {loading ? (
           <svg
-            className="animate-spin h-5 w-5 text-white mx-auto"
+            className="mx-auto h-5 w-5 animate-spin text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"

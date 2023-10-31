@@ -35,12 +35,12 @@ export const AccountDeleteForm = ({ accountId }: { accountId: number }) => {
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-md text-gray-700">
-        Are you sure you want to delete this account? <br></br>This action cannot
-        be undone.
+        Are you sure you want to delete this account? <br></br>This action
+        cannot be undone.
       </h2>
-      <div className="justify-between flex gap-4 items-center">
+      <div className="flex items-center justify-between gap-4">
         <button
-          className="text-sm text-gray-800 bg-gray-100 px-5 py-2.5 rounded-lg hover:bg-gray-200 ring-1 ring-gray-100"
+          className="rounded-lg bg-gray-100 px-5 py-2.5 text-sm text-gray-800 ring-1 ring-gray-100 hover:bg-gray-200"
           onClick={closeDialog}
         >
           Cancel
@@ -48,12 +48,12 @@ export const AccountDeleteForm = ({ accountId }: { accountId: number }) => {
         <button
           onClick={handleDelete}
           className={`${
-            loading && "opacity-50 cursor-not-allowed"
-          } text-white bg-red-600 hover:bg-red-700 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 self-start w-24`}
+            loading && "cursor-not-allowed opacity-50"
+          } mb-2 mr-2 w-24 self-start rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-red-700`}
         >
           {loading ? (
             <svg
-              className="animate-spin h-5 w-5 text-white mx-auto"
+              className="mx-auto h-5 w-5 animate-spin text-white"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"

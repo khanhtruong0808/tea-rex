@@ -64,7 +64,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     option: Item[],
     specialInstructions: string,
     quantity: number,
-    spice?: Item
+    spice?: Item,
   ) {
     if (spice !== null) {
       const newCartItems: CartItem[] = [
@@ -86,7 +86,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     setIsEmpty(false);
     if (item.menuType === "beverage") {
       setTotalBeverageAmount(
-        (totalBeverageAmount) => totalBeverageAmount + Number(item.price)
+        (totalBeverageAmount) => totalBeverageAmount + Number(item.price),
       );
     }
     if (totalBeverageAmount > 0) {

@@ -177,7 +177,7 @@ const Menu = () => {
         <img
           src="tearex.png"
           alt="tearex.png"
-          className="animate-pulse text-center ml-10 w-[40%]" // Other classes can be used alongside inline styles
+          className="ml-10 w-[40%] animate-pulse text-center" // Other classes can be used alongside inline styles
         />
         {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE
         <div
@@ -275,7 +275,7 @@ const Menu = () => {
   const handleAddFoodToCart = (
     selectedItem: MenuItem,
     selectedOption: Item[],
-    selectedSpiceLevel: Item
+    selectedSpiceLevel: Item,
   ) => {
     if (selectedSpiceLevel.name === "") {
       setSpiceError(true);
@@ -291,7 +291,7 @@ const Menu = () => {
       newOptionArr,
       specialInstructions,
       quantity,
-      selectedSpiceLevel
+      selectedSpiceLevel,
     );
 
     // reset modal form state for next item to be added
@@ -310,7 +310,7 @@ const Menu = () => {
   // function to handle adding beverages to cart
   const handleAddBeverageToCart = (
     selectedItem: MenuItem,
-    selectedToppings: Item[]
+    selectedToppings: Item[],
   ) => {
     const newArr = [
       ...selectedToppings,
@@ -355,7 +355,7 @@ const Menu = () => {
 
     if (exist) {
       const newSelectedOption = selectedOption.map((x) =>
-        x.name === sauceName ? { ...exist, qty: quantity, price: 0.5 } : x
+        x.name === sauceName ? { ...exist, qty: quantity, price: 0.5 } : x,
       );
       setSelectedOption(newSelectedOption);
     } else {
@@ -393,7 +393,7 @@ const Menu = () => {
       // if toppings exist, remove it from the array
       if (exist) {
         const newSelectedToppings = selectedToppings.filter(
-          (x) => x.name !== name
+          (x) => x.name !== name,
         );
         setSelectedToppings(newSelectedToppings);
       } else {
@@ -413,7 +413,7 @@ const Menu = () => {
       return (
         <label
           key={index}
-          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+          className={`relative mb-2 block cursor-pointer rounded-lg bg-white shadow-lg ${
             selected
               ? "border-2 border-orange-300"
               : "border border-transparent hover:border-gray-300"
@@ -421,7 +421,7 @@ const Menu = () => {
         >
           <input
             type="checkbox"
-            className="form-checkbox absolute opacity-0 h-6 w-6"
+            className="form-checkbox absolute h-6 w-6 opacity-0"
             onChange={() => handleToppings(choice, -1)}
             checked={selected}
           />
@@ -441,7 +441,7 @@ const Menu = () => {
         <label
           key={index}
           aria-disabled={disabled}
-          className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer aria-disabled:opacity-50 aria-disabled:cursor-not-allowed aria-disabled:border-none ${
+          className={`relative mb-2 block cursor-pointer rounded-lg bg-white shadow-lg aria-disabled:cursor-not-allowed aria-disabled:border-none aria-disabled:opacity-50 ${
             selected
               ? "border-2 border-orange-300"
               : "border border-transparent hover:border-gray-300"
@@ -449,7 +449,7 @@ const Menu = () => {
         >
           <input
             type="checkbox"
-            className="form-checkbox absolute opacity-0 h-6 w-6"
+            className="form-checkbox absolute h-6 w-6 opacity-0"
             onChange={() => handleToppings(choice, 1)}
             checked={selected}
             disabled={disabled}
@@ -523,7 +523,7 @@ const Menu = () => {
                 </span>
               </h3>
               <hr className="mb-4 border-gray-300" />
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-screen-lg mx-auto">
+              <div className="mx-auto grid max-w-screen-lg grid-cols-1 gap-4 md:grid-cols-2">
                 {sauceChoices.map((choice, index) => (
                   <SauceSelector
                     key={index}
@@ -539,7 +539,7 @@ const Menu = () => {
             <div className="mt-4">
               <h3
                 className={`${
-                  spiceError ? "text-red-500 text-bold" : ""
+                  spiceError ? "text-bold text-red-500" : ""
                 } mb-2 text-lg font-bold`}
               >
                 Spicy
@@ -551,7 +551,7 @@ const Menu = () => {
               <hr className="mb-2 border-gray-300" />
               <div className="grid grid-cols-2 gap-2">
                 {spiceError && (
-                  <p className="col-span-full text-red-500 text-sm">
+                  <p className="col-span-full text-sm text-red-500">
                     Please select a spice level.
                   </p>
                 )}
@@ -560,7 +560,7 @@ const Menu = () => {
                   return (
                     <label
                       key={index}
-                      className={`block bg-white rounded-lg shadow-lg mb-2 relative cursor-pointer ${
+                      className={`relative mb-2 block cursor-pointer rounded-lg bg-white shadow-lg ${
                         selected
                           ? "border-2 border-orange-300"
                           : "border border-transparent hover:border-gray-300"
@@ -568,7 +568,7 @@ const Menu = () => {
                     >
                       <input
                         type="checkbox"
-                        className="form-checkbox absolute opacity-0 h-6 w-6"
+                        className="form-checkbox absolute h-6 w-6 opacity-0"
                         checked={selected}
                         onChange={() => handleSpiceLevelChange(choice, -1)}
                       />
@@ -601,7 +601,7 @@ const Menu = () => {
                     handleAddFoodToCart(
                       selectedItem,
                       selectedOption,
-                      selectedSpiceLevel
+                      selectedSpiceLevel,
                     )
                   }
                 >
@@ -616,7 +616,7 @@ const Menu = () => {
             <div className="mt-4">
               <h3
                 className={`${
-                  sizeError ? "text-red-500 text-bold" : ""
+                  sizeError ? "text-bold text-red-500" : ""
                 } mb-2 text-lg font-bold`}
               >
                 Cup Size
@@ -625,9 +625,9 @@ const Menu = () => {
                   (Please select 1)
                 </span>
               </h3>
-              <hr className="border-gray-300 mb-2" />
+              <hr className="mb-2 border-gray-300" />
               {sizeError && (
-                <p className="col-span-full text-red-500 text-sm">
+                <p className="col-span-full text-sm text-red-500">
                   Please select a size.
                 </p>
               )}
@@ -653,7 +653,7 @@ const Menu = () => {
             <div className="mt-4">
               <h3
                 className={`${
-                  iceError ? "text-red-500 text-bold" : ""
+                  iceError ? "text-bold text-red-500" : ""
                 } mb-2 text-lg font-bold`}
               >
                 Ice Level
@@ -664,11 +664,11 @@ const Menu = () => {
               </h3>
               <hr className="mb-2 border-gray-300" />
               {iceError && (
-                <p className="col-span-full text-red-500 text-sm">
+                <p className="col-span-full text-sm text-red-500">
                   Please select an ice level.
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 {renderIceChoices()}
               </div>
             </div>
@@ -676,7 +676,7 @@ const Menu = () => {
             <div className="mt-4">
               <h3
                 className={`${
-                  sugarError ? "text-red-500 text-bold" : ""
+                  sugarError ? "text-bold text-red-500" : ""
                 } mb-2 text-lg font-bold`}
               >
                 Sugar Level
@@ -687,11 +687,11 @@ const Menu = () => {
               </h3>
               <hr className="mb-2 border-gray-300" />
               {sugarError && (
-                <p className="col-span-full text-red-500 text-sm">
+                <p className="col-span-full text-sm text-red-500">
                   Please select a sugar level.
                 </p>
               )}
-              <div className="grid grid-cols-2 gap-2 mt-2">
+              <div className="mt-2 grid grid-cols-2 gap-2">
                 {renderSugarChoices()}
               </div>
             </div>
@@ -727,9 +727,9 @@ const Menu = () => {
   );
 
   return (
-    <div className="flex gap-x-4 px-4 lg:px-6 pt-12 pb-20">
+    <div className="flex gap-x-4 px-4 pb-20 pt-12 lg:px-6">
       <button
-        className="block md:hidden z-50 fixed rounded-full shadow-md bg-lime-700 px-4 py-6 text-sm font-bold text-white hover:bg-lime-800"
+        className="fixed z-50 block rounded-full bg-lime-700 px-4 py-6 text-sm font-bold text-white shadow-md hover:bg-lime-800 md:hidden"
         onClick={handleOpenMobileMenu}
       >
         Menu
@@ -740,7 +740,7 @@ const Menu = () => {
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
-        <div className="fixed lg:px-40 pt-9">
+        <div className="fixed pt-9 lg:px-40">
           <DeliveryOption />
         </div>
       </div>
@@ -774,12 +774,12 @@ const Menu = () => {
             ))
           : data.find(
               (menuSection: MenuSection) =>
-                menuSection.name === selectedCategory
+                menuSection.name === selectedCategory,
             ) && (
               <MenuSection
                 menuSection={data.find(
                   (menuSection: MenuSection) =>
-                    menuSection.name === selectedCategory
+                    menuSection.name === selectedCategory,
                 )}
                 handleAddToCart={handleAddToCart}
               />

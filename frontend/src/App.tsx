@@ -35,8 +35,8 @@ function App() {
         <Route path="/account" element={<Accounts />} />
         <Route path="/faq" element={<FAQPage />} /> {/* Add FAQ page route */}
         <Route path="*" element={<NotFound />} />
-      </Route>
-    )
+      </Route>,
+    ),
   );
 
   return (

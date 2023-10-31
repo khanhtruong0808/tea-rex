@@ -152,7 +152,7 @@ const RewardsSystem = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({ phoneNumber, spendingPoints }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -164,7 +164,7 @@ const RewardsSystem = ({
           setSpentPoints(data.pendingPoints);
 
           console.log(
-            `Points left: ${data.points}, Pending points: ${data.pendingPoints}`
+            `Points left: ${data.points}, Pending points: ${data.pendingPoints}`,
           );
 
           console.log("Potential discount: " + potentialDiscount);
@@ -180,7 +180,7 @@ const RewardsSystem = ({
           }
         } else {
           console.error(
-            "Response did not contain points or pendingPoints information."
+            "Response did not contain points or pendingPoints information.",
           );
           return;
         }
@@ -252,8 +252,8 @@ const RewardsSystem = ({
   };
 
   return (
-    <div className="border border-gray-300 p-4 rounded-md">
-      <label className="block text-sm font-medium text-gray-600 mb-2">
+    <div className="rounded-md border border-gray-300 p-4">
+      <label className="mb-2 block text-sm font-medium text-gray-600">
         Sign up for our rewards system, or if you already have your phone with
         us, input your phone number to gain points on your order!
       </label>
@@ -261,7 +261,7 @@ const RewardsSystem = ({
         type="text"
         className={`p-2  ${
           phoneError ? "border-2 border-red-500" : "border border-gray-200"
-        } rounded w-full`}
+        } w-full rounded`}
         placeholder="(111) 111-1111"
         value={phoneNumber}
         onChange={handlePhoneChange}
@@ -273,7 +273,7 @@ const RewardsSystem = ({
       )}
       <button
         onClick={handleSubmit}
-        className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block"
+        className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
       >
         Submit
       </button>
@@ -283,15 +283,15 @@ const RewardsSystem = ({
           Points: {points}
           <div>
             Spend points! Discount only applies to beverages!
-            <div className="flex mt-4 space-x-2">
+            <div className="mt-4 flex space-x-2">
               <button
                 onClick={() => handleSpendPoints(10)}
                 disabled={loading}
-                className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block"
+                className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
               >
                 {loading ? (
                   <svg
-                    className="animate-spin h-5 w-5 text-white mx-auto"
+                    className="mx-auto h-5 w-5 animate-spin text-white"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -316,14 +316,14 @@ const RewardsSystem = ({
               </button>
               <button
                 onClick={cancelShowingRewardsInfo}
-                className="mt-2 px-4 py-2 bg-red-500 text-white font-semibold rounded hover:scale-110 transition lg:block"
+                className="mt-2 rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
               >
                 Cancel
               </button>
             </div>
             <button
               onClick={handleAddPointsClick}
-              className="mt-2 px-4 py-2 bg-lime-700 text-white font-semibold rounded hover:scale-110 transition lg:block"
+              className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
             >
               Add points THIS IS A TESTING BUTTON DELETE LATER!!!!
             </button>

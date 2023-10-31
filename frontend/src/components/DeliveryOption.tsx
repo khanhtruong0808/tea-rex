@@ -16,14 +16,14 @@ const DeliveryOption = () => {
     },
   ];
   return (
-    <div className="flex justify-center items-center gap-6">
+    <div className="flex items-center justify-center gap-6">
       {deliveryIcons.map((deliveryIcons) => (
         <NavLink
           to={deliveryIcons.path}
           key={deliveryIcons.name}
           className="flex gap-8"
         >
-          <li className="flex text-6xl bg-violet-400 text-white font-bold rounded-full px-3 py-3 hover:scale-125 transition">
+          <li className="flex rounded-full bg-violet-400 px-3 py-3 text-6xl font-bold text-white transition hover:scale-125">
             {deliveryIcons.icon}
           </li>
         </NavLink>

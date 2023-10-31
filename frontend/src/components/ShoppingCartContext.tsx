@@ -17,7 +17,7 @@ type ShoppingCartContext = {
     option: Item[],
     specialInstructions: string,
     quantity: number,
-    spice?: Item
+    spice?: Item,
   ) => void;
   removeItem: (id: number) => void;
   clearCart: () => void;
