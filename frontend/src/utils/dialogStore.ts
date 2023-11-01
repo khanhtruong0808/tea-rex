@@ -10,7 +10,7 @@ interface DialogState {
   openDialog: ({
     title,
     content,
-    variant = "menu",
+    variant,
   }: {
     title: string;
     content: ReactNode;
