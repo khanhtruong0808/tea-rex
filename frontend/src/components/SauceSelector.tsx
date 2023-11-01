@@ -29,8 +29,8 @@ export const SauceSelector = ({
   };
 
   return (
-    <div className="flex w-3/4 items-center p-0">
-      <div className="flex w-[500px] items-center rounded-lg border border-gray-300 p-2">
+    <div className="flex items-center p-0">
+      <div className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-2">
         <button
           className={`flex h-8 w-8 items-center justify-center rounded-full ${
             quantity === 0 ? "bg-gray-200" : "bg-red-500 text-white"
@@ -39,22 +39,22 @@ export const SauceSelector = ({
         >
           {quantity === 0 ? "+" : "X"}
         </button>
-        <span className="w-40 overflow-hidden overflow-ellipsis whitespace-nowrap">
-          {sauceName}
-        </span>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white"
-          onClick={handleDecrement}
-        >
-          -
-        </button>
-        <span className="mx-2">{quantity}</span>
-        <button
-          className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white"
-          onClick={handleIncrement}
-        >
-          +
-        </button>
+        <span className="text-center">{sauceName}</span>
+        <div className="flex items-center">
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white"
+            onClick={handleDecrement}
+          >
+            -
+          </button>
+          <span className="mx-2">{quantity}</span>
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white"
+            onClick={handleIncrement}
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );
