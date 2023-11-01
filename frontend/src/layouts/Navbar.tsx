@@ -1,6 +1,5 @@
 import { Disclosure } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { HiOutlineShoppingCart } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { FaShoppingCart } from "react-icons/fa";
@@ -17,18 +16,17 @@ const routes = [
 
 export const Navbar = () => {
   const { openCart, cartQuantity } = useShoppingCart();
-
   return (
     <Disclosure
       as="nav"
       className="sticky left-0 right-0 top-0 z-20 bg-gradient-to-bl from-amber-600 to-amber-500"
     >
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <div className="max-w-8xl mx-auto px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 items-center justify-between md:h-20 xl:h-24">
               <div className="flex items-center">
-                <NavLink to="/" className="shrink-0">
+                <NavLink to="/" className="shrink-0" onClick={() => close()}>
                   <img
                     src="tea-rex-sign.png"
                     alt=""
@@ -88,6 +86,7 @@ export const Navbar = () => {
               {routes.map((route) => (
                 <NavLink
                   to={route.path}
+                  onClick={() => close()} // hack to close the menu on mobile
                   key={route.name}
                   preventScrollReset={true}
                   className="font-navbar block rounded-md px-3 text-2xl font-bold hover:bg-lime-700 hover:text-white"
@@ -98,6 +97,7 @@ export const Navbar = () => {
               <div className="py-1"></div>
               <NavLink
                 to="/menu"
+                onClick={() => close()} // hack to close the menu on mobile
                 className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
               >
                 ORDER NOW

@@ -65,7 +65,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     quantity: number,
     spice?: Item,
   ) {
-    const id = Math.random().toString(36).substring(2, 10);
+    const id = Math.random().toString(36).substring(2, 18);
 
     if (spice !== null) {
       const newCartItems: CartItem[] = [
