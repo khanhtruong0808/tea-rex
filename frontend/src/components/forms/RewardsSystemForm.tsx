@@ -3,6 +3,7 @@ import { config } from "../../config";
 import { useShoppingCart } from "../ShoppingCartProvider";
 import useAlert from "../AlertMessageContext";
 import useRewards from "../RewardsContext";
+import { Spinner } from "../../utils/Spinner";
 
 /*  
 	NOTES: ---------------------------------------------------------------
@@ -23,20 +24,13 @@ interface RewardsSystemProps {
 
 const RewardsSystem = ({
   subtotal,
-  total,
   setIsRewardsMember,
   setRewardsMemberPhoneNumber,
 }: RewardsSystemProps) => {
-  const {
-    cartItems,
-    updateDiscount,
-    discount,
-    totalBeverageAmount,
-    addToCart,
-  } = useShoppingCart();
+  const { cartItems, updateDiscount, discount, totalBeverageAmount } =
+    useShoppingCart();
   const {
     setContextPhoneNumber,
-    handleAddPoints,
     handleRevertPendingPoints,
     setPoints,
     setSpentPoints,
@@ -47,7 +41,9 @@ const RewardsSystem = ({
 
   const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [popcornChickenLoading, setPopcornChickenLoading] = useState(false); // loading state for redeeming popcorn chicken
+  const [drinkLoading, setDrinkLoading] = useState(false); // loading state for redeeming drinks
+  const [phoneLoading, setPhoneLoading] = useState(false);
   const [beverageDiscount, setBeverageDiscount] = useState(0);
   let [phoneNumber, setPhoneNumber] = useState("");
 
@@ -131,10 +127,6 @@ const RewardsSystem = ({
     }
   };
 
-  const handleAddPointsClick = () => {
-    handleAddPoints(totalBeverageAmount);
-  };
-
   async function handleSpendPoints(
     spentPoints: number,
     rewardsType: RewardsType,
@@ -152,7 +144,10 @@ const RewardsSystem = ({
     phoneNumber = cleanPhoneNumber(phoneNumber);
     setContextPhoneNumber(phoneNumber);
 
-    setLoading(true);
+    rewardsType === "drinks"
+      ? setDrinkLoading(true)
+      : setPopcornChickenLoading(true);
+
     try {
       const response = await fetch(
         config.baseApiUrl + "/rewards-member-pend-spend",
@@ -187,7 +182,8 @@ const RewardsSystem = ({
 
               if (potentialBeverageDiscount === 0) {
                 showAlert("No more beverages to apply discount!", "error");
-                setLoading(false);
+                setDrinkLoading(false);
+                setPopcornChickenLoading(false);
                 return;
               }
 
@@ -222,19 +218,22 @@ const RewardsSystem = ({
                 data.pendingPoints,
             );
           }
-          setLoading(false);
+          setDrinkLoading(false);
+          setPopcornChickenLoading(false);
           return;
         }
       } else {
         console.error("No data received from the server!");
-        setLoading(false);
+        setDrinkLoading(false);
+        setPopcornChickenLoading(false);
         return;
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
       showAlert(errorMessage, "error");
     }
-    setLoading(false);
+    setDrinkLoading(false);
+    setPopcornChickenLoading(false);
   }
 
   function applyDiscountForItem(itemType: RewardsType) {
@@ -274,7 +273,6 @@ const RewardsSystem = ({
         `No more ${config.itemName} to redeem or discount exceeds available amount!`,
         "error",
       );
-      setLoading(false);
       return false;
     }
 
@@ -293,6 +291,8 @@ const RewardsSystem = ({
     }
 
     phoneNumber = cleanPhoneNumber(phoneNumber);
+
+    setPhoneLoading(true);
     try {
       let response = await fetch(config.baseApiUrl + "/rewards-member-check", {
         method: "POST",
@@ -334,120 +334,96 @@ const RewardsSystem = ({
       const errorMessage = (error as Error).message;
       console.error(`Error: ${errorMessage}`);
     }
+    setPhoneLoading(false);
   };
 
   return (
-    <div className="rounded-md border border-gray-300 p-4">
-      <label className="mb-2 block text-sm font-medium text-gray-600">
+    <div>
+      <h2 className="text-lg font-medium">Rewards</h2>
+      <p className="my-2 block text-sm text-gray-800">
         Sign up for our rewards system, or if you already have your phone with
         us, input your phone number to gain points on your order!
+      </p>
+      <label className="my-2 border-gray-300 pt-2 text-sm font-medium text-gray-700">
+        Phone number
       </label>
-      <input
-        type="text"
-        className={`p-2  ${
-          phoneError ? "border-2 border-red-500" : "border border-gray-200"
-        } w-full rounded`}
-        placeholder="(111) 111-1111"
-        value={phoneNumber}
-        onChange={handlePhoneChange}
-      />
+      <div className="flex items-end gap-2">
+        <input
+          type="text"
+          className={`${
+            phoneError ? "border-red-500" : "border-gray-200"
+          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          placeholder="(111) 111-1111"
+          value={phoneNumber}
+          onChange={handlePhoneChange}
+        />
+        <button
+          onClick={handleSubmit}
+          className="w-20 rounded-md border bg-lime-600 py-2 text-white hover:bg-lime-700 sm:text-sm lg:block"
+        >
+          {phoneLoading ? <Spinner /> : "Submit"}
+        </button>
+      </div>
       {phoneError && (
         <p className="text-sm text-red-500">
           Please enter a valid phone number!
         </p>
       )}
-      <button
-        onClick={handleSubmit}
-        className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-      >
-        Submit
-      </button>
 
       {isShowingRewardsInfo && (
         <div className="mt-4">
-          Points: {points}
-          <div>
-            Spend points! Discount only applies to beverages!
-            <div className="mt-4 flex space-x-2">
-              <button
-                onClick={() => {
-                  handleSpendPoints(50, "drinks");
-                }}
-                disabled={loading}
-                className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-              >
-                {loading ? (
-                  <svg
-                    className="mx-auto h-5 w-5 animate-spin text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  "Spend 50 Points for a free drink under $6!"
-                )}
-              </button>
-
-              <button
-                onClick={() => {
-                  handleSpendPoints(200, "popcorn-chicken");
-                }}
-                disabled={loading}
-                className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-              >
-                {loading ? (
-                  <svg
-                    className="mx-auto h-5 w-5 animate-spin text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  "Spend 200 Points for free popcorn chicken!"
-                )}
-              </button>
-              <button
-                onClick={cancelShowingRewardsInfo}
-                className="mt-2 rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-              >
-                Cancel
-              </button>
-            </div>
+          <div className="mb-4 flex flex-col">
             <button
-              onClick={handleAddPointsClick}
-              className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
+              onClick={() => {
+                handleSpendPoints(50, "drinks");
+              }}
+              disabled={drinkLoading || points < 50}
+              className="group mt-2 h-12 w-full rounded bg-lime-600 text-sm text-white enabled:hover:bg-lime-700 lg:block"
             >
-              Add points THIS IS A TESTING BUTTON DELETE LATER!!!!
+              {drinkLoading ? (
+                <Spinner />
+              ) : (
+                <div className="flex group-disabled:cursor-not-allowed group-disabled:opacity-50">
+                  <div className="flex items-center justify-center whitespace-nowrap border-r border-lime-900 px-5 text-base">
+                    50 points
+                  </div>
+                  <div className="flex w-full flex-col items-center justify-center px-4">
+                    <p>$6 off any drink*</p>
+                  </div>
+                </div>
+              )}
+            </button>
+            <button
+              onClick={() => {
+                handleSpendPoints(200, "popcorn-chicken");
+              }}
+              disabled={popcornChickenLoading || points < 200}
+              className="group mt-2 h-12 w-full rounded bg-lime-600 text-sm text-white enabled:hover:bg-lime-700 lg:block"
+            >
+              {popcornChickenLoading ? (
+                <Spinner />
+              ) : (
+                <div className="flex group-disabled:cursor-not-allowed group-disabled:opacity-50">
+                  <div className="flex items-center justify-center whitespace-nowrap border-r border-lime-900 px-4 text-base">
+                    200 points
+                  </div>
+                  <div className="flex w-full flex-col items-center justify-center px-4">
+                    <p>Free popcorn chicken</p>
+                  </div>
+                </div>
+              )}
             </button>
           </div>
+          <span className="font-medium">{points}</span> points left
+          <p className="text-xs text-gray-700">
+            *Redeeming $6 off a drink does not include price of toppings
+          </p>
+          <button
+            onClick={cancelShowingRewardsInfo}
+            className="mt-2 rounded border border-gray-300 bg-gray-50 px-4 py-2 text-sm text-gray-500 lg:block"
+          >
+            Cancel
+          </button>
         </div>
       )}
     </div>
