@@ -15,9 +15,19 @@ interface MenuSection {
 }
 
 type CartItem = {
+  id: string;
   item: MenuItem;
   option: Item[];
   specialInstructions;
   quantity: number;
   spice?: Item;
 };
+
+interface account {
+  id: number;
+  username: string;
+  password: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+}

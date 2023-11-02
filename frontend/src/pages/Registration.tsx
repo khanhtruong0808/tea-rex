@@ -57,17 +57,17 @@ class Registration extends React.Component<IProps, IState> {
 
   render() {
     return (
-      <div className="flex items-center h-screen rounded-md justify-center">
+      <div className="flex h-screen items-center justify-center rounded-md">
         <form
           onSubmit={this.handleSubmit}
-          className="mx-auto p-8 px-8 rounded-lg justify-center"
+          className="mx-auto justify-center rounded-lg p-8 px-8"
         >
-          <div className="w-96 p-10 shadow-lg bg-gray-200 rounded-md justify-center">
+          <div className="w-96 justify-center rounded-md bg-gray-200 p-10 shadow-lg">
             <div>
-              <h3 className="text-4xl font-semibold text-center">Welcome!!!</h3>
+              <h3 className="text-center text-4xl font-semibold">Welcome!!!</h3>
               <div>
                 <input
-                  className="w-full text-black my-2 py-4 bg-transparent border-b border-black outline-none focus:outline-none"
+                  className="my-2 w-full border-b border-black bg-transparent py-4 text-black outline-none focus:outline-none"
                   type="username"
                   placeholder="username"
                   value={this.state.username}
@@ -78,7 +78,7 @@ class Registration extends React.Component<IProps, IState> {
                 <input
                   type={this.state.showPassword ? "text" : "password"}
                   placeholder="password"
-                  className="w-full text-black my-2 py-4 bg-transparent border-b border-black outline-none focus:outline-none"
+                  className="my-2 w-full border-b border-black bg-transparent py-4 text-black outline-none focus:outline-none"
                   value={this.state.password}
                   onChange={this.handlePasswordChange}
                   style={{ flex: 1 }}
@@ -91,7 +91,7 @@ class Registration extends React.Component<IProps, IState> {
                 <input
                   type={this.state.showPassword ? "text" : "password"}
                   placeholder="confirm password"
-                  className="w-full text-black my-2 py-4 bg-transparent border-b border-black outline-none focus:outline-none"
+                  className="my-2 w-full border-b border-black bg-transparent py-4 text-black outline-none focus:outline-none"
                   value={this.state.confirmPassword}
                   onChange={this.handleConfirmPasswordChange}
                 />
@@ -102,7 +102,7 @@ class Registration extends React.Component<IProps, IState> {
             </div>
             <div className="mt-5 justify-center">
               <button
-                className="w-full border-green-500 bg-green-500 text-white py-1 px-5 rounded-md"
+                className="w-full rounded-md border-green-500 bg-green-500 px-5 py-1 text-white"
                 type="submit"
               >
                 Register

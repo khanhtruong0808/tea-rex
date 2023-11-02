@@ -164,7 +164,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
         try {
           console.log("Tax:" + tax);
           const finalAmount = Math.round(
-            Number((subtotal - discount + tax).toFixed(2)) * 100
+            Number((subtotal - discount + tax).toFixed(2)) * 100,
           );
           const response = await fetch(config.baseApiUrl + "/payment", {
             method: "POST",
@@ -258,17 +258,17 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <fieldset className="border border-gray-300 p-4 rounded-md">
+      <fieldset className="rounded-md border border-gray-300 p-4">
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-600 mb-2">
+          <label className="mb-2 block text-sm font-semibold text-gray-600">
             Pick up location: <br />
             2475 Elk Grove Blvd #150, Elk Grove, CA 95758
             <Map width="100%" />
           </label>
         </div>
         {/* Name */}
-        <div className="mb-4 relative">
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+        <div className="relative mb-4">
+          <label className="mb-2 block text-sm font-medium text-gray-600">
             Name
           </label>
           <input
@@ -276,7 +276,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             placeholder="Name on Card"
             className={`p-3 ${
               nameError ? "border-2 border-red-500" : "border border-gray-200"
-            } rounded w-full`}
+            } w-full rounded`}
             onChange={(e) => {
               setName(e.target.value);
               if (e.target.value.length > 0) {
@@ -289,15 +289,15 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           )}
         </div>
         {/* Card Number */}
-        <div className="mb-4 relative">
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+        <div className="relative mb-4">
+          <label className="mb-2 block text-sm font-medium text-gray-600">
             Card Number
           </label>
           <CardNumberElement
             options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
             className={`p-3 ${
               cardError ? "border-2 border-red-500" : "border border-gray-200"
-            } rounded w-full`}
+            } w-full rounded`}
             onChange={(e) => {
               setIsCardComplete(e.complete);
               if (e.complete) {
@@ -308,13 +308,13 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           {cardError && (
             <p className="text-sm text-red-500"> Please enter a card number!</p>
           )}
-          <span className="absolute top-1/2 right-10 transform -translate-y-1/2"></span>
+          <span className="absolute right-10 top-1/2 -translate-y-1/2 transform"></span>
         </div>
         {/* Expiration Date, CVV*/}
-        <div className="mb-4 w-full flex">
+        <div className="mb-4 flex w-full">
           {/* Expiration Date */}
-          <div className="flex-grow mr-1">
-            <label className="block text-sm font-medium text-gray-600 mb-2">
+          <div className="mr-1 flex-grow">
+            <label className="mb-2 block text-sm font-medium text-gray-600">
               Expiration Date
             </label>
             <CardExpiryElement
@@ -323,7 +323,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
                 expiryError
                   ? "border-2 border-red-500"
                   : "border border-gray-200"
-              } rounded w-full`}
+              } w-full rounded`}
               onChange={(e) => {
                 setIsExpiryComplete(e.complete);
                 if (e.complete) {
@@ -339,14 +339,14 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           </div>
           {/* CVV */}
           <div className="flex-grow">
-            <label className="block text-sm font-medium text-gray-600 mb-2 ">
+            <label className="mb-2 block text-sm font-medium text-gray-600 ">
               CVC
             </label>
             <CardCvcElement
               options={STRIPE_OPTIONS}
               className={`p-3 ${
                 cvcError ? "border-2 border-red-500" : "border border-gray-200"
-              } rounded w-full`}
+              } w-full rounded`}
               onChange={(e) => {
                 setIsCvcComplete(e.complete);
                 if (e.complete) {
@@ -360,15 +360,15 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           </div>
         </div>
         {/* ZIP */}
-        <div className="mb-4 relative">
-          <label className="block text-sm font-medium text-gray-600 mb-2">
+        <div className="relative mb-4">
+          <label className="mb-2 block text-sm font-medium text-gray-600">
             Zip
           </label>
           <input
             type="text"
             className={`p-3 ${
               zipError ? "border-2 border-red-500" : "border border-gray-200"
-            } rounded w-full`}
+            } w-full rounded`}
             placeholder="ZIP"
             pattern="\d{5}"
             maxLength={5}
@@ -384,14 +384,14 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
             <p className="text-sm text-red-500">Please enter a zip code!</p>
           )}
         </div>
-        <div className="flex mt-4 space-x-2">
+        <div className="mt-4 flex space-x-2">
           <button
-            className="bg-lime-700 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
             disabled={isSubmitting}
           >
             {isSubmitting ? (
               <svg
-                className="animate-spin h-5 w-5 text-white mx-auto"
+                className="mx-auto h-5 w-5 animate-spin text-white"
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
                 viewBox="0 0 24 24"
@@ -416,7 +416,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           </button>
           <button
             type="button"
-            className="bg-red-500 text-white font-semibold py-2 px-4 rounded hover:scale-110 transition lg:block"
+            className="rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
             onClick={cancelCheckout}
           >
             Cancel

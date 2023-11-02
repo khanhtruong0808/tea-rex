@@ -29,32 +29,32 @@ export const SauceSelector = ({
   };
 
   return (
-    <div className="w-3/4 p-0 flex items-center">
-      <div className="w-[500px] rounded-lg border border-gray-300 p-2 flex items-center">
+    <div className="flex items-center p-0">
+      <div className="flex w-full items-center justify-between rounded-lg border border-gray-300 p-2">
         <button
-          className={`w-8 h-8 rounded-full flex items-center justify-center ${
+          className={`flex h-8 w-8 items-center justify-center rounded-full ${
             quantity === 0 ? "bg-gray-200" : "bg-red-500 text-white"
           }`}
           onClick={quantity === 0 ? handleIncrement : handleDelete}
         >
           {quantity === 0 ? "+" : "X"}
         </button>
-        <span className="w-40 whitespace-nowrap overflow-hidden overflow-ellipsis">
-          {sauceName}
-        </span>
-        <button
-          className="w-8 h-8 bg-yellow-500 text-white rounded-full flex items-center justify-center"
-          onClick={handleDecrement}
-        >
-          -
-        </button>
-        <span className="mx-2">{quantity}</span>
-        <button
-          className="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center"
-          onClick={handleIncrement}
-        >
-          +
-        </button>
+        <span className="text-center">{sauceName}</span>
+        <div className="flex items-center">
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-500 text-white"
+            onClick={handleDecrement}
+          >
+            -
+          </button>
+          <span className="mx-2">{quantity}</span>
+          <button
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-green-500 text-white"
+            onClick={handleIncrement}
+          >
+            +
+          </button>
+        </div>
       </div>
     </div>
   );

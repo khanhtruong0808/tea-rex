@@ -25,16 +25,16 @@ export default function NotFound() {
     <>
       <div
         id="mainContainer"
-        className="flex justify-center items-center pt-24 md:w-full"
+        className="flex items-center justify-center pt-24 md:w-full"
       >
-        <div className="flex flex-col md:flex-row items-center justify-center mx-4">
-          <div className="flex flex-col font- justify-center text-center md:w-64 md:text-left">
+        <div className="mx-4 flex flex-col items-center justify-center md:flex-row">
+          <div className="font- flex flex-col justify-center text-center md:w-64 md:text-left">
             <p className="text-3xl">Tea Rex</p>
-            <p className="text-xl py-1">404 Page Not Found</p>
+            <p className="py-1 text-xl">404 Page Not Found</p>
             <p className="">The page you are looking for does not exist.</p>
           </div>
           <div id="picContainer" className="transform">
-            <div id="bouncingContainer" className="md:w-96 pt-14 md:pt-1">
+            <div id="bouncingContainer" className="pt-14 md:w-96 md:pt-1">
               <img
                 src="/sad-tea-rex.png"
                 alt="sad boba t-rex"

@@ -15,7 +15,7 @@ interface RewardsContextProps {
 }
 
 export const RewardsContext = createContext<RewardsContextProps | undefined>(
-  undefined
+  undefined,
 );
 
 export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
@@ -45,7 +45,7 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
               "Content-Type": "application/json",
             },
             body: JSON.stringify({ phoneNumber }),
-          }
+          },
         );
 
         const data = await response.json();

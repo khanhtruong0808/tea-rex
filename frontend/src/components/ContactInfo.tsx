@@ -1,34 +1,15 @@
 import { MdPlace } from "react-icons/md";
-import styled from "styled-components";
 import PText from "./Ptext";
-
-const ItemStyles = styled.div`
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-  border-radius: 8px;
-  margin-bottom: 2rem;
-  .icon {
-    padding: 1.3rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-  }
-  svg {
-    width: 3.5rem;
-  }
-`;
 
 export default function ContactInfo({ icon = <MdPlace />, text = "" }) {
   return (
-    <ItemStyles>
-      <div className="icon">{icon}</div>
-      <div className="info">
+    <div className="mb-8 flex items-center gap-8 rounded-lg p-8">
+      <div className="flex items-center justify-center rounded-full bg-green-600 p-5">
+        {icon}
+      </div>
+      <div className="flex flex-col">
         <PText>{text}</PText>
       </div>
-    </ItemStyles>
+    </div>
   );
 }

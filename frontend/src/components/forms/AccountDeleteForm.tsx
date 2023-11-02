@@ -4,30 +4,30 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDialog from "../../utils/dialogStore";
 
-export const ItemDeleteForm = ({ itemId }: { itemId: number }) => {
+export const AccountDeleteForm = ({ accountId }: { accountId: number }) => {
   const [loading, setLoading] = useState(false);
   const { closeDialog } = useDialog();
 
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (itemId: number) =>
-      fetch(config.baseApiUrl + `/menu-item/${itemId}`, {
+    mutationFn: (accountId: number) =>
+      fetch(config.baseApiUrl + `/accounts/${accountId}`, {
         method: "DELETE",
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["menuSections"] });
-      toast.success("Menu item deleted");
+      queryClient.invalidateQueries({ queryKey: ["accInformation"] });
+      toast.success("Account deleted");
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Could not delete menu item");
+      toast.error("Could not delete this account");
     },
   });
 
   const handleDelete = async () => {
     setLoading(true);
-    await mutation.mutateAsync(itemId);
+    await mutation.mutateAsync(accountId);
     setLoading(false);
     closeDialog();
   };
@@ -35,8 +35,8 @@ export const ItemDeleteForm = ({ itemId }: { itemId: number }) => {
   return (
     <div className="flex flex-col gap-6">
       <h2 className="text-md text-gray-700">
-        Are you sure you want to delete this item? <br></br>This action cannot
-        be undone.
+        Are you sure you want to delete this account? <br></br>This action
+        cannot be undone.
       </h2>
       <div className="flex items-center justify-between gap-4">
         <button

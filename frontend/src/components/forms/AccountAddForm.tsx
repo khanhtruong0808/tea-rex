@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDialog from "../../utils/dialogStore";
 
-export const ItemEditForm = ({ item }: { item: MenuItem }) => {
+export const AccountAddForm = () => {
   const [loading, setLoading] = useState(false);
   const { closeDialog } = useDialog();
 
@@ -14,34 +14,28 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<MenuItem>({
-    defaultValues: {
-      name: item.name,
-      price: item.price,
-      menuType: item.menuType,
-    },
-  });
+  } = useForm<account>();
 
   const mutation = useMutation({
-    mutationFn: (newItem: MenuItem) =>
-      fetch(config.baseApiUrl + `/menu-item/${item.id}`, {
-        method: "PUT",
-        body: JSON.stringify(newItem),
+    mutationFn: (newAccount: account) =>
+      fetch(config.baseApiUrl + "/accounts", {
+        method: "POST",
+        body: JSON.stringify(newAccount),
         headers: {
           "Content-Type": "application/json",
         },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["menuSections"] });
-      toast.success("Menu item edited");
+      queryClient.invalidateQueries({ queryKey: ["accInformation"] });
+      toast.success("Account Created");
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Could not edit menu item");
+      toast.error("Failed to create account");
     },
   });
 
-  const onSubmit: SubmitHandler<MenuItem> = async (data) => {
+  const onSubmit: SubmitHandler<account> = async (data) => {
     setLoading(true);
     await mutation.mutateAsync({ ...data });
     setLoading(false);
@@ -55,14 +49,14 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
           htmlFor="name"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Name
+          Username
         </label>
         <div className="mt-2">
           <input
-            {...register("name", { required: true })}
+            {...register("username", { required: true })}
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
-          {errors.name && (
+          {errors.username && (
             <span className="text-red-500">This field is required</span>
           )}
         </div>
@@ -72,36 +66,70 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
           htmlFor="price"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Price
+          Password
         </label>
         <div className="mt-2">
           <input
-            type="number"
-            step={0.01}
-            {...register("price", { required: true })}
+            {...register("password", { required: true })}
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
-          {errors.price && (
+          {errors.password && (
             <span className="text-red-500">This field is required</span>
           )}
         </div>
       </div>
       <div>
         <label
-          htmlFor="menuType"
+          htmlFor="price"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Menu Type
+          First Name
         </label>
-        <select
-          id="menuType"
-          {...register("menuType", { required: true })}
-          className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
-        >
-          <option value="beverage">Beverage</option>
-          <option value="food">Food</option>
-        </select>
+        <div className="mt-2">
+          <input
+            {...register("firstName", { required: true })}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          {errors.firstName && (
+            <span className="text-red-500">This field is required</span>
+          )}
+        </div>
       </div>
+      <div>
+        <label
+          htmlFor="price"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Last Name
+        </label>
+        <div className="mt-2">
+          <input
+            {...register("lastName", { required: true })}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          {errors.lastName && (
+            <span className="text-red-500">This field is required</span>
+          )}
+        </div>
+      </div>
+      <div>
+        <label
+          htmlFor="price"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Email Address
+        </label>
+        <div className="mt-2">
+          <input
+            {...register("email", { required: true })}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          {errors.email && (
+            <span className="text-red-500">This field is required</span>
+          )}
+        </div>
+      </div>
+
       <div></div>
       <button
         type="submit"

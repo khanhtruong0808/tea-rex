@@ -24,7 +24,7 @@ const AlertMessage: React.FC<AlertMessageProps> = ({
     convertToAlertColor(severityProp);
 
   return (
-    <div className="animate-fade-left fixed top-0 right-0 mr-8">
+    <div className="animate-fade-left fixed right-0 top-0 mr-8">
       <Alert severity={severityColor}>{message}</Alert>
     </div>
   );

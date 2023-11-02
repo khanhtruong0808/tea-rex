@@ -9,13 +9,14 @@ export const ShoppingCartList = ({
   cartItems,
   className,
 }: ShoppingCartListProps) => {
-  /*const [removeItem] = useShoppingCart();*/
+  const { removeItem } = useShoppingCart();
 
   return (
     <div className={`${className} mt-8`}>
       <div className="flow-root">
         <ul role="list" className="-my-6 divide-y divide-gray-200">
           {cartItems.map((item, index) => {
+            const itemID = item.id;
             const menuItem = item.item;
             const options = item.option;
             const sortedOptions = options.sort((a: any, b: any) => {
@@ -57,21 +58,28 @@ export const ShoppingCartList = ({
                           {option.qty !== -1 && `${option.qty}x`} {option.name}
                         </p>
                         {option.price !== undefined && (
-                          <p className="ml-4 text-gray-900 font-medium">
+                          <p className="ml-4 font-medium text-gray-900">
                             ${option.price.toFixed(2)}
                           </p>
                         )}
                       </div>
                     ))}
                   </div>
-                  <div className="flex flex-1 items-end justify-between text-sm mt-4">
+                  <div className="mt-4 flex flex-1 items-end justify-between text-sm">
                     <div className="flex">
                       <button
                         type="button"
-                        className="font-medium text-lime-600 hover:text-lime-500"
-                        /*onClick={() => removeItem(menuItem.name)}*/
+                        className="pr-1 font-medium text-lime-600 hover:text-lime-500"
                       >
-                        Edit/Remove
+                        Edit
+                      </button>
+                      <p>|</p>
+                      <button
+                        type="button"
+                        className="pl-1 font-medium text-lime-600 hover:text-lime-500"
+                        onClick={() => removeItem(itemID)}
+                      >
+                        Remove
                       </button>
                     </div>
                   </div>

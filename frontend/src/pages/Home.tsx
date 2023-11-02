@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
@@ -9,16 +9,46 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 
 const topTenItems = [
-  { src: "top-ten-items/1.jpg", alt: "item1" },
-  { src: "top-ten-items/2.jpg", alt: "item2" },
-  { src: "top-ten-items/3.jpg", alt: "item3" },
-  { src: "top-ten-items/4.jpg", alt: "item4" },
-  { src: "top-ten-items/5.jpg", alt: "item5" },
-  { src: "top-ten-items/6.jpg", alt: "item6" },
-  { src: "top-ten-items/7.jpg", alt: "item7" },
-  { src: "top-ten-items/8.jpg", alt: "item8" },
-  { src: "top-ten-items/9.jpg", alt: "item9" },
-  { src: "top-ten-items/10.jpg", alt: "item10" },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg",
+    alt: "item1",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg",
+    alt: "item2",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg",
+    alt: "item3",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636250/TeaRex/TopItems/4_k3rtvb.jpg",
+    alt: "item4",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636253/TeaRex/TopItems/5_pd1uhu.jpg",
+    alt: "item5",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636257/TeaRex/TopItems/6_smi0wq.jpg",
+    alt: "item6",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636260/TeaRex/TopItems/7_brrd1p.jpg",
+    alt: "item7",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636264/TeaRex/TopItems/8_ykzm77.jpg",
+    alt: "item8",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636267/TeaRex/TopItems/9_y5jiyc.jpg",
+    alt: "item9",
+  },
+  {
+    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636272/TeaRex/TopItems/10_zsdorh.jpg",
+    alt: "item10",
+  },
 ];
 
 const galleryItems = [
@@ -37,7 +67,7 @@ const galleryItems = [
 
 const Home: React.FC = () => {
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
-    null
+    null,
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
@@ -61,6 +91,22 @@ const Home: React.FC = () => {
     };
   }, [fullScreenImageUrl]);
 
+  const containerRef = useRef(null);
+  useEffect(() => {
+    if (window && containerRef.current) {
+      window.cloudinary
+        .galleryWidget({
+          container: containerRef.current,
+          cloudName: "dwtzyvjko",
+          aspectRatio: "16:9",
+          mediaAssets: [{ tag: "top-items" }],
+          carouselStyle: "indicators",
+          carouselLocation: "bottom",
+        })
+        .render();
+    }
+  }, []);
+
   return (
     <div className="relative">
       {fullScreenImageUrl && (
@@ -71,12 +117,12 @@ const Home: React.FC = () => {
           <img
             src={fullScreenImageUrl}
             alt="Full Screen"
-            className="max-w-full max-h-full object-contain"
+            className="max-h-full max-w-full object-contain"
           />
         </div>
       )}
       {/* Gallery section */}
-      <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
+      <div className="group relative m-auto h-[580px] w-full max-w-[px] select-none px-4 py-16">
         <Swiper
           style={{
             /*@ts-ignore*/
@@ -95,14 +141,14 @@ const Home: React.FC = () => {
           pagination={{ clickable: true }}
           // onSlideChange={() => console.log("slide change")}
           // onSwiper={(swiper) => console.log(swiper)}
-          className="w-full h-full rounded-2xl object-center object-cover relative"
+          className="relative h-full w-full rounded-2xl object-cover object-center"
         >
           {galleryItems.map((item, index) => (
             <SwiperSlide key={index}>
               <img
                 src={item.src}
                 alt={item.alt}
-                className="w-full h-full cursor-pointer object-cover"
+                className="h-full w-full cursor-pointer object-cover"
                 onClick={handleImageClick}
               ></img>
             </SwiperSlide>
@@ -110,13 +156,13 @@ const Home: React.FC = () => {
         </Swiper>
       </div>
       {/* About Us & Google Map Section */}
-      <div className="flex flex-col md:flex-row sm:container sm:mx-auto">
-        <div className="flex-1 mb-4 md:mb-0">
-          <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">
+      <div className="flex flex-col sm:container sm:mx-auto md:flex-row">
+        <div className="mb-4 flex-1 md:mb-0">
+          <h1 className="font-menu pb-4 text-center text-6xl font-extrabold">
             About Us
           </h1>
-          <div className="pt-2 border-t-2 border-black justify-center"></div>
-          <h2 className="text-center text-xl pt-3">
+          <div className="justify-center border-t-2 border-black pt-2"></div>
+          <h2 className="pt-3 text-center text-xl">
             Tea Rex is a mom and pop shop offering boba drinks and Asian cuisine
             in a trendy, cheerful atmosphere. We make everything with love using
             only the freshest ingredients. We offer a variety of Asian dishes,
@@ -129,52 +175,24 @@ const Home: React.FC = () => {
             order to go for a filling meal or delicious drink on the go!
           </h2>
         </div>
-        <div className="flex-1 flex p-0 sm:p-10 justify-center min-h-[300px]">
+        <div className="flex min-h-[300px] flex-1 justify-center p-0 sm:p-10">
           <Map />
         </div>
       </div>
       {/* Top Ten Items Section */}
       <section className="mt-10">
         <div>
-          <div className="w-9/12 max-w-xl mx-auto">
-            <h1 className="font-extrabold text-center text-6xl pb-4 font-menu">
+          <div className="mx-auto w-9/12 max-w-xl">
+            <h1 className="font-menu pb-4 text-center text-6xl font-extrabold">
               Top Ten Items
             </h1>
-            <div className="pt-2 border-t-2 border-black justify-center"></div>
+            <div className="justify-center border-t-2 border-black pt-2"></div>
           </div>
         </div>
-        <div className="max-w-[px] h-[580px] select-none w-full m-auto py-16 px-4 relative group">
-          <Swiper
-            style={{
-              /*@ts-ignore*/
-              "--swiper-navigation-color": "#000000",
-              "--swiper-pagination-color": "#000000",
-            }}
-            breakpoints={{
-              480: { slidesPerView: 1, spaceBetween: 80 },
-              768: { slidesPerView: 2, spaceBetween: 150 },
-              1024: { slidesPerView: 3, spaceBetween: 50 },
-            }}
-            loop={true}
-            modules={[Pagination, Navigation]}
-            navigation={true}
-            pagination={{ clickable: true }}
-            // onSlideChange={() => console.log("slide change")}
-            // onSwiper={(swiper) => console.log(swiper)}
-            className="w-full h-full rounded-2xl object-center object-cover relative"
-          >
-            {topTenItems.map((item, index) => (
-              <SwiperSlide key={index}>
-                <img
-                  src={item.src}
-                  alt={item.alt}
-                  className="w-full h-full cursor-pointer object-scale-down"
-                  onClick={handleImageClick}
-                ></img>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
+        <div
+          ref={containerRef}
+          style={{ width: "1200px,", margin: "auto" }}
+        ></div>
       </section>
     </div>
   );

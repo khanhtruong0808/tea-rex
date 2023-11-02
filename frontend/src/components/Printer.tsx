@@ -37,7 +37,7 @@ export function Printer() {
           name: option.name,
           quantity: option.qty,
         })),
-      })
+      }),
     ),
   };
 
@@ -67,7 +67,7 @@ export function Printer() {
 
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
-      options
+      options,
     )
       .then((res) => res.json())
       .then((res) => {
@@ -111,7 +111,7 @@ export function Printer() {
 
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
-      options
+      options,
     )
       .then((res) => res.json())
       .then((res) => {
@@ -123,7 +123,7 @@ export function Printer() {
   const createOrder = (
     order: Order,
     orderTypeId: string,
-    orderTypeLabel: string
+    orderTypeLabel: string,
   ) => {
     const options = {
       method: "POST",
@@ -172,7 +172,7 @@ export function Printer() {
     };
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/atomic_order/orders`,
-      options
+      options,
     )
       .then((res) => res.json())
       .then((res) => {
@@ -195,7 +195,7 @@ export function Printer() {
     };
     fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
-      options
+      options,
     )
       .then((res) => res.json())
       .then((res) => console.log(res))

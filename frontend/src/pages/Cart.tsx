@@ -39,7 +39,7 @@ export default function Cart() {
           : 0;
         return optionAccumulator + optionPrice;
       },
-      0
+      0,
     );
     return acc + itemPrice + optionsTotal;
   }, 0);
@@ -83,7 +83,7 @@ export default function Cart() {
           className={isCheckingOut ? "hidden" : ""}
         />
         {isEmpty && (
-          <div className="flex flex-col justify-center items-center mt-10 flex-grow">
+          <div className="mt-10 flex flex-grow flex-col items-center justify-center">
             <p className="text-xl font-medium text-gray-900">
               {" "}
               No items in cart!{" "}
@@ -91,7 +91,7 @@ export default function Cart() {
             <img src="sad-tea-rex-empty-cart.png" alt="Empty Cart" />
           </div>
         )}
-        <div className={`${isCheckingOut ? "" : "hidden"} bg-white h-full`}>
+        <div className={`${isCheckingOut ? "" : "hidden"} h-full bg-white`}>
           <div className="w-full p-5">
             <PaymentForm
               cancelCheckout={handleCancel}
@@ -136,7 +136,7 @@ export default function Cart() {
             <button
               onClick={() => setIsCheckingOut(true)}
               disabled={cartItems.length === 0}
-              className="w-full flex items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:bg-opacity-50 disabled:cursor-not-allowed disabled:hover-none"
+              className="disabled:hover-none flex w-full items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:cursor-not-allowed disabled:bg-opacity-50"
             >
               Checkout
             </button>

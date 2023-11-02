@@ -41,27 +41,27 @@ const FAQPage = () => {
     setExpandedIndex((prevIndexes) =>
       prevIndexes.includes(index)
         ? prevIndexes.filter((item) => item !== index)
-        : [...prevIndexes, index]
+        : [...prevIndexes, index],
     );
   };
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center border-b border-black pb-4">
+      <h1 className="font-menu mb-6 border-b-2 border-black pb-4 text-center text-6xl font-extrabold">
         Frequently Asked Questions
       </h1>
       <div className="space-y-6">
         {faqData.map((item, index) => (
           <div
             key={index}
-            className="bg-gradient-to-r from-orange-400 to-green-400 p-6 rounded-lg shadow-lg"
+            className="rounded-lg bg-gradient-to-r from-orange-400 to-green-400 p-6 shadow-lg"
           >
             {" "}
             <div
-              className="cursor-pointer flex justify-between items-center"
+              className="flex cursor-pointer items-center justify-between"
               onClick={() => handleQuestionClick(index)}
             >
-              <h2 className="text-xl font-bold mb-2 border-b border-black">
+              <h2 className="mb-2 border-b border-black text-xl font-bold">
                 {item.question}
               </h2>
               <div className="text-black-500">

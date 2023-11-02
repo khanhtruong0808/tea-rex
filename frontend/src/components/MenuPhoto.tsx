@@ -68,7 +68,7 @@ export function MenuPhoto({ sectionId }: MenuPhotosProps) {
   }
   return (
     <>
-      <label className="cursor-pointer rounded-full p-0.5 hover:scale-110 w-[28px] h-[28px]">
+      <label className="h-[28px] w-[28px] cursor-pointer rounded-full p-0.5 hover:scale-110">
         <FiEdit3 size={28} />
         <input
           type="file"

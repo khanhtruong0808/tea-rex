@@ -4,7 +4,6 @@ import useRewards from "../components/RewardsContext";
 import SlideOver from "./SlideOver";
 
 interface Item {
-  id?: number;
   name: string;
   price?: number;
   qty: number;
@@ -81,19 +80,21 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     option: Item[],
     specialInstructions: string,
     quantity: number,
-    spice?: Item
+    spice?: Item,
   ) {
+    const id = Math.random().toString(36).substring(2, 18);
+
     if (spice !== null) {
       const newCartItems: CartItem[] = [
         ...cartItems,
-        { item, option, spice, specialInstructions, quantity },
+        { id, item, option, spice, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     } else {
       const newCartItems: CartItem[] = [
         ...cartItems,
-        { item, option, specialInstructions, quantity },
+        { id, item, option, specialInstructions, quantity },
       ];
       setCartItems(newCartItems);
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
@@ -101,8 +102,8 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     setIsEmpty(false);
   }
 
-  function removeItem(item: MenuItem) {
-    const newCartItems: CartItem[] = cartItems.filter((x) => x.item !== item);
+  function removeItem(id: string) {
+    const newCartItems: CartItem[] = cartItems.filter((x) => x.id !== id);
     setCartItems(newCartItems);
     if (newCartItems.length === 0) {
       setIsEmpty(true);

@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDialog from "../../utils/dialogStore";
 
-export const ItemEditForm = ({ item }: { item: MenuItem }) => {
+export const AccountEditForm = ({ account }: { account: account }) => {
   const [loading, setLoading] = useState(false);
   const { closeDialog } = useDialog();
 
@@ -14,34 +14,35 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<MenuItem>({
+  } = useForm<account>({
     defaultValues: {
-      name: item.name,
-      price: item.price,
-      menuType: item.menuType,
+      username: account.username,
+      password: account.password,
+      firstName: account.firstName,
+      lastName: account.lastName,
     },
   });
 
   const mutation = useMutation({
-    mutationFn: (newItem: MenuItem) =>
-      fetch(config.baseApiUrl + `/menu-item/${item.id}`, {
+    mutationFn: (newAccount: account) =>
+      fetch(config.baseApiUrl + `/accounts/${account.id}`, {
         method: "PUT",
-        body: JSON.stringify(newItem),
+        body: JSON.stringify(newAccount),
         headers: {
           "Content-Type": "application/json",
         },
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["menuSections"] });
-      toast.success("Menu item edited");
+      queryClient.invalidateQueries({ queryKey: ["accInformation"] });
+      toast.success("Account updated");
     },
     onError: (err) => {
       console.error(err);
-      toast.error("Could not edit menu item");
+      toast.error("Could not edit account information");
     },
   });
 
-  const onSubmit: SubmitHandler<MenuItem> = async (data) => {
+  const onSubmit: SubmitHandler<account> = async (data) => {
     setLoading(true);
     await mutation.mutateAsync({ ...data });
     setLoading(false);
@@ -55,14 +56,14 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
           htmlFor="name"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Name
+          Username
         </label>
         <div className="mt-2">
           <input
-            {...register("name", { required: true })}
+            {...register("username", { required: true })}
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
-          {errors.name && (
+          {errors.username && (
             <span className="text-red-500">This field is required</span>
           )}
         </div>
@@ -72,16 +73,14 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
           htmlFor="price"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Price
+          Password
         </label>
         <div className="mt-2">
           <input
-            type="number"
-            step={0.01}
-            {...register("price", { required: true })}
+            {...register("password", { required: true })}
             className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
           />
-          {errors.price && (
+          {errors.password && (
             <span className="text-red-500">This field is required</span>
           )}
         </div>
@@ -91,16 +90,34 @@ export const ItemEditForm = ({ item }: { item: MenuItem }) => {
           htmlFor="menuType"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
-          Menu Type
+          First Name
         </label>
-        <select
-          id="menuType"
-          {...register("menuType", { required: true })}
-          className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        <div className="mt-2">
+          <input
+            {...register("firstName", { required: true })}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          {errors.firstName && (
+            <span className="text-red-500">This field is required</span>
+          )}
+        </div>
+      </div>
+      <div>
+        <label
+          htmlFor="menuType"
+          className="block text-sm font-medium leading-6 text-gray-900"
         >
-          <option value="beverage">Beverage</option>
-          <option value="food">Food</option>
-        </select>
+          Last Name
+        </label>
+        <div className="mt-2">
+          <input
+            {...register("lastName", { required: true })}
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          />
+          {errors.lastName && (
+            <span className="text-red-500">This field is required</span>
+          )}
+        </div>
       </div>
       <div></div>
       <button

@@ -29,9 +29,9 @@ const MenuItem = ({
   handleAddToCart,
 }: MenuItemProps) => {
   return (
-    <div className="group flex bg-white px-3 py-2 text-base sm:text-lg md:text-xl hover:bg-amber-400">
+    <div className="group flex bg-white px-3 py-2 text-base hover:bg-amber-400 sm:text-lg md:text-xl">
       <div
-        className="flex cursor-pointer justify-between w-full"
+        className="flex w-full cursor-pointer justify-between"
         onClick={() => handleAddToCart(item)}
         key={item.id}
       >
@@ -106,8 +106,8 @@ export const MenuSection = ({
       id={menuSection.name}
       className="flex w-full flex-col"
     >
-      <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 pb-8 px-2">
-        <h2 className="text-center font-menu text-5xl sm:text-6xl font-bold uppercase">
+      <div className="align-center relative mb-8 flex flex-col gap-y-4 border-b border-amber-300 px-2 pb-8">
+        <h2 className="font-menu text-center text-5xl font-bold uppercase sm:text-6xl">
           {isAdmin && (
             <div className="absolute bottom-0">
               <button
@@ -128,7 +128,7 @@ export const MenuSection = ({
         </h2>
         <div className="flex self-center">
           <img
-            className="max-w-xs sm:max-w-sm self-center object-contain"
+            className="max-w-xs self-center object-contain sm:max-w-sm"
             src={menuSection.imageUrl}
             alt={menuSection.imageAltText}
           />
