@@ -47,7 +47,7 @@ const FAQPage = () => {
 
   return (
     <div className="container mx-auto p-6">
-      <h1 className="mb-6 border-b border-black pb-4 text-center text-3xl font-bold">
+      <h1 className="font-menu mb-6 border-b-2 border-black pb-4 text-center text-6xl font-extrabold">
         Frequently Asked Questions
       </h1>
       <div className="space-y-6">
