@@ -55,7 +55,7 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
           setPhoneNumber("");
           resolve(true);
         } else {
-          console.error("Failed to revert pending points!");
+          console.error(data.error);
           resolve(false);
         }
       } catch (error) {

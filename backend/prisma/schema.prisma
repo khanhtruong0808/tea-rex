@@ -29,11 +29,13 @@ model MenuItem {
 }
 
 model User {
-  id       Int     @id @default(autoincrement())
-  username String  @unique @db.VarChar(255)
-  password String
-  email    String  @unique
-  name     String?
+  id        Int     @id @default(autoincrement())
+  username  String  @unique @db.VarChar(255)
+  password  String
+  email     String  @unique
+  firstName String?
+  lastName  String?
+  name      String?
 }
 
 model RewardsMember {
