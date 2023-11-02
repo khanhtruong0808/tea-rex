@@ -11,7 +11,7 @@ const routes = [
   },
   { name: "Gallery", path: "/gallery" },
   { name: "Contact Us", path: "/contact" },
-  { name: "FAQ", path: "/FAQ" },
+  { name: "FAQ", path: "/faq" },
 ];
 
 export const Navbar = () => {
@@ -51,6 +51,7 @@ export const Navbar = () => {
                 <div className="flex items-center">
                   <NavLink
                     to="/menu"
+                    reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                     className="block whitespace-nowrap rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white transition hover:scale-110 xl:block xl:px-6 xl:py-3"
                   >
                     ORDER NOW
@@ -88,7 +89,6 @@ export const Navbar = () => {
                   to={route.path}
                   onClick={() => close()} // hack to close the menu on mobile
                   key={route.name}
-                  preventScrollReset={true}
                   className="font-navbar block rounded-md px-3 text-2xl font-bold hover:bg-lime-700 hover:text-white"
                 >
                   {route.name}
@@ -97,7 +97,7 @@ export const Navbar = () => {
               <div className="py-1"></div>
               <NavLink
                 to="/menu"
-                onClick={() => close()} // hack to close the menu on mobile
+                reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                 className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
               >
                 ORDER NOW

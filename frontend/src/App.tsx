@@ -33,7 +33,7 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/payment-result" element={<PaymentResult />} />
         <Route path="/account" element={<Accounts />} />
-        <Route path="/faq" element={<FAQPage />} /> {/* Add FAQ page route */}
+        <Route path="/faq" element={<FAQPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>,
     ),
