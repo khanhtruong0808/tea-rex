@@ -26,7 +26,11 @@ export const Navbar = () => {
           <div className="max-w-8xl mx-auto px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 items-center justify-between md:h-20 xl:h-24">
               <div className="flex items-center">
-                <NavLink to="/" className="shrink-0" onClick={() => close()}>
+                <NavLink
+                  to="/"
+                  className="shrink-0"
+                  reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
+                >
                   <img
                     src="tea-rex-sign.png"
                     alt=""
@@ -40,6 +44,7 @@ export const Navbar = () => {
                     <NavLink
                       to={route.path}
                       key={route.name}
+                      reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                       className="font-navbar whitespace-nowrap text-2xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100 xl:text-3xl"
                     >
                       {route.name}
@@ -87,7 +92,7 @@ export const Navbar = () => {
               {routes.map((route) => (
                 <NavLink
                   to={route.path}
-                  onClick={() => close()} // hack to close the menu on mobile
+                  reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                   key={route.name}
                   className="font-navbar block rounded-md px-3 text-2xl font-bold hover:bg-lime-700 hover:text-white"
                 >
