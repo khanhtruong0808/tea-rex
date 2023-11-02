@@ -28,6 +28,23 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     setCartItems(items);
   }, []);
 
+  useEffect(() => {
+    let calculatedBeverageAmount = 0;
+    for (const item of cartItems) {
+      if (item.item.menuType === "beverage") {
+        calculatedBeverageAmount += Number(item.item.price);
+      }
+    }
+
+    setTotalBeverageAmount(calculatedBeverageAmount);
+
+    if (calculatedBeverageAmount > 0) {
+      setHasBeverages(true);
+    } else {
+      setHasBeverages(false);
+    }
+  }, [cartItems]);
+
   const [isOpen, setIsOpen] = useState(false);
   const [isEmpty, setIsEmpty] = useState(true);
   const [discount, setDiscount] = useState(0);
@@ -83,14 +100,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       localStorage.setItem("cartItems", JSON.stringify(newCartItems));
     }
     setIsEmpty(false);
-    if (item.menuType === "beverage") {
-      setTotalBeverageAmount(
-        (totalBeverageAmount) => totalBeverageAmount + Number(item.price),
-      );
-    }
-    if (totalBeverageAmount > 0) {
-      setHasBeverages(true);
-    }
   }
 
   function removeItem(id: string) {

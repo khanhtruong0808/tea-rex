@@ -325,7 +325,6 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
     }
 
     if (member.pendingPoints == 0) {
-      console.log("No pending points to revert");
       return;
     }
 
@@ -351,8 +350,7 @@ app.put("/rewards-member-revert-pending", async (req, res) => {
 });
 
 app.put("/rewards-member-pend-spend", async (req, res) => {
-  const { phoneNumber, spendingPoints } = req.body;
-
+  const { phoneNumber, spentPoints } = req.body;
   try {
     const member = await prisma.rewardsMember.findUnique({
       where: { phoneNumber: phoneNumber },
@@ -362,7 +360,7 @@ app.put("/rewards-member-pend-spend", async (req, res) => {
       res.status(404).json({ error: "Member not found" });
       return;
     }
-    const newAvailablePoints = member.points - spendingPoints;
+    const newAvailablePoints = member.points - spentPoints;
 
     if (newAvailablePoints < 0) {
       res.status(400).json({ error: "Not enough points to spend" });
@@ -373,13 +371,14 @@ app.put("/rewards-member-pend-spend", async (req, res) => {
       where: { phoneNumber: phoneNumber },
       data: {
         points: newAvailablePoints,
-        pendingPoints: (member.pendingPoints || 0) + spendingPoints,
+        pendingPoints: (member.pendingPoints || 0) + spentPoints,
       },
     });
 
     res.json({
       points: updatedMember.points,
       pendingPoints: updatedMember.pendingPoints,
+      curentSpentPoints: spentPoints,
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
@@ -482,10 +481,6 @@ app.put("/rewards-member-revert", async (req, res) => {
     }
 
     const revertedPoints = member.points + spentPoints;
-    console.log("PhoneNumber: ", phoneNumber);
-    console.log("Current spent points: ", spentPoints);
-    console.log("Member's current points: ", member.points);
-    console.log("Reverted points: ", revertedPoints);
     const updatedMember = await prisma.rewardsMember.update({
       where: { phoneNumber: phoneNumber },
       data: { points: revertedPoints },

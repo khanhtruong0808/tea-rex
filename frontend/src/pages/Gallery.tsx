@@ -79,6 +79,7 @@ const Gallery = () => {
                   src={item.src}
                   alt={item.alt}
                   onClick={handleImageClick}
+                  className="hover:cursor-pointer"
                 />
               </div>
             ))}
@@ -95,7 +96,7 @@ const Gallery = () => {
                 key={index}
               >
                 <img
-                  className="h-full w-full"
+                  className="h-full w-full hover:cursor-pointer"
                   src={item.src}
                   alt={item.alt}
                   onClick={handleImageClick}
