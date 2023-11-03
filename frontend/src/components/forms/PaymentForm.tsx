@@ -9,11 +9,9 @@ import {
 } from "@stripe/react-stripe-js";
 import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
 import { config } from "../../config";
-import Map from "../Map";
 import { Printer } from "../Printer";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
-import { AiOutlineConsoleSql } from "react-icons/ai";
 
 const STRIPE_OPTIONS = {
   iconStyle: "solid",
@@ -43,6 +41,8 @@ interface PaymentFormProps {
   cancelCheckout: () => void;
   isRewardsMember: boolean;
   phoneNumber: string;
+  setHandleSubmit: (func: any) => void;
+  setLoading: (loading: boolean) => void;
 }
 
 interface TaxData {
@@ -51,7 +51,12 @@ interface TaxData {
 }
 type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry";
 
-const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
+const PaymentForm = ({
+  cancelCheckout,
+  isRewardsMember,
+  setHandleSubmit,
+  setLoading,
+}: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
@@ -65,7 +70,6 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [isExpiryComplete, setIsExpiryComplete] = useState(false);
   const [isCvcComplete, setIsCvcComplete] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { handleAddPoints } = useRewards();
   const {
@@ -214,8 +218,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     submitPayment();
   }, [isSubmitting]);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     let formInvalid = false;
     for (const validation of validations) {
       if (validation.condition) {
@@ -238,176 +241,123 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       handleAddPoints(Math.floor(finaltotal));
     }
   };
+  setHandleSubmit(handleSubmit);
 
   return (
-    <form onSubmit={handleSubmit}>
-      <fieldset className="rounded-md border border-gray-300 p-4">
-        <div className="mb-4">
-          <label className="mb-2 block text-sm font-semibold text-gray-600">
-            Pick up location: <br />
-            2475 Elk Grove Blvd #150, Elk Grove, CA 95758
-            <Map width="100%" />
+    <form onSubmit={handleSubmit} className="pb-8">
+      <h2 className="text-lg font-medium">Payment details</h2>
+      {/* Name */}
+      <div className="relative mb-4 mt-2">
+        <label className="block text-sm font-medium text-gray-700">Name</label>
+        <input
+          type="text"
+          placeholder="Name on card"
+          className={`${
+            nameError ? "border-red-500" : "border-gray-300"
+          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (e.target.value.length > 0) {
+              setNameError(false);
+            }
+          }}
+        />
+        {nameError && (
+          <p className="text-sm text-red-500">Please enter a name!</p>
+        )}
+      </div>
+      {/* Card Number */}
+      <div className="relative mb-4">
+        <label className="block text-sm font-medium text-gray-700">
+          Card Number
+        </label>
+        <CardNumberElement
+          options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
+          className={`${
+            cardError ? "border-red-500" : "border-gray-200"
+          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          onChange={(e) => {
+            setIsCardComplete(e.complete);
+            if (e.complete) {
+              setCardError(false);
+            }
+          }}
+        />
+        {cardError && (
+          <p className="text-sm text-red-500"> Please enter a card number!</p>
+        )}
+        <span className="absolute right-10 top-1/2 -translate-y-1/2 transform"></span>
+      </div>
+      {/* Expiration Date, CVV*/}
+      <div className="mb-4 flex w-full space-x-2">
+        {/* Expiration Date */}
+        <div className="flex-grow">
+          <label className="block text-sm font-medium text-gray-700">
+            Expiration Date
           </label>
-        </div>
-        {/* Name */}
-        <div className="relative mb-4">
-          <label className="mb-2 block text-sm font-medium text-gray-600">
-            Name
-          </label>
-          <input
-            type="text"
-            placeholder="Name on Card"
-            className={`p-3 ${
-              nameError ? "border-2 border-red-500" : "border border-gray-200"
-            } w-full rounded`}
+          <CardExpiryElement
+            options={STRIPE_OPTIONS}
+            className={`${
+              expiryError ? "border-red-500" : "border-gray-200"
+            } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
             onChange={(e) => {
-              setName(e.target.value);
-              if (e.target.value.length > 0) {
-                setNameError(false);
-              }
-            }}
-          />
-          {nameError && (
-            <p className="text-sm text-red-500">Please enter a name!</p>
-          )}
-        </div>
-        {/* Card Number */}
-        <div className="relative mb-4">
-          <label className="mb-2 block text-sm font-medium text-gray-600">
-            Card Number
-          </label>
-          <CardNumberElement
-            options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
-            className={`p-3 ${
-              cardError ? "border-2 border-red-500" : "border border-gray-200"
-            } w-full rounded`}
-            onChange={(e) => {
-              setIsCardComplete(e.complete);
+              setIsExpiryComplete(e.complete);
               if (e.complete) {
-                setCardError(false);
+                setExpiryError(false);
               }
             }}
           />
-          {cardError && (
-            <p className="text-sm text-red-500"> Please enter a card number!</p>
+          {expiryError && (
+            <p className="text-sm text-red-500">
+              Please enter an expiration date!
+            </p>
           )}
-          <span className="absolute right-10 top-1/2 -translate-y-1/2 transform"></span>
         </div>
-        {/* Expiration Date, CVV*/}
-        <div className="mb-4 flex w-full">
-          {/* Expiration Date */}
-          <div className="mr-1 flex-grow">
-            <label className="mb-2 block text-sm font-medium text-gray-600">
-              Expiration Date
-            </label>
-            <CardExpiryElement
-              options={STRIPE_OPTIONS}
-              className={`p-3 ${
-                expiryError
-                  ? "border-2 border-red-500"
-                  : "border border-gray-200"
-              } w-full rounded`}
-              onChange={(e) => {
-                setIsExpiryComplete(e.complete);
-                if (e.complete) {
-                  setExpiryError(false);
-                }
-              }}
-            />
-            {expiryError && (
-              <p className="text-sm text-red-500">
-                Please enter an expiration date!
-              </p>
-            )}
-          </div>
-          {/* CVV */}
-          <div className="flex-grow">
-            <label className="mb-2 block text-sm font-medium text-gray-600 ">
-              CVC
-            </label>
-            <CardCvcElement
-              options={STRIPE_OPTIONS}
-              className={`p-3 ${
-                cvcError ? "border-2 border-red-500" : "border border-gray-200"
-              } w-full rounded`}
-              onChange={(e) => {
-                setIsCvcComplete(e.complete);
-                if (e.complete) {
-                  setCvcError(false);
-                }
-              }}
-            />
-            {cvcError && (
-              <p className="text-sm text-red-500">Please enter the CVC!</p>
-            )}
-          </div>
-        </div>
-        {/* ZIP */}
-        <div className="relative mb-4">
-          <label className="mb-2 block text-sm font-medium text-gray-600">
-            Zip
+        {/* CVV */}
+        <div className="flex-grow">
+          <label className="block text-sm font-medium text-gray-700 ">
+            CVC
           </label>
-          <input
-            type="text"
-            className={`p-3 ${
-              zipError ? "border-2 border-red-500" : "border border-gray-200"
-            } w-full rounded`}
-            placeholder="ZIP"
-            pattern="\d{5}"
-            maxLength={5}
-            inputMode="numeric"
+          <CardCvcElement
+            options={STRIPE_OPTIONS}
+            className={`${
+              cvcError ? "border-red-500" : "border-gray-200"
+            } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
             onChange={(e) => {
-              setZipCode(e.target.value);
-              if (e.target.value.length == 5) {
-                setZipError(false);
+              setIsCvcComplete(e.complete);
+              if (e.complete) {
+                setCvcError(false);
               }
             }}
           />
-          {zipError && (
-            <p className="text-sm text-red-500">Please enter a zip code!</p>
+          {cvcError && (
+            <p className="text-sm text-red-500">Please enter the CVC!</p>
           )}
         </div>
-        <div className="mt-4 flex space-x-2">
-          <button
-            className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-            disabled={loading}
-          >
-            {loading ? (
-              <svg
-                className="mx-auto h-5 w-5 animate-spin text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                ></path>
-              </svg>
-            ) : (
-              "Pay"
-            )}
-          </button>
-          <button
-            type="button"
-            className="rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-            onClick={() => {
-              cancelCheckout;
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      </fieldset>
+      </div>
+      {/* ZIP */}
+      <div className="relative mb-4">
+        <label className="block text-sm font-medium text-gray-700">Zip</label>
+        <input
+          type="text"
+          className={`${
+            zipError ? "border-red-500" : "border-gray-200"
+          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          placeholder="ZIP"
+          pattern="\d{5}"
+          maxLength={5}
+          inputMode="numeric"
+          onChange={(e) => {
+            setZipCode(e.target.value);
+            if (e.target.value.length == 5) {
+              setZipError(false);
+            }
+          }}
+        />
+        {zipError && (
+          <p className="text-sm text-red-500">Please enter a zip code!</p>
+        )}
+      </div>
     </form>
   );
 };

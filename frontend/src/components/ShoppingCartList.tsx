@@ -59,7 +59,7 @@ export const ShoppingCartList = ({
                         </p>
                         {option.price !== undefined && (
                           <p className="ml-4 font-medium text-gray-900">
-                            ${option.price.toFixed(2)}
+                            ${Math.abs(option.price * option.qty).toFixed(2)}
                           </p>
                         )}
                       </div>

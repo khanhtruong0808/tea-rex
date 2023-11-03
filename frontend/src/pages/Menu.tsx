@@ -22,7 +22,7 @@ const Menu = () => {
   const closeDialog = useDialog((state) => state.closeDialog);
 
   // category selected on sidebar
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Milk Tea");
 
   const navigate = useNavigate();
   useEffect(() => {

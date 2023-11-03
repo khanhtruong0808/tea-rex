@@ -1,11 +1,13 @@
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import RewardsSystemForm from "../components/forms/RewardsSystemForm";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Dialog } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { AlertProvider } from "../components/AlertMessageContext";
 import { ShoppingCartList } from "../components/ShoppingCartList";
 import PaymentForm from "../components/forms/PaymentForm";
+import Map from "../components/Map";
+import { Spinner } from "../utils/Spinner";
 import { config } from "../config";
 
 export default function Cart() {
@@ -26,9 +28,20 @@ export default function Cart() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [isRewardsMember, setIsRewardsMember] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [loading, setLoading] = useState(false);
+  const handleSubmitRef = useRef<(() => Promise<void>) | null>(null);
 
   const handleCancel = () => {
     setIsCheckingOut(false);
+  };
+
+  const handlePlaceOrder = async () => {
+    if (
+      handleSubmitRef.current &&
+      typeof handleSubmitRef.current === "function"
+    ) {
+      await handleSubmitRef.current();
+    }
   };
 
   const newSubtotal = cartItems.reduce((acc: number, item) => {
@@ -92,15 +105,20 @@ export default function Cart() {
             <img src="sad-tea-rex-empty-cart.png" alt="Empty Cart" />
           </div>
         )}
-        <div className={`${isCheckingOut ? "" : "hidden"} h-full bg-white`}>
-          <div className="w-full p-5">
-            <PaymentForm
-              cancelCheckout={handleCancel}
-              isRewardsMember={isRewardsMember}
-              phoneNumber={phoneNumber}
-            />
-          </div>
-          <div className="w-full p-5">
+        <div
+          className={`${isCheckingOut ? "" : "hidden"} mt-8 h-full bg-white`}
+        >
+          <div className="w-full space-y-8">
+            <div className="mb-2 block space-y-2 text-sm font-semibold text-gray-600">
+              <div>
+                <h2 className="text-lg font-medium text-black">
+                  Pick up location
+                </h2>
+                <p>2475 Elk Grove Blvd #150</p>
+                <p>Elk Grove, CA 95758</p>
+              </div>
+              <Map width="100%" />
+            </div>
             <AlertProvider>
               <RewardsSystemForm
                 subtotal={Number(subtotal.toFixed(2))}
@@ -109,6 +127,13 @@ export default function Cart() {
                 setRewardsMemberPhoneNumber={setPhoneNumber}
               />
             </AlertProvider>
+            <PaymentForm
+              cancelCheckout={handleCancel}
+              isRewardsMember={isRewardsMember}
+              phoneNumber={phoneNumber}
+              setLoading={setLoading}
+              setHandleSubmit={(func: any) => (handleSubmitRef.current = func)}
+            />
           </div>
         </div>
       </div>
@@ -132,7 +157,7 @@ export default function Cart() {
           <p>Total</p>
           <p>${finaltotal.toFixed(2)}</p>
         </div>
-        {!isCheckingOut && (
+        {!isCheckingOut ? (
           <div className="mt-6">
             <button
               onClick={() => setIsCheckingOut(true)}
@@ -140,6 +165,16 @@ export default function Cart() {
               className="disabled:hover-none flex w-full items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:cursor-not-allowed disabled:bg-opacity-50"
             >
               Checkout
+            </button>
+          </div>
+        ) : (
+          <div className="mt-6">
+            <button
+              onClick={handlePlaceOrder}
+              disabled={cartItems.length === 0}
+              className="disabled:hover-none flex w-full items-center justify-center rounded-md border border-transparent bg-lime-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:enabled:bg-lime-700 disabled:cursor-not-allowed disabled:bg-opacity-50"
+            >
+              {loading ? <Spinner /> : "Place your order"}
             </button>
           </div>
         )}
