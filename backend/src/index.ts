@@ -277,7 +277,6 @@ app.post("/rewards-member-add", async (req, res) => {
     res.status(200).json(member);
   } catch (error) {
     const errorMessage = (error as Error).message;
-    console.log(errorMessage);
     res.status(400).json({ error: `Failed to create member: ${errorMessage}` });
   }
 });
@@ -303,7 +302,6 @@ app.post("/rewards-member-check", async (req, res) => {
     });
   } catch (error) {
     const errorMessage = (error as Error).message;
-    console.log(errorMessage);
     res.status(400).json({
       error: `Failed to retrieve member: ${errorMessage}`,
     });
@@ -433,8 +431,6 @@ app.put("/rewards-member-spend", async (req, res) => {
       return;
     }
 
-    console.log(`Member points: ${member.points}`);
-
     if (member.points <= 0) {
       newPoints = 0; //this is to prevent negative points
       return res.status(400).json({
@@ -445,9 +441,6 @@ app.put("/rewards-member-spend", async (req, res) => {
         error: "Not enough points to spend the specified amount.",
       });
     } else {
-      console.log(`Member.points: ${member.points}`);
-      console.log(`Spent points: ${spentPoints}`);
-
       newPoints = member.points - spentPoints;
     }
 
@@ -539,56 +532,55 @@ app.post("/payment", cors(), async (req, res) => {
       success: true,
     });
   } catch (error: any) {
+    console.log("Payment failure!");
     res.json({
-      message: "Payment failed " + error.message,
+      message: "Payment has failed: " + error.message,
       success: false,
     });
   }
 });
 
-app.post("/calculate-tax", async (req, res) => {
-  const { amount, zipCode } = req.body;
-  try {
-    const calculation = await stripe.tax.calculations.create({
-      currency: "usd",
-      line_items: [
-        {
-          amount: amount,
-          reference: "L1",
-        },
-      ],
-      customer_details: {
-        address: {
-          postal_code: zipCode,
-          country: "US",
-        },
-        address_source: "billing",
-      },
-      expand: ["line_items.data.tax_breakdown"],
-    });
+// app.post("/calculate-tax", async (req, res) => {
+//   const { amount, zipCode } = req.body;
+//   try {
+//     const calculation = await stripe.tax.calculations.create({
+//       currency: "usd",
+//       line_items: [
+//         {
+//           amount: amount,
+//           reference: "L1",
+//         },
+//       ],
+//       customer_details: {
+//         address: {
+//           postal_code: zipCode,
+//           country: "US",
+//         },
+//         address_source: "billing",
+//       },
+//       expand: ["line_items.data.tax_breakdown"],
+//     });
 
-    if (calculation) {
-      console.log(calculation);
-      res.json({
-        message: "calculation successful",
-        tax: calculation.tax_amount_exclusive,
-        totalAmount: calculation.amount_total,
-        success: true,
-      });
-    } else {
-      res.json({
-        message: "Could not fetch tax data!",
-        success: true,
-      });
-    }
-  } catch (error: any) {
-    console.log("error with retrieving tax data: " + error.message);
-    res.json({
-      message: error.message,
-      success: false,
-    });
-  }
-});
+//     if (calculation) {
+//       res.json({
+//         message: "calculation successful",
+//         tax: calculation.tax_amount_exclusive,
+//         totalAmount: calculation.amount_total,
+//         success: true,
+//       });
+//     } else {
+//       res.json({
+//         message: "Could not fetch tax data!",
+//         success: true,
+//       });
+//     }
+//   } catch (error: any) {
+//     res.json({
+//       message: error.message,
+//       success: false,
+//     });
+//   }
+// });
 
 // generating cloudinary signature
 cloudinary.config({

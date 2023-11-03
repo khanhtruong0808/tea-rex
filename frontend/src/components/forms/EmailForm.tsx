@@ -1,6 +1,6 @@
-import { FormEvent, useState, useEffect } from "react";
+import { FormEvent, useState, useEffect, useCallback } from "react";
 import { config } from "../../config";
-import useAlert from "../AlertMessageContext";
+import Captcha from "../Captcha";
 
 function isNotValidEmail(email: string) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -19,6 +19,8 @@ export default function EmailForm() {
   const [lastNameError, setLastNameError] = useState(false);
   const [messageError, setMessageError] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isNotABot, setIsNotABot] = useState(false);
+  const [captchaError, setCaptchaError] = useState(false);
 
   const validations: { condition: boolean; type: ValidationErrorType }[] = [
     {
@@ -104,113 +106,137 @@ export default function EmailForm() {
     setUserEmail("");
     setUserMessage("");
   };
+
+  const handleTurnstileSuccess = useCallback((token: string) => {
+    if (token == "error") {
+      setCaptchaError(true);
+    } else {
+      setIsNotABot(true);
+    }
+  }, []);
+
   return (
-    <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
-      <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
-        <fieldset className="w-full rounded-md border border-gray-300 p-4">
-          {isSubmitted ? (
-            <p className="text-xl"> Your query has been submitted! </p>
-          ) : (
-            <>
-              <div className="mx-auto mb-4 flex">
-                <div className="flex w-1/2 flex-col pr-1">
-                  <input
-                    type="text"
-                    placeholder="First name"
-                    className={`${
-                      firstNameError
-                        ? "border-2 border-red-500"
-                        : "border border-gray-200"
-                    } font-navbar mr-1 w-full rounded`}
-                    onChange={(e) => {
-                      setUserFirstName(e.target.value);
-                      if (e.target.value.length > 0) {
-                        setFirstNameError(false);
-                      }
-                    }}
-                  />
-                  {firstNameError && (
-                    <p className="text-xs text-red-500">
-                      Please enter a first name!
-                    </p>
-                  )}
-                </div>
-                <div className="flex w-1/2 flex-col pr-1">
-                  <input
-                    type="text"
-                    placeholder="Last name"
-                    className={`${
-                      lastNameError
-                        ? "border-2 border-red-500"
-                        : "border border-gray-200"
-                    } font-navbar w-full rounded`}
-                    onChange={(e) => {
-                      setUserLastName(e.target.value);
-                      if (e.target.value.length > 0) {
-                        setLastNameError(false);
-                      }
-                    }}
-                  />
-                  {lastNameError && (
-                    <p className="text-xs text-red-500">
-                      Please enter a last name!
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="mb-4 flex flex-col pr-1">
-                <input
-                  type="text"
-                  placeholder="Enter your email address"
-                  className={`${
-                    emailError
-                      ? "border-2 border-red-500"
-                      : "border border-gray-200"
-                  } font-navbar flex w-full rounded`}
-                  onChange={(e) => {
-                    setUserEmail(e.target.value);
-                    if (e.target.value.length > 0) {
-                      setEmailError(false);
-                    }
-                  }}
-                />
-                {emailError && (
-                  <p className="text-xs text-red-500">
-                    Please enter an email address!
-                  </p>
-                )}
-              </div>
-              <div className="mb-2 flex flex-col pr-1">
-                <textarea
-                  rows={10}
-                  placeholder="Message"
-                  className={`${
-                    messageError
-                      ? "border-2 border-red-500"
-                      : "border border-gray-200"
-                  } font-navbar flex w-full rounded`}
-                  onChange={(e) => {
-                    setUserMessage(e.target.value);
-                    if (e.target.value.length > 0) {
-                      setMessageError(false);
-                    }
-                  }}
-                />
-                {messageError && (
-                  <p className="text-xs text-red-500">
-                    Message cannot be blank!
-                  </p>
-                )}
-              </div>
-              <div className="mx-auto mt-4 flex">
-                <button className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block">
-                  Submit
-                </button>
-              </div>
-            </>
-          )}
-        </fieldset>
+    <>
+      <div className="flex justify-center">
+        <Captcha onSuccess={handleTurnstileSuccess} />
       </div>
-    </form>
+      {captchaError && (
+        <div
+          className="flex justify-center font-semibold"
+          style={{ fontSize: "36px" }}
+        >
+          Captcha error!
+        </div>
+      )}
+      {isNotABot && !captchaError && (
+        <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
+          <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
+            <fieldset className="w-full rounded-md border border-gray-300 p-4">
+              {isSubmitted ? (
+                <p className="text-xl"> Your query has been submitted! </p>
+              ) : (
+                <>
+                  <div className="mx-auto mb-4 flex">
+                    <div className="flex w-1/2 flex-col pr-1">
+                      <input
+                        type="text"
+                        placeholder="First name"
+                        className={`${
+                          firstNameError
+                            ? "border-2 border-red-500"
+                            : "border border-gray-200"
+                        } font-navbar mr-1 w-full rounded`}
+                        onChange={(e) => {
+                          setUserFirstName(e.target.value);
+                          if (e.target.value.length > 0) {
+                            setFirstNameError(false);
+                          }
+                        }}
+                      />
+                      {firstNameError && (
+                        <p className="text-xs text-red-500">
+                          Please enter a first name!
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex w-1/2 flex-col pr-1">
+                      <input
+                        type="text"
+                        placeholder="Last name"
+                        className={`${
+                          lastNameError
+                            ? "border-2 border-red-500"
+                            : "border border-gray-200"
+                        } font-navbar w-full rounded`}
+                        onChange={(e) => {
+                          setUserLastName(e.target.value);
+                          if (e.target.value.length > 0) {
+                            setLastNameError(false);
+                          }
+                        }}
+                      />
+                      {lastNameError && (
+                        <p className="text-xs text-red-500">
+                          Please enter a last name!
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="mb-4 flex flex-col pr-1">
+                    <input
+                      type="text"
+                      placeholder="Enter your email address"
+                      className={`${
+                        emailError
+                          ? "border-2 border-red-500"
+                          : "border border-gray-200"
+                      } font-navbar flex w-full rounded`}
+                      onChange={(e) => {
+                        setUserEmail(e.target.value);
+                        if (e.target.value.length > 0) {
+                          setEmailError(false);
+                        }
+                      }}
+                    />
+                    {emailError && (
+                      <p className="text-xs text-red-500">
+                        Please enter an email address!
+                      </p>
+                    )}
+                  </div>
+                  <div className="mb-2 flex flex-col pr-1">
+                    <textarea
+                      rows={10}
+                      placeholder="Message"
+                      className={`${
+                        messageError
+                          ? "border-2 border-red-500"
+                          : "border border-gray-200"
+                      } font-navbar flex w-full rounded`}
+                      onChange={(e) => {
+                        setUserMessage(e.target.value);
+                        if (e.target.value.length > 0) {
+                          setMessageError(false);
+                        }
+                      }}
+                    />
+                    {messageError && (
+                      <p className="text-xs text-red-500">
+                        Message cannot be blank!
+                      </p>
+                    )}
+                  </div>
+                  <div className="mx-auto mt-4 flex">
+                    <button className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block">
+                      Submit
+                    </button>
+                  </div>
+                </>
+              )}
+            </fieldset>
+          </div>
+        </form>
+      )}
+    </>
   );
 }

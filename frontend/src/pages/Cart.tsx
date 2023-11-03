@@ -8,6 +8,7 @@ import { ShoppingCartList } from "../components/ShoppingCartList";
 import PaymentForm from "../components/forms/PaymentForm";
 import Map from "../components/Map";
 import { Spinner } from "../utils/Spinner";
+import { config } from "../config";
 
 export default function Cart() {
   const {
@@ -16,10 +17,10 @@ export default function Cart() {
     closeCart,
     discount,
     updateSubtotal,
-    updateTax,
     updateFinaltotal,
     subtotal,
     tax,
+    updateTax,
     finaltotal,
     isExternalTaxSet,
     isEmpty,
@@ -60,7 +61,7 @@ export default function Cart() {
   useEffect(() => {
     if (!isExternalTaxSet) {
       updateSubtotal(newSubtotal);
-      updateTax((subtotal - discount) * 0.0875);
+      updateTax((subtotal - discount) * config.taxRate);
       updateFinaltotal(subtotal - discount + tax);
     }
   }, [addToCart, discount]);

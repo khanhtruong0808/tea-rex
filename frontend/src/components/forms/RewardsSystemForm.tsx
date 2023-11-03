@@ -41,7 +41,8 @@ const RewardsSystem = ({
 
   const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [popcornChickenLoading, setPopcornChickenLoading] = useState(false); // loading state for redeeming popcorn chicken
+  const [itemLoading, setItemLoading] = useState(false); // loading state for redeeming popcorn chicken
+  //MDC: changed the name to be some generic item, in case the client wants to add new discount to different items
   const [drinkLoading, setDrinkLoading] = useState(false); // loading state for redeeming drinks
   const [phoneLoading, setPhoneLoading] = useState(false);
   const [beverageDiscount, setBeverageDiscount] = useState(0);
@@ -144,9 +145,7 @@ const RewardsSystem = ({
     phoneNumber = cleanPhoneNumber(phoneNumber);
     setContextPhoneNumber(phoneNumber);
 
-    rewardsType === "drinks"
-      ? setDrinkLoading(true)
-      : setPopcornChickenLoading(true);
+    rewardsType === "drinks" ? setDrinkLoading(true) : setItemLoading(true);
 
     try {
       const response = await fetch(
@@ -170,6 +169,7 @@ const RewardsSystem = ({
             case "drinks":
               if (!checkForBeverages()) {
                 showAlert("No beverages in cart!", "error");
+                setDrinkLoading(false);
                 return;
               }
 
@@ -183,7 +183,7 @@ const RewardsSystem = ({
               if (potentialBeverageDiscount === 0) {
                 showAlert("No more beverages to apply discount!", "error");
                 setDrinkLoading(false);
-                setPopcornChickenLoading(false);
+                setItemLoading(false);
                 return;
               }
 
@@ -219,13 +219,13 @@ const RewardsSystem = ({
             );
           }
           setDrinkLoading(false);
-          setPopcornChickenLoading(false);
+          setItemLoading(false);
           return;
         }
       } else {
         console.error("No data received from the server!");
         setDrinkLoading(false);
-        setPopcornChickenLoading(false);
+        setItemLoading(false);
         return;
       }
     } catch (error) {
@@ -233,7 +233,7 @@ const RewardsSystem = ({
       showAlert(errorMessage, "error");
     }
     setDrinkLoading(false);
-    setPopcornChickenLoading(false);
+    setItemLoading(false);
   }
 
   function applyDiscountForItem(itemType: RewardsType) {
@@ -258,6 +258,7 @@ const RewardsSystem = ({
 
     if (!foundItem) {
       showAlert(config.alertMessage, "error");
+      setItemLoading(false);
       return;
     }
 
@@ -397,10 +398,10 @@ const RewardsSystem = ({
               onClick={() => {
                 handleSpendPoints(200, "popcorn-chicken");
               }}
-              disabled={popcornChickenLoading || points < 200}
+              disabled={itemLoading || points < 200}
               className="group mt-2 h-12 w-full rounded bg-lime-600 text-sm text-white enabled:hover:bg-lime-700 lg:block"
             >
-              {popcornChickenLoading ? (
+              {itemLoading ? (
                 <Spinner />
               ) : (
                 <div className="flex group-disabled:cursor-not-allowed group-disabled:opacity-50">
