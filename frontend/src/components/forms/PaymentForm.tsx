@@ -65,21 +65,18 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [isExpiryComplete, setIsExpiryComplete] = useState(false);
   const [isCvcComplete, setIsCvcComplete] = useState(false);
-  const [taxData, setTaxData] = useState<TaxData | null>(null);
+  const [loading, setLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isTaxUpdated, setIsTaxUpdated] = useState(false);
   const { handleAddPoints } = useRewards();
   const {
     clearCart,
     closeCart,
     hasBeverages,
-    updateFinaltotal,
-    updateTax,
     subtotal,
     discount,
     tax,
     finaltotal,
-    setExternalTax,
+    totalBeverageAmount,
   } = useShoppingCart();
 
   const validations: { condition: boolean; type: ValidationErrorType }[] = [
@@ -113,27 +110,27 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
     expiry: setExpiryError,
   };
 
-  useEffect(() => {
-    if (taxData) {
-      if (taxData.success) {
-        setExternalTax(true);
-        // Temporary Commenting this out to not confuse people -KT
-        // updateTax(100); // change later to actual tax data value
-        setIsTaxUpdated(true);
-      } else {
-        console.error("Error with tax data: " + taxData.message);
-      }
-    }
-  }, [taxData]);
+  // useEffect(() => {
+  //   if (taxData) {
+  //     if (taxData.success) {
+  //       setExternalTax(true);
+  //       // Temporary Commenting this out to not confuse people -KT
+  //       // updateTax(100); // change later to actual tax data value
+  //       setIsTaxUpdated(true);
+  //     } else {
+  //       console.error("Error with tax data: " + taxData.message);
+  //     }
+  //   }
+  // }, [taxData]);
+
+  // useEffect(() => {
+  //   console.log("Updated tax: " + tax);
+  //   console.log("Updated final total: " + (subtotal - discount + tax));
+  //   updateFinaltotal(subtotal - discount + tax);
+  // }, [tax]);
 
   useEffect(() => {
-    console.log("Updated tax: " + tax);
-    console.log("Updated final total: " + (subtotal - discount + tax));
-    updateFinaltotal(subtotal - discount + tax);
-  }, [tax]);
-
-  useEffect(() => {
-    if (!isSubmitting || !isTaxUpdated) {
+    if (!isSubmitting) {
       return;
     }
     const submitPayment = async () => {
@@ -149,7 +146,7 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
         return;
       }
 
-      setExternalTax(true);
+      // setExternalTax(true);
       // Temporary Commenting this out to not confuse people -KT
       // const updatedTax = 100;
       // TODO: this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
@@ -210,12 +207,12 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
         }
       }
       setIsSubmitting(false);
+      setLoading(false);
     };
 
     console.log("submitting...");
     submitPayment();
-    setIsTaxUpdated(false);
-  }, [isSubmitting, isTaxUpdated]);
+  }, [isSubmitting]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -232,27 +229,13 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
       return;
     }
 
-    try {
-      const taxResponse = await fetch(config.baseApiUrl + "/calculate-tax", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: Math.round(Number(subtotal.toFixed(2)) * 100),
-          zipCode: zipCode,
-        }),
-      });
-
-      setTaxData(await taxResponse.json());
-      setIsSubmitting(true);
-    } catch (backendError: any) {
-      console.error("Error: ", backendError.response, backendError.message);
-    }
+    setIsSubmitting(true);
+    setLoading(true);
 
     //update the points on the rewardsMember
     if (isRewardsMember && hasBeverages) {
-      handleAddPoints(Math.floor(finaltotal / 10));
+      // handleAddPoints(Math.floor(totalBeverageAmount));
+      handleAddPoints(Math.floor(finaltotal));
     }
   };
 
@@ -387,9 +370,9 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
         <div className="mt-4 flex space-x-2">
           <button
             className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-            disabled={isSubmitting}
+            disabled={loading}
           >
-            {isSubmitting ? (
+            {loading ? (
               <svg
                 className="mx-auto h-5 w-5 animate-spin text-white"
                 xmlns="http://www.w3.org/2000/svg"
@@ -417,7 +400,9 @@ const PaymentForm = ({ cancelCheckout, isRewardsMember }: PaymentFormProps) => {
           <button
             type="button"
             className="rounded bg-red-500 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-            onClick={cancelCheckout}
+            onClick={() => {
+              cancelCheckout;
+            }}
           >
             Cancel
           </button>

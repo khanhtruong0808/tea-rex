@@ -131,10 +131,6 @@ const RewardsSystem = ({
     }
   };
 
-  const handleAddPointsClick = () => {
-    handleAddPoints(totalBeverageAmount);
-  };
-
   async function handleSpendPoints(
     spentPoints: number,
     rewardsType: RewardsType,
@@ -175,6 +171,7 @@ const RewardsSystem = ({
             case "drinks":
               if (!checkForBeverages()) {
                 showAlert("No beverages in cart!", "error");
+                setLoading(false);
                 return;
               }
 
@@ -259,6 +256,7 @@ const RewardsSystem = ({
 
     if (!foundItem) {
       showAlert(config.alertMessage, "error");
+      setLoading(false);
       return;
     }
 
@@ -441,12 +439,6 @@ const RewardsSystem = ({
                 Cancel
               </button>
             </div>
-            <button
-              onClick={handleAddPointsClick}
-              className="mt-2 rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block"
-            >
-              Add points THIS IS A TESTING BUTTON DELETE LATER!!!!
-            </button>
           </div>
         </div>
       )}

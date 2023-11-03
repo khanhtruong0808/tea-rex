@@ -68,8 +68,7 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
 
   async function handleAddPoints(subtotal: number) {
     let addPoints = Math.round(subtotal);
-    let newPoints = points + addPoints; // updating points with the 10% value
-    console.log(newPoints);
+    let newPoints = points + addPoints;
     try {
       let response = await fetch(config.baseApiUrl + "/rewards-member-update", {
         method: "PUT",
@@ -90,7 +89,6 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
-      console.error(`Failed to add free points!: ${errorMessage}`);
     }
   }
 
