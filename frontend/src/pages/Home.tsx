@@ -71,40 +71,50 @@ const Home: React.FC = () => {
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    setFullScreenImageUrl(event.currentTarget.src); // copies the clicked image's url to be stored this variable
+    setFullScreenImageUrl(event.currentTarget.src);
   };
 
   const closeFullScreen = () => {
-    setFullScreenImageUrl(null); // removes the clicked image's url by setting it to null
-  };
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (fullScreenImageUrl && event.key === "Escape") {
-      closeFullScreen();
+    if (fullScreenImageUrl) {
+      setFullScreenImageUrl(null);
     }
   };
 
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeFullScreen();
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [fullScreenImageUrl]);
+  }, []);
 
   const containerRef = useRef(null);
+
   useEffect(() => {
+    let widget: any = null;
     if (window && containerRef.current) {
-      window.cloudinary
-        .galleryWidget({
-          container: containerRef.current,
-          cloudName: "dwtzyvjko",
-          aspectRatio: "16:9",
-          mediaAssets: [{ tag: "top-items" }],
-          carouselStyle: "indicators",
-          carouselLocation: "bottom",
-        })
-        .render();
+      widget = window.cloudinary.galleryWidget({
+        container: containerRef.current,
+        cloudName: "dwtzyvjko",
+        aspectRatio: "16:9",
+        mediaAssets: [{ tag: "top-items" }],
+        carouselStyle: "indicators",
+        carouselLocation: "bottom",
+      });
+      widget.render();
     }
+
+    return () => {
+      if (widget) {
+        widget.destroy();
+      }
+    };
   }, []);
 
   return (
@@ -155,7 +165,7 @@ const Home: React.FC = () => {
           ))}
         </Swiper>
       </div>
-      {/* About Us & Google Map Section */}
+      {/* About Us & Map Section */}
       <div className="flex flex-col sm:container sm:mx-auto md:flex-row">
         <div className="mb-4 flex-1 md:mb-0">
           <h1 className="font-menu pb-4 text-center text-6xl font-extrabold">
