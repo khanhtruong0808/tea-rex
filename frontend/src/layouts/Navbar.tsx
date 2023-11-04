@@ -16,6 +16,7 @@ const routes = [
 
 export const Navbar = () => {
   const { openCart, cartQuantity } = useShoppingCart();
+
   return (
     <Disclosure
       as="nav"
@@ -26,11 +27,7 @@ export const Navbar = () => {
           <div className="max-w-8xl mx-auto px-2 lg:px-5 xl:px-8">
             <div className="flex h-16 items-center justify-between md:h-20 xl:h-24">
               <div className="flex items-center">
-                <NavLink
-                  to="/"
-                  className="shrink-0"
-                  reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
-                >
+                <NavLink to="/" className="shrink-0">
                   <img
                     src="tea-rex-sign.png"
                     alt=""
@@ -44,7 +41,6 @@ export const Navbar = () => {
                     <NavLink
                       to={route.path}
                       key={route.name}
-                      reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                       className="font-navbar whitespace-nowrap text-2xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100 xl:text-3xl"
                     >
                       {route.name}
@@ -56,7 +52,6 @@ export const Navbar = () => {
                 <div className="flex items-center">
                   <NavLink
                     to="/menu"
-                    reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                     className="block whitespace-nowrap rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white transition hover:scale-110 xl:block xl:px-6 xl:py-3"
                   >
                     ORDER NOW
@@ -102,7 +97,6 @@ export const Navbar = () => {
               <div className="py-1"></div>
               <NavLink
                 to="/menu"
-                reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
                 className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
               >
                 ORDER NOW

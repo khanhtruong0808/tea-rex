@@ -23,25 +23,29 @@ const Gallery = () => {
   );
 
   const handleImageClick = (event: React.MouseEvent<HTMLImageElement>) => {
-    setFullScreenImageUrl(event.currentTarget.src); // copies the clicked image's url to be stored this variable
+    setFullScreenImageUrl(event.currentTarget.src);
   };
 
   const closeFullScreen = () => {
-    setFullScreenImageUrl(null); // removes the clicked image's url by setting it to null
-  };
-
-  const handleKeyDown = (event: KeyboardEvent) => {
-    if (fullScreenImageUrl && event.key === "Escape") {
-      closeFullScreen();
+    if (fullScreenImageUrl) {
+      setFullScreenImageUrl(null);
     }
   };
 
   useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        closeFullScreen();
+      }
+    };
+
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [fullScreenImageUrl]);
+  }, []);
+
   return (
     <div>
       <div className="mx-auto w-9/12 max-w-xl">
@@ -75,7 +79,6 @@ const Gallery = () => {
                 key={index}
               >
                 <img
-                  // className=""
                   src={item.src}
                   alt={item.alt}
                   onClick={handleImageClick}
@@ -108,7 +111,5 @@ const Gallery = () => {
       </div>
     </div>
   );
-
-  // make folder for pictures in public folder
 };
 export default Gallery;

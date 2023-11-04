@@ -32,7 +32,6 @@ const FAQPage = () => {
       answer:
         "Stay connected with us through our social media channels! You'll find all the links in the footer below each page.",
     },
-    // Add more FAQ items here
   ];
 
   const [expandedIndex, setExpandedIndex] = useState<number[]>([]);
