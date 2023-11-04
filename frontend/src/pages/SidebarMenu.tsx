@@ -76,7 +76,7 @@ const SidebarMenu = ({
             } mb-1 w-full cursor-pointer rounded-lg px-3 py-2 text-left uppercase`}
             onClick={() => setSelectedCategory("all")}
           >
-            View All
+            View All Food & Drinks
           </button>
           <Tab.Panel className="flex flex-col gap-y-1">
             {beverageMenuSections.map((menuSection: MenuSection) => {
