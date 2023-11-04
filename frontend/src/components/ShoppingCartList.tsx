@@ -1,4 +1,5 @@
 import { useShoppingCart } from "./ShoppingCartProvider";
+import { twMerge } from "tailwind-merge";
 
 interface ShoppingCartListProps {
   cartItems: CartItem[];
@@ -12,7 +13,7 @@ export const ShoppingCartList = ({
   const { removeItem } = useShoppingCart();
 
   return (
-    <div className={`${className} mt-8`}>
+    <div className={twMerge("mt-8", className)}>
       <div className="flow-root">
         <ul role="list" className="-my-6 divide-y divide-gray-200">
           {cartItems.map((item, index) => {
@@ -55,7 +56,8 @@ export const ShoppingCartList = ({
                         key={option.name}
                       >
                         <p className="mt-1 text-gray-500">
-                          {option.qty !== -1 && `${option.qty}x`} {option.name}
+                          {option.qty !== -1 && `${option.qty}x`}{" "}
+                          {option.name.replace(/\s?\+?\$?\d\.\d\d/, "")}
                         </p>
                         {option.price !== undefined && (
                           <p className="ml-4 font-medium text-gray-900">

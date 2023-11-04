@@ -1,6 +1,7 @@
 import { FormEvent, useState, useEffect, useCallback } from "react";
 import { config } from "../../config";
 import Captcha from "../Captcha";
+import { Spinner } from "../../utils/Spinner";
 
 function isNotValidEmail(email: string) {
   const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -10,6 +11,7 @@ function isNotValidEmail(email: string) {
 type ValidationErrorType = "email" | "first_name" | "last_name" | "message";
 
 export default function EmailForm() {
+  const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [userFirstName, setUserFirstName] = useState("");
   const [userLastName, setUserLastName] = useState("");
@@ -74,6 +76,7 @@ export default function EmailForm() {
       console.error("Form is invalid!");
       return;
     }
+    setLoading(true);
 
     try {
       const response = await fetch(config.baseApiUrl + "/send-mail", {
@@ -105,6 +108,7 @@ export default function EmailForm() {
     setUserLastName("");
     setUserEmail("");
     setUserMessage("");
+    setLoading(false);
   };
 
   const handleTurnstileSuccess = useCallback((token: string) => {
@@ -142,10 +146,8 @@ export default function EmailForm() {
                         type="text"
                         placeholder="First name"
                         className={`${
-                          firstNameError
-                            ? "border-2 border-red-500"
-                            : "border border-gray-200"
-                        } font-navbar mr-1 w-full rounded`}
+                          firstNameError ? "border-red-500" : "border-gray-200"
+                        } font-navbar mr-1 w-full rounded border`}
                         onChange={(e) => {
                           setUserFirstName(e.target.value);
                           if (e.target.value.length > 0) {
@@ -164,10 +166,8 @@ export default function EmailForm() {
                         type="text"
                         placeholder="Last name"
                         className={`${
-                          lastNameError
-                            ? "border-2 border-red-500"
-                            : "border border-gray-200"
-                        } font-navbar w-full rounded`}
+                          lastNameError ? "border-red-500" : "border-gray-200"
+                        } font-navbar w-full rounded border`}
                         onChange={(e) => {
                           setUserLastName(e.target.value);
                           if (e.target.value.length > 0) {
@@ -187,10 +187,8 @@ export default function EmailForm() {
                       type="text"
                       placeholder="Enter your email address"
                       className={`${
-                        emailError
-                          ? "border-2 border-red-500"
-                          : "border border-gray-200"
-                      } font-navbar flex w-full rounded`}
+                        emailError ? "border-red-500" : "border-gray-200"
+                      } font-navbar flex w-full rounded border`}
                       onChange={(e) => {
                         setUserEmail(e.target.value);
                         if (e.target.value.length > 0) {
@@ -209,10 +207,8 @@ export default function EmailForm() {
                       rows={10}
                       placeholder="Message"
                       className={`${
-                        messageError
-                          ? "border-2 border-red-500"
-                          : "border border-gray-200"
-                      } font-navbar flex w-full rounded`}
+                        messageError ? "border-red-500" : "border-gray-200"
+                      } font-navbar flex w-full rounded border`}
                       onChange={(e) => {
                         setUserMessage(e.target.value);
                         if (e.target.value.length > 0) {
@@ -227,8 +223,8 @@ export default function EmailForm() {
                     )}
                   </div>
                   <div className="mx-auto mt-4 flex">
-                    <button className="rounded bg-lime-700 px-4 py-2 font-semibold text-white transition hover:scale-110 lg:block">
-                      Submit
+                    <button className="rounded bg-lime-700 px-4 py-2 font-semibold text-white hover:bg-lime-800 lg:block">
+                      {loading ? <Spinner /> : "Submit"}
                     </button>
                   </div>
                 </>

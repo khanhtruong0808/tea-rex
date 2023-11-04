@@ -1,6 +1,8 @@
 import { FiEdit3 } from "react-icons/fi";
 import { config } from "../config";
 import axios from "axios";
+import { useState } from "react";
+import { Spinner } from "../utils/Spinner";
 
 interface MenuPhotosProps {
   sectionId: number;
@@ -8,6 +10,7 @@ interface MenuPhotosProps {
 let file: File;
 
 export function MenuPhoto({ sectionId }: MenuPhotosProps) {
+  const [loading, setLoading] = useState(false);
   async function updateImageUrlInDb(url: string) {
     console.log(sectionId);
     try {
@@ -56,6 +59,7 @@ export function MenuPhoto({ sectionId }: MenuPhotosProps) {
   }
 
   function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setLoading(true);
     const files = event.target.files;
     if (files) {
       if (files.length > 1) {
@@ -65,17 +69,18 @@ export function MenuPhoto({ sectionId }: MenuPhotosProps) {
         getSignature();
       }
     }
+    setLoading(false);
   }
   return (
     <>
       <label className="h-[28px] w-[28px] cursor-pointer rounded-full p-0.5 hover:scale-110">
-        <FiEdit3 size={28} />
+        {loading ? <Spinner className="text-black" /> : <FiEdit3 size={28} />}
         <input
           type="file"
           id="file-upload"
           accept="image/*"
+          className="hidden"
           onChange={handleImageChange}
-          style={{ display: "none" }}
         />
       </label>
     </>

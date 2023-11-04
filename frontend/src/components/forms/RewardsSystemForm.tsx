@@ -353,14 +353,14 @@ const RewardsSystem = ({
           type="text"
           className={`${
             phoneError ? "border-red-500" : "border-gray-200"
-          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          } mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm`}
           placeholder="(111) 111-1111"
           value={phoneNumber}
           onChange={handlePhoneChange}
         />
         <button
           onClick={handleSubmit}
-          className="w-20 rounded-md border bg-lime-600 py-2 text-white hover:bg-lime-700 sm:text-sm lg:block"
+          className="w-20 rounded-md border bg-lime-600 px-3 py-2 text-sm text-white hover:bg-lime-700 lg:block"
         >
           {phoneLoading ? <Spinner /> : "Submit"}
         </button>
@@ -389,7 +389,7 @@ const RewardsSystem = ({
                     50 points
                   </div>
                   <div className="flex w-full flex-col items-center justify-center px-4">
-                    <p>$6 off any drink*</p>
+                    <p>Up to $6 off any drink*</p>
                   </div>
                 </div>
               )}
@@ -421,7 +421,7 @@ const RewardsSystem = ({
           </p>
           <button
             onClick={cancelShowingRewardsInfo}
-            className="mt-2 rounded border border-gray-300 bg-gray-50 px-4 py-2 text-sm text-gray-500 lg:block"
+            className="mt-2 rounded border border-gray-300 bg-gray-50 px-4 py-2 text-sm text-gray-500 hover:bg-gray-100 lg:block"
           >
             Cancel
           </button>

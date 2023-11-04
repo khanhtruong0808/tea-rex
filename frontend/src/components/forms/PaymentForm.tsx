@@ -1,4 +1,4 @@
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CardNumberElement,
@@ -7,28 +7,33 @@ import {
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js";
-import { StripeCardNumberElementOptions } from "@stripe/stripe-js";
+import {
+  StripeCardNumberElementOptions,
+  StripeCardElementOptions,
+} from "@stripe/stripe-js";
 import { config } from "../../config";
 import { Printer } from "../Printer";
 import useRewards from "../RewardsContext";
 import { useShoppingCart } from "../ShoppingCartProvider";
 
-const STRIPE_OPTIONS = {
+const STRIPE_OPTIONS: StripeCardElementOptions = {
+  style: {
+    base: {
+      fontSize: "14px",
+      lineHeight: "20px",
+    },
+    invalid: {
+      iconColor: "#df1b41",
+    },
+  },
+};
+
+const CARD_NUMBER_OPTIONS: StripeCardNumberElementOptions = {
   iconStyle: "solid",
   style: {
     base: {
-      iconColor: "#fffff",
-      color: "#fffff",
-      fontWeight: 500,
-      fontFamily: "Roboto, Open Sans, Segoe UI, sans-serif",
-      fontSize: "16px",
-      fontSmoothing: "antialiased",
-      ":-webkit-autofill": {
-        color: "#000",
-        backgroundColor: "transparent",
-      },
-      "::placeholder": { color: "#4a5568" },
-      borderColor: "#df1b41",
+      fontSize: "14px",
+      lineHeight: "20px",
     },
     invalid: {
       iconColor: "#df1b41",
@@ -45,14 +50,9 @@ interface PaymentFormProps {
   setLoading: (loading: boolean) => void;
 }
 
-interface TaxData {
-  success: boolean;
-  message?: string;
-}
 type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry";
 
 const PaymentForm = ({
-  cancelCheckout,
   isRewardsMember,
   setHandleSubmit,
   setLoading,
@@ -80,7 +80,6 @@ const PaymentForm = ({
     discount,
     tax,
     finaltotal,
-    totalBeverageAmount,
   } = useShoppingCart();
 
   const validations: { condition: boolean; type: ValidationErrorType }[] = [
@@ -114,25 +113,6 @@ const PaymentForm = ({
     expiry: setExpiryError,
   };
 
-  // useEffect(() => {
-  //   if (taxData) {
-  //     if (taxData.success) {
-  //       setExternalTax(true);
-  //       // Temporary Commenting this out to not confuse people -KT
-  //       // updateTax(100); // change later to actual tax data value
-  //       setIsTaxUpdated(true);
-  //     } else {
-  //       console.error("Error with tax data: " + taxData.message);
-  //     }
-  //   }
-  // }, [taxData]);
-
-  // useEffect(() => {
-  //   console.log("Updated tax: " + tax);
-  //   console.log("Updated final total: " + (subtotal - discount + tax));
-  //   updateFinaltotal(subtotal - discount + tax);
-  // }, [tax]);
-
   useEffect(() => {
     if (!isSubmitting) {
       return;
@@ -149,12 +129,6 @@ const PaymentForm = ({
         console.error("CardNumberElement not found!");
         return;
       }
-
-      // setExternalTax(true);
-      // Temporary Commenting this out to not confuse people -KT
-      // const updatedTax = 100;
-      // TODO: this is set for testing purposes to make sure that the tax can be updated, should be changed later to the actual taxData from Stripe as currently, Stripe does not calculate tax during development, value of taxability_reason: 'product_exempt'
-      // updateTax(updatedTax);
 
       const { error, paymentMethod } = await stripe.createPaymentMethod({
         type: "card",
@@ -237,7 +211,6 @@ const PaymentForm = ({
 
     //update the points on the rewardsMember
     if (isRewardsMember && hasBeverages) {
-      // handleAddPoints(Math.floor(totalBeverageAmount));
       handleAddPoints(Math.floor(finaltotal));
     }
   };
@@ -254,7 +227,7 @@ const PaymentForm = ({
           placeholder="Name on card"
           className={`${
             nameError ? "border-red-500" : "border-gray-300"
-          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          } mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm`}
           onChange={(e) => {
             setName(e.target.value);
             if (e.target.value.length > 0) {
@@ -272,10 +245,10 @@ const PaymentForm = ({
           Card Number
         </label>
         <CardNumberElement
-          options={STRIPE_OPTIONS as StripeCardNumberElementOptions}
+          options={CARD_NUMBER_OPTIONS}
           className={`${
             cardError ? "border-red-500" : "border-gray-200"
-          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          } mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm`}
           onChange={(e) => {
             setIsCardComplete(e.complete);
             if (e.complete) {
@@ -299,7 +272,7 @@ const PaymentForm = ({
             options={STRIPE_OPTIONS}
             className={`${
               expiryError ? "border-red-500" : "border-gray-200"
-            } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+            } mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm`}
             onChange={(e) => {
               setIsExpiryComplete(e.complete);
               if (e.complete) {
@@ -322,7 +295,7 @@ const PaymentForm = ({
             options={STRIPE_OPTIONS}
             className={`${
               cvcError ? "border-red-500" : "border-gray-200"
-            } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+            } mt-1 block w-full rounded-md border px-3 py-2 text-sm shadow-sm`}
             onChange={(e) => {
               setIsCvcComplete(e.complete);
               if (e.complete) {
@@ -342,7 +315,7 @@ const PaymentForm = ({
           type="text"
           className={`${
             zipError ? "border-red-500" : "border-gray-200"
-          } mt-1 block w-full rounded-md border px-3 py-2 shadow-sm sm:text-sm`}
+          } font-base mt-1 block w-full rounded-md border px-3 py-2 text-sm`}
           placeholder="ZIP"
           pattern="\d{5}"
           maxLength={5}

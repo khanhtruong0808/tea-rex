@@ -87,7 +87,7 @@ export const Navbar = () => {
               {routes.map((route) => (
                 <NavLink
                   to={route.path}
-                  reloadDocument // for some reason this prevents react-router from freezing the screen on resizing...
+                  onClick={() => close()}
                   key={route.name}
                   className="font-navbar block rounded-md px-3 text-2xl font-bold hover:bg-lime-700 hover:text-white"
                 >
@@ -97,6 +97,7 @@ export const Navbar = () => {
               <div className="py-1"></div>
               <NavLink
                 to="/menu"
+                onClick={() => close()}
                 className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
               >
                 ORDER NOW

@@ -36,6 +36,7 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
 
   async function handleRevertPendingPoints(): Promise<boolean> {
     return new Promise(async (resolve, reject) => {
+      if (!phoneNumber) return;
       try {
         let response = await fetch(
           config.baseApiUrl + "/rewards-member-revert-pending",
