@@ -28,6 +28,11 @@ const FAQPage = () => {
         "We accept payments securely through Stripe, making it convenient for you.",
     },
     {
+      question: "Is there a rewards system?",
+      answer:
+        "Yes! Our rewards program allows you to earn points with every order. These points can lead to a free drink valued at up to $8. If you ever fancy a drink that's a bit pricier, you can apply your points to lower the cost. Joining the fun is easy – simply sign up and redeem your points during checkout. It's our way of saying thanks for being a part of our tea-loving community!",
+    },
+    {
       question: "How can I keep in touch via social media?",
       answer:
         "Stay connected with us through our social media channels! You'll find all the links in the footer below each page.",
