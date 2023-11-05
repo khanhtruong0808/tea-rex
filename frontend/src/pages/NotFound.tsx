@@ -36,7 +36,7 @@ export default function NotFound() {
           <div id="picContainer" className="transform">
             <div id="bouncingContainer" className="pt-14 md:w-96 md:pt-1">
               <img
-                src="/sad-tea-rex.png"
+                src="tea-rex-logos/sad-tea-rex.webp"
                 alt="sad boba t-rex"
                 className="bg-transparent"
               ></img>

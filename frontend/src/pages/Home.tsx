@@ -52,17 +52,17 @@ const topTenItems = [
 ];
 
 const galleryItems = [
-  { src: "food-items/chicken-ramen-burger.jpg", alt: "chicken ramen burger" },
-  { src: "food-items/menu-board.jpg", alt: "menu-board" },
-  { src: "food-items/outside.jpg", alt: "outside" },
+  { src: "food-items/chicken-ramen-burger.webp", alt: "chicken ramen burger" },
+  { src: "food-items/menu-board.webp", alt: "menu-board" },
+  { src: "food-items/outside.webp", alt: "outside" },
   {
-    src: "food-items/popcorn-chicken-bento-rice.jpg",
+    src: "food-items/popcorn-chicken-bento-rice.webp",
     alt: "popcorn chicken bento rice",
   },
-  { src: "food-items/popcorn-chicken.jpg", alt: "popcorn chicken" },
-  { src: "food-items/spam-masubi.jpg", alt: "spam masubi" },
-  { src: "food-items/tofu.jpg", alt: "tofu" },
-  { src: "food-items/outside1.jpg", alt: "outside" },
+  { src: "food-items/popcorn-chicken.webp", alt: "popcorn chicken" },
+  { src: "food-items/spam-masubi.webp", alt: "spam masubi" },
+  { src: "food-items/tofu.webp", alt: "tofu" },
+  { src: "food-items/outside1.webp", alt: "outside" },
 ];
 
 const Home: React.FC = () => {

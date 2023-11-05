@@ -13,7 +13,7 @@ const storeLoc = {
 };
 
 const customIcon = new L.Icon({
-  iconUrl: "tearex.png",
+  iconUrl: "tea-rex-logos/tearex.webp",
   iconSize: [90, 95],
   iconAnchor: [30, 65],
   popupAnchor: [-3, -76],

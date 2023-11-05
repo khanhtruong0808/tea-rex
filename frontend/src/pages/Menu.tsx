@@ -53,8 +53,8 @@ const Menu = () => {
     return (
       <div className="relative flex flex-col items-center justify-center">
         <img
-          src="tearex.png"
-          alt="tearex.png"
+          src="tea-rex-logos/tearex.webp"
+          alt="tearex.webp"
           className="ml-10 w-[40%] animate-pulse text-center" // Other classes can be used alongside inline styles
         />
         {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE

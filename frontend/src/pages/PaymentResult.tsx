@@ -10,7 +10,7 @@ function PaymentResult() {
         <div className="relative mb-4 flex w-3/4 flex-col items-center">
           <img
             className="w-1/2 object-contain md:w-3/4"
-            src={"/happy-tea-rex.png"}
+            src={"tea-rex-logos/happy-tea-rex.webp"}
           />
           <div className="center font-description text-l absolute mb-10 md:text-3xl">
             Payment was successful!
@@ -19,7 +19,10 @@ function PaymentResult() {
       ) : (
         <>
           <div className="relative mb-4 flex w-3/4 flex-col items-center">
-            <img className="w-1/2 object-contain" src={"/sad-tea-rex.png"} />
+            <img
+              className="w-1/2 object-contain"
+              src={"tea-rex-logos/sad-tea-rex.webp"}
+            />
             <div className="center font-description text-l absolute mb-10 md:text-3xl">
               Payment failed!
             </div>
