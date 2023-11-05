@@ -29,7 +29,7 @@ export const Navbar = () => {
               <div className="flex items-center">
                 <NavLink to="/" className="shrink-0">
                   <img
-                    src="tea-rex-sign.png"
+                    src="tea-rex-logos/tea-rex-sign.webp"
                     alt=""
                     className="h-12 w-auto md:h-16 lg:h-20 xl:h-24"
                   />

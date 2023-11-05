@@ -7,7 +7,7 @@ export default function ContactInfo({ icon = <MdPlace />, text = "" }) {
       <div className="flex items-center justify-center rounded-full bg-green-600 p-5">
         {icon}
       </div>
-      <div className="flex flex-col whitespace-nowrap">
+      <div className="flex flex-col ">
         <PText>{text}</PText>
       </div>
     </div>

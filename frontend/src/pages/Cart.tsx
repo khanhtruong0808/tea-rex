@@ -102,7 +102,10 @@ export default function Cart() {
               {" "}
               No items in cart!{" "}
             </p>
-            <img src="sad-tea-rex-empty-cart.png" alt="Empty Cart" />
+            <img
+              src="tea-rex-logos/sad-tea-rex-empty-cart.webp"
+              alt="Empty Cart"
+            />
           </div>
         )}
         <div
