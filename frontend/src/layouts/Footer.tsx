@@ -41,21 +41,21 @@ const Footer = () => {
   return (
     <div className="sticky left-0 right-0 top-0 z-20 bg-gradient-to-bl from-amber-600 to-amber-500">
       <div>
-        <ul className="display:flex; container mx-auto grid pt-10 sm:grid-cols-2 md:grid-cols-4">
+        <ul className="container mx-auto grid pt-10 sm:grid-cols-2 md:grid-cols-4">
           {footInfo.map((footInfo) => (
             <li
               key={footInfo.name}
               className="justify-left flex break-after-column gap-1 pl-5 sm:block lg:justify-center lg:pl-20 xl:h-20"
             >
-              <p className="text-xl font-semibold">{footInfo.name}</p>
-              <p>{footInfo.hours}</p>
-              <p>{footInfo.phone}</p>
-              <p>{footInfo.location}</p>
+              <p className="text-xl font-semibold sm:p-0">{footInfo.name}</p>
+              <p className="py-1 sm:py-0">{footInfo.hours}</p>
+              <p className="py-1 sm:py-0">{footInfo.phone}</p>
+              <p className="py-1 sm:py-0">{footInfo.location}</p>
             </li>
           ))}
         </ul>
       </div>
-      <ul className="flex items-center justify-center gap-6 lg:h-1">
+      <ul className="flex items-center justify-center gap-6 py-1 lg:h-1">
         {footIcons.map((footIcons) => (
           <NavLink
             to={footIcons.path}
