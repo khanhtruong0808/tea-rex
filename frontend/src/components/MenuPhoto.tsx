@@ -7,6 +7,14 @@ import { Spinner } from "../utils/Spinner";
 interface MenuPhotosProps {
   sectionId: number;
 }
+
+interface MediaData {
+  apiKey: string;
+  cloudName: string;
+  signature: string;
+  timestamp: string;
+}
+
 let file: File;
 
 export function MenuPhoto({ sectionId }: MenuPhotosProps) {
@@ -14,7 +22,7 @@ export function MenuPhoto({ sectionId }: MenuPhotosProps) {
   async function updateImageUrlInDb(url: string) {
     console.log(sectionId);
     try {
-      const res = await axios({
+      await axios({
         method: "PUT",
         url: `${config.baseApiUrl}/menu-section/${sectionId}`,
         data: {
@@ -38,7 +46,7 @@ export function MenuPhoto({ sectionId }: MenuPhotosProps) {
       console.error(err);
     }
   }
-  async function uploadMedia(data: any) {
+  async function uploadMedia(data: MediaData) {
     try {
       const formData = new FormData();
       formData.append("file", file);

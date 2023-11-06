@@ -1,4 +1,4 @@
-import { Turnstile } from "@marsidev/react-turnstile";
+import { Turnstile, TurnstileInstance } from "@marsidev/react-turnstile";
 import { config } from "../config";
 import React from "react";
 
@@ -7,7 +7,7 @@ interface CaptchaProps {
 }
 
 const Captcha: React.FC<CaptchaProps> = ({ onSuccess }) => {
-  const ref = React.useRef<any>(null);
+  const ref = React.useRef<TurnstileInstance>(null);
 
   function handleSuccess(token: string) {
     onSuccess(token);

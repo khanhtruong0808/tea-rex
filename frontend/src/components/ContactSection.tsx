@@ -1,6 +1,5 @@
 import { MdEmail, MdLocalPhone, MdPlace } from "react-icons/md";
 import ContactInfoItem from "./ContactInfo";
-import SectionTitle from "./SectionTitle";
 
 export default function ContactSection() {
   return (

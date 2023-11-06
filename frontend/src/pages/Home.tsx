@@ -10,48 +10,48 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import adminModeStore from "../utils/adminModeStore";
 
-const topTenItems = [
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg",
-    alt: "item1",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg",
-    alt: "item2",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg",
-    alt: "item3",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636250/TeaRex/TopItems/4_k3rtvb.jpg",
-    alt: "item4",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636253/TeaRex/TopItems/5_pd1uhu.jpg",
-    alt: "item5",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636257/TeaRex/TopItems/6_smi0wq.jpg",
-    alt: "item6",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636260/TeaRex/TopItems/7_brrd1p.jpg",
-    alt: "item7",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636264/TeaRex/TopItems/8_ykzm77.jpg",
-    alt: "item8",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636267/TeaRex/TopItems/9_y5jiyc.jpg",
-    alt: "item9",
-  },
-  {
-    src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636272/TeaRex/TopItems/10_zsdorh.jpg",
-    alt: "item10",
-  },
-];
+// const topTenItems = [
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg",
+//     alt: "item1",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg",
+//     alt: "item2",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg",
+//     alt: "item3",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636250/TeaRex/TopItems/4_k3rtvb.jpg",
+//     alt: "item4",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636253/TeaRex/TopItems/5_pd1uhu.jpg",
+//     alt: "item5",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636257/TeaRex/TopItems/6_smi0wq.jpg",
+//     alt: "item6",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636260/TeaRex/TopItems/7_brrd1p.jpg",
+//     alt: "item7",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636264/TeaRex/TopItems/8_ykzm77.jpg",
+//     alt: "item8",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636267/TeaRex/TopItems/9_y5jiyc.jpg",
+//     alt: "item9",
+//   },
+//   {
+//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636272/TeaRex/TopItems/10_zsdorh.jpg",
+//     alt: "item10",
+//   },
+// ];
 
 const galleryItems = [
   
@@ -100,6 +100,7 @@ const Home: React.FC = () => {
   const containerRef = useRef(null);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let widget: any = null;
     if (window && containerRef.current) {
       widget = window.cloudinary.galleryWidget({
@@ -137,11 +138,12 @@ const Home: React.FC = () => {
       {/* Gallery section */}
       <div className="group relative m-auto h-[580px] w-full max-w-[px] select-none px-4 py-16">
         <Swiper
-          style={{
-            /*@ts-ignore*/
-            "--swiper-navigation-color": "#000000",
-            "--swiper-pagination-color": "#000000",
-          }}
+          style={
+            {
+              "--swiper-navigation-color": "#000000",
+              "--swiper-pagination-color": "#000000",
+            } as React.CSSProperties
+          }
           spaceBetween={30}
           centeredSlides={true}
           autoplay={{

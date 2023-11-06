@@ -37,7 +37,7 @@ const RewardsSystem = ({
     spentPoints,
     points,
   } = useRewards();
-  let { showAlert } = useAlert();
+  const { showAlert } = useAlert();
 
   const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
@@ -46,6 +46,7 @@ const RewardsSystem = ({
   const [drinkLoading, setDrinkLoading] = useState(false); // loading state for redeeming drinks
   const [phoneLoading, setPhoneLoading] = useState(false);
   const [beverageDiscount, setBeverageDiscount] = useState(0);
+  // eslint-disable-next-line prefer-const
   let [phoneNumber, setPhoneNumber] = useState("");
 
   const discountItems = {
@@ -61,7 +62,7 @@ const RewardsSystem = ({
   };
 
   const formatPhoneNumber = (input: string) => {
-    let cleaned = ("" + input).replace(/\D/g, "");
+    const cleaned = ("" + input).replace(/\D/g, "");
     if (cleaned.length == 0) {
       return "";
     } else if (cleaned.length <= 3) {
@@ -166,7 +167,7 @@ const RewardsSystem = ({
           const potentialDiscount = 0;
 
           switch (rewardsType) {
-            case "drinks":
+            case "drinks": {
               if (!checkForBeverages()) {
                 showAlert("No beverages in cart!", "error");
                 setDrinkLoading(false);
@@ -193,6 +194,7 @@ const RewardsSystem = ({
               );
               updateDiscount(discount + potentialBeverageDiscount);
               break;
+            }
 
             case "popcorn-chicken":
               if (!applyDiscountForItem(rewardsType)) {
@@ -262,7 +264,7 @@ const RewardsSystem = ({
       return;
     }
 
-    let finalDiscount = Number(discount) + Number(itemPrice);
+    const finalDiscount = Number(discount) + Number(itemPrice);
 
     const adjustedDiscount = parseFloat(
       (Number(finalDiscount) - Number(beverageDiscount)).toFixed(2),
@@ -303,7 +305,7 @@ const RewardsSystem = ({
         body: JSON.stringify({ phoneNumber }),
       });
 
-      let data = await response.json();
+      const data = await response.json();
 
       if (data && data.exists) {
         handleRevertPendingPoints();

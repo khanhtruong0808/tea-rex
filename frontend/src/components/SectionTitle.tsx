@@ -22,10 +22,15 @@ const SectionTitleStyle = styled.div`
   }
 `;
 
+interface SectionTitleProps {
+  subheading?: string;
+  heading?: string;
+}
+
 export default function SectionTitle({
   subheading = "Need Subheading",
   heading = "need heading",
-}) {
+}: SectionTitleProps) {
   return (
     <SectionTitleStyle className="section-title">
       <h2>{heading}</h2>

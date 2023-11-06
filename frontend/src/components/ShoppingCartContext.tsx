@@ -4,13 +4,6 @@
 
 import { createContext } from "react";
 
-interface Item {
-  id?: number;
-  name: string;
-  price?: number;
-  qty: number;
-}
-
 type ShoppingCartContext = {
   addToCart: (
     item: MenuItem,

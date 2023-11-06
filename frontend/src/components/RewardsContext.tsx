@@ -35,49 +35,54 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
   }
 
   async function handleRevertPendingPoints(): Promise<boolean> {
-    return new Promise(async (resolve, reject) => {
-      if (!phoneNumber) return;
-      try {
-        let response = await fetch(
-          config.baseApiUrl + "/rewards-member-revert-pending",
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ phoneNumber }),
-          },
-        );
-
-        const data = await response.json();
-        if (data && data.points) {
-          setPoints(data.points);
-          setSpentPoints(0);
-          setPhoneNumber("");
-          resolve(true);
-        } else {
-          console.error(data.error);
-          resolve(false);
-        }
-      } catch (error) {
-        const errorMessage = (error as Error).message;
-        console.error(`Error while reverting pending points: ${errorMessage}`);
-        reject(error);
+    return new Promise((resolve, reject) => {
+      if (!phoneNumber) {
+        reject(new Error("Phone number is required"));
+        return;
       }
-    });
-  }
-
-  async function handleAddPoints(subtotal: number) {
-    let addPoints = Math.round(subtotal);
-    let newPoints = points + addPoints;
-    try {
-      let response = await fetch(config.baseApiUrl + "/rewards-member-update", {
+      fetch(config.baseApiUrl + "/rewards-member-revert-pending", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ phoneNumber, newPoints }),
-      });
+        body: JSON.stringify({ phoneNumber }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.points) {
+            setPoints(data.points);
+            setSpentPoints(0);
+            setPhoneNumber("");
+            resolve(true);
+          } else {
+            console.error(data.error);
+            resolve(false);
+          }
+        })
+        .catch((error) => {
+          const errorMessage = error.message;
+          console.error(
+            `Error while reverting pending points: ${errorMessage}`,
+          );
+          reject(error);
+        });
+    });
+  }
+
+  async function handleAddPoints(subtotal: number) {
+    const addPoints = Math.round(subtotal);
+    const newPoints = points + addPoints;
+    try {
+      const response = await fetch(
+        config.baseApiUrl + "/rewards-member-update",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ phoneNumber, newPoints }),
+        },
+      );
 
       const data = await response.json();
 
@@ -90,6 +95,7 @@ export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
+      console.error(errorMessage);
     }
   }
 

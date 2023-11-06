@@ -6,7 +6,8 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import DeliveryOption from "../components/DeliveryOption";
-import PulseLoader from "react-spinners/PulseLoader";
+import { useNavigate } from "react-router-dom";
+// import PulseLoader from "react-spinners/PulseLoader";
 import { AddItemForm } from "../components/AddItemForm";
 import LogoutHandler from "../components/LogoutButton"
 
@@ -68,7 +69,7 @@ const Menu = () => {
     );
   }
   if (isLoading) return null;
-
+    
   // function when clicking add to cart button
   const handleAddToCart = (selectedItem: MenuItem) => {
     openDialog({

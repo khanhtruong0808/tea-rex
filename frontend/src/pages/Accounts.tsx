@@ -1,5 +1,3 @@
-import { useState, useEffect } from "react";
-import axios from "axios";
 import { TbTrash } from "react-icons/tb";
 import { config } from "../config";
 import { useQuery } from "@tanstack/react-query";
