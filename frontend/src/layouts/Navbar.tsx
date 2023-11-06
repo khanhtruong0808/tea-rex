@@ -32,6 +32,7 @@ export const Navbar = () => {
                     src="tea-rex-logos/tea-rex-sign.webp"
                     alt=""
                     className="h-12 w-auto md:h-16 lg:h-20 xl:h-24"
+                    aria-label="Go home"
                   />
                 </NavLink>
               </div>
@@ -60,7 +61,11 @@ export const Navbar = () => {
               </div>
 
               <div className="flex items-center">
-                <button className="relative" onClick={openCart}>
+                <button
+                  className="relative"
+                  onClick={openCart}
+                  aria-label="Open Cart"
+                >
                   <FaShoppingCart className="mr-2 h-6 w-6 cursor-pointer rounded-lg text-black/70 hover:text-black md:h-8 md:w-8" />
                   {cartQuantity > 0 && (
                     <div className="absolute left-3 top-3 flex h-4 w-4 items-center justify-center rounded-full bg-lime-700 text-sm text-white md:left-3.5 md:top-3.5 md:h-5 md:w-5">

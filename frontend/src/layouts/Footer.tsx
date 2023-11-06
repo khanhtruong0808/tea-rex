@@ -41,9 +41,9 @@ const Footer = () => {
   return (
     <div className="sticky left-0 right-0 top-0 z-20 bg-gradient-to-bl from-amber-600 to-amber-500">
       <div>
-        <ul className="container mx-auto grid pt-10 sm:grid-cols-2 md:grid-cols-4">
+        <div className="container mx-auto grid pt-10 sm:grid-cols-2 md:grid-cols-4">
           {footInfo.map((footInfo) => (
-            <li
+            <div
               key={footInfo.name}
               className="justify-left flex break-after-column gap-1 pl-5 sm:block lg:justify-center lg:pl-20 xl:h-20"
             >
@@ -51,29 +51,30 @@ const Footer = () => {
               <p className="py-1 sm:py-0">{footInfo.hours}</p>
               <p className="py-1 sm:py-0">{footInfo.phone}</p>
               <p className="py-1 sm:py-0">{footInfo.location}</p>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
-      <ul className="flex items-center justify-center gap-6 py-1 lg:h-1">
+      <div className="flex items-center justify-center gap-6 py-1 lg:h-1">
         {footIcons.map((footIcons) => (
           <NavLink
             to={footIcons.path}
             key={footIcons.name}
+            aria-label={footIcons.name}
             className="flex gap-6"
           >
-            <li className="flex rounded-full bg-lime-700 px-2 py-2 text-2xl font-bold text-white transition hover:scale-125">
+            <div className="flex rounded-full bg-lime-700 px-2 py-2 text-2xl font-bold text-white transition hover:scale-125">
               {footIcons.icon}
-            </li>
+            </div>
           </NavLink>
         ))}
-      </ul>
-      <ul className="mx-2 flex justify-end gap-1">
+      </div>
+      <div className="mx-2 flex justify-end gap-1">
         <p className="pt-1">
           <AiOutlineCopyrightCircle />
         </p>
         <p>2023 Tea Rex</p>
-      </ul>
+      </div>
     </div>
   );
 };
