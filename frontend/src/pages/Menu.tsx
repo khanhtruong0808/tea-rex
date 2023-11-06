@@ -6,9 +6,9 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import DeliveryOption from "../components/DeliveryOption";
-import { useNavigate } from "react-router-dom";
 import PulseLoader from "react-spinners/PulseLoader";
 import { AddItemForm } from "../components/AddItemForm";
+import LogoutHandler from "../components/LogoutButton"
 
 const Menu = () => {
   const { data, isLoading } = useQuery({
@@ -24,7 +24,6 @@ const Menu = () => {
   // category selected on sidebar
   const [selectedCategory, setSelectedCategory] = useState<string>("Milk Tea");
 
-  const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -78,25 +77,6 @@ const Menu = () => {
   }
   if (isLoading) return null;
 
-  const handleLogout = () => {
-    // Clear the admin mode state
-
-    adminModeStore.setState({ isAdmin: false });
-    localStorage.removeItem("token");
-    fetch("/logout", {
-      method: "GET",
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          navigate("/Admin");
-        } else {
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
   // function when clicking add to cart button
   const handleAddToCart = (selectedItem: MenuItem) => {
     openDialog({
@@ -146,22 +126,10 @@ const Menu = () => {
         </div>
       </div>
 
-      <div className="absolute right-2 top-28">
-        <div className="flex flex-col">
-          {isAdmin && (
-            <div className="z-10">
-              <div className="justify-center">
-                <button
-                  onClick={handleLogout}
-                  className="w-full rounded-md border-red-500 bg-red-500 px-5 py-1 text-white"
-                  type="button"
-                >
-                  Logout
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+      <div>
+        {isAdmin && (
+          <LogoutHandler />
+        )}
       </div>
 
       <div className="flex-1 space-y-12">

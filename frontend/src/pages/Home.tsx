@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from "react";
 import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
+import LogoutHandler from "../components/LogoutButton"
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/effect-fade";
+import adminModeStore from "../utils/adminModeStore";
 
 const topTenItems = [
   {
@@ -52,6 +54,7 @@ const topTenItems = [
 ];
 
 const galleryItems = [
+  
   { src: "food-items/chicken-ramen-burger.webp", alt: "chicken ramen burger" },
   { src: "food-items/menu-board.webp", alt: "menu-board" },
   { src: "food-items/outside.webp", alt: "outside" },
@@ -64,8 +67,8 @@ const galleryItems = [
   { src: "food-items/tofu.webp", alt: "tofu" },
   { src: "food-items/outside1.webp", alt: "outside" },
 ];
-
 const Home: React.FC = () => {
+  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
     null,
   );
@@ -204,6 +207,11 @@ const Home: React.FC = () => {
           style={{ width: "1200px,", margin: "auto" }}
         ></div>
       </section>
+      <div>
+        {isAdmin && (
+          <LogoutHandler />
+        )}
+      </div>
     </div>
   );
 };

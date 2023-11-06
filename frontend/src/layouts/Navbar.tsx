@@ -3,6 +3,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { NavLink } from "react-router-dom";
 import { useShoppingCart } from "../components/ShoppingCartProvider";
 import { FaShoppingCart } from "react-icons/fa";
+import ownerModeStore from "../utils/ownerModeStore";
 
 const routes = [
   {
@@ -16,7 +17,7 @@ const routes = [
 
 export const Navbar = () => {
   const { openCart, cartQuantity } = useShoppingCart();
-
+  const isOwner = ownerModeStore((state) => state.isOwner);
   return (
     <Disclosure
       as="nav"
@@ -48,6 +49,16 @@ export const Navbar = () => {
                   ))}
                 </div>
               </div>
+              {isOwner && (
+                  <div className="hidden md:block">
+                      <NavLink
+                        to="/account"
+                        className="whitespace-nowrap font-navbar text-2xl xl:text-3xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100"
+                        >
+                        Accounts
+                      </NavLink>
+                  </div>
+              )}
               <div className="hidden md:block">
                 <div className="flex items-center">
                   <NavLink

@@ -26,6 +26,7 @@
     "express-session": "^1.17.3",
     "i": "^0.3.7",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "leaflet": "^1.9.4",
     "node-pre-gyp": "^0.17.0",
     "react": "^18.2.0",
