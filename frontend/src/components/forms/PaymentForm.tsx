@@ -46,7 +46,7 @@ interface PaymentFormProps {
   cancelCheckout: () => void;
   isRewardsMember: boolean;
   phoneNumber: string;
-  setHandleSubmit: (func: any) => void;
+  setHandleSubmit: (func: () => Promise<void>) => void;
   setLoading: (loading: boolean) => void;
 }
 

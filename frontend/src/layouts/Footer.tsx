@@ -1,4 +1,4 @@
-import { NavLink, Route } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { FaFacebookF } from "react-icons/fa";
 import { FaYelp } from "react-icons/fa";
 import { FaTripadvisor } from "react-icons/fa";

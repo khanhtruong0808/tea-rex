@@ -7,7 +7,7 @@ import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import DeliveryOption from "../components/DeliveryOption";
 import { useNavigate } from "react-router-dom";
-import PulseLoader from "react-spinners/PulseLoader";
+// import PulseLoader from "react-spinners/PulseLoader";
 import { AddItemForm } from "../components/AddItemForm";
 
 const Menu = () => {
@@ -89,7 +89,6 @@ const Menu = () => {
       .then((response) => {
         if (response.status === 200) {
           navigate("/Admin");
-        } else {
         }
       })
       .catch((error) => {

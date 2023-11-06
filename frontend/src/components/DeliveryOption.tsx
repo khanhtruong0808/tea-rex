@@ -1,6 +1,6 @@
 import { SiUbereats } from "react-icons/si";
 import { SiGrubhub } from "react-icons/si";
-import { NavLink, Route } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const DeliveryOption = () => {
   const deliveryIcons = [

@@ -100,8 +100,8 @@ export default function EmailForm() {
       } else {
         console.error("Failed to send email", emailResponse.message);
       }
-    } catch (error: any) {
-      console.error("Problem with sending email", error.message);
+    } catch (error: unknown) {
+      console.error("Problem with sending email", (error as Error).message);
     }
 
     setUserFirstName("");

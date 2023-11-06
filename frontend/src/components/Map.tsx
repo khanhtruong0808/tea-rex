@@ -1,4 +1,4 @@
-import { MapContainer, TileLayer, useMap, Marker, Popup } from "react-leaflet";
+import { MapContainer, TileLayer, useMap, Marker } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { useEffect } from "react";
@@ -25,7 +25,7 @@ const showInMapClicked = () => {
   );
 };
 
-const Map: React.FC<MapProps> = ({ width }) => {
+const Map = ({ width }: MapProps) => {
   const defaultContainerStyle = {
     width: "100%",
     height: "500px",

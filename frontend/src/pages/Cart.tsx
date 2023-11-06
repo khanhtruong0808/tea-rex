@@ -135,7 +135,7 @@ export default function Cart() {
               isRewardsMember={isRewardsMember}
               phoneNumber={phoneNumber}
               setLoading={setLoading}
-              setHandleSubmit={(func: any) => (handleSubmitRef.current = func)}
+              setHandleSubmit={(func) => (handleSubmitRef.current = func)}
             />
           </div>
         </div>

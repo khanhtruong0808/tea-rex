@@ -20,7 +20,7 @@ export const ShoppingCartList = ({
             const itemID = item.id;
             const menuItem = item.item;
             const options = item.option;
-            const sortedOptions = options.sort((a: any, b: any) => {
+            const sortedOptions = options.sort((a, b) => {
               if (a.qty < b.qty) {
                 return -1;
               }
