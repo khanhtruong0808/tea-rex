@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { config } from "../config";
 import adminModeStore from "../utils/adminModeStore";
+import ownerModeStore from "../utils/ownerModeStore";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -27,12 +29,6 @@ function Login() {
     setUsernameError("");
     setPasswordError("");
     setMessage("");
-
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      adminModeStore.setState({ isAdmin: true });
-    }
     //const isAdmin = localStorage.getItem("isAdmin") === "true";
     //adminModeStore.setState({ isAdmin });
   }, []);
@@ -71,7 +67,18 @@ function Login() {
       );
       if (response.status === 200) {
         localStorage.setItem("token", response.data.token);
-        adminModeStore.setState({ isAdmin: true });
+        const token = localStorage.getItem("token");
+        if (token !== null) {
+          const decodedToken: { accessLevel: string } = jwtDecode(token);
+          const accessLevel = decodedToken.accessLevel;
+          console.log(accessLevel);
+          if (accessLevel == "owner") {
+            ownerModeStore.setState({ isOwner: true });
+            adminModeStore.setState({ isAdmin: true });
+          } else if (accessLevel == "admin") {
+            adminModeStore.setState({ isAdmin: true });
+          }
+        }
         setUsernameError("");
         setPasswordError("");
         navigate("/menu");

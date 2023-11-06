@@ -9,8 +9,8 @@ import { Spinner } from "../../utils/Spinner";
 export const AccountEditForm = ({ account }: { account: account }) => {
   const [loading, setLoading] = useState(false);
   const { closeDialog } = useDialog();
-
   const queryClient = useQueryClient();
+
   const {
     register,
     handleSubmit,
@@ -18,7 +18,6 @@ export const AccountEditForm = ({ account }: { account: account }) => {
   } = useForm<account>({
     defaultValues: {
       username: account.username,
-      password: account.password,
       firstName: account.firstName,
       lastName: account.lastName,
     },
@@ -42,7 +41,7 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       toast.error("Could not edit account information");
     },
   });
-
+  
   const onSubmit: SubmitHandler<account> = async (data) => {
     setLoading(true);
     await mutation.mutateAsync({ ...data });
@@ -71,7 +70,7 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       </div>
       <div>
         <label
-          htmlFor="price"
+          htmlFor="password"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Password
@@ -88,7 +87,7 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       </div>
       <div>
         <label
-          htmlFor="menuType"
+          htmlFor="firstName"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           First Name
@@ -105,7 +104,7 @@ export const AccountEditForm = ({ account }: { account: account }) => {
       </div>
       <div>
         <label
-          htmlFor="menuType"
+          htmlFor="lastName"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Last Name
@@ -119,6 +118,22 @@ export const AccountEditForm = ({ account }: { account: account }) => {
             <span className="text-red-500">This field is required</span>
           )}
         </div>
+      </div>
+      <div>
+        <label
+          htmlFor="isAdmin"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Admin Access?
+        </label>
+        <select
+          id="isAdmin"
+          {...register("isAdmin", { required: true })}
+          className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        >
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
       </div>
       <div></div>
       <button

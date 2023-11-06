@@ -47,7 +47,7 @@ export const AccountAddForm = () => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-2">
       <div>
         <label
-          htmlFor="name"
+          htmlFor="username"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Username
@@ -64,7 +64,7 @@ export const AccountAddForm = () => {
       </div>
       <div>
         <label
-          htmlFor="price"
+          htmlFor="password"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Password
@@ -81,7 +81,7 @@ export const AccountAddForm = () => {
       </div>
       <div>
         <label
-          htmlFor="price"
+          htmlFor="firstName"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           First Name
@@ -98,7 +98,7 @@ export const AccountAddForm = () => {
       </div>
       <div>
         <label
-          htmlFor="price"
+          htmlFor="lastName"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Last Name
@@ -115,7 +115,7 @@ export const AccountAddForm = () => {
       </div>
       <div>
         <label
-          htmlFor="price"
+          htmlFor="email"
           className="block text-sm font-medium leading-6 text-gray-900"
         >
           Email Address
@@ -130,7 +130,22 @@ export const AccountAddForm = () => {
           )}
         </div>
       </div>
-
+      <div>
+        <label
+          htmlFor="isAdmin"
+          className="block text-sm font-medium leading-6 text-gray-900"
+        >
+          Admin Access?
+        </label>
+        <select
+          id="isAdmin"
+          {...register("isAdmin", { required: true })}
+          className="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        >
+          <option value="true">True</option>
+          <option value="false">False</option>
+        </select>
+      </div>
       <div></div>
       <button
         type="submit"
