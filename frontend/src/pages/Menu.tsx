@@ -6,10 +6,9 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import DeliveryOption from "../components/DeliveryOption";
-import { useNavigate } from "react-router-dom";
 // import PulseLoader from "react-spinners/PulseLoader";
 import { AddItemForm } from "../components/AddItemForm";
-import LogoutHandler from "../components/LogoutButton"
+import LogoutHandler from "../components/LogoutButton";
 
 const Menu = () => {
   const { data, isLoading } = useQuery({
@@ -69,7 +68,7 @@ const Menu = () => {
     );
   }
   if (isLoading) return null;
-    
+
   // function when clicking add to cart button
   const handleAddToCart = (selectedItem: MenuItem) => {
     openDialog({
@@ -119,11 +118,7 @@ const Menu = () => {
         </div>
       </div>
 
-      <div>
-        {isAdmin && (
-          <LogoutHandler />
-        )}
-      </div>
+      <div>{isAdmin && <LogoutHandler />}</div>
 
       <div className="flex-1 space-y-12">
         {selectedCategory === "all"
