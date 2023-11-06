@@ -73,7 +73,9 @@ export const MenuSection = ({
       try {
         const decodedToken: { accessLevel: string } = jwtDecode(token);
         const accessLevel = decodedToken.accessLevel;
-        adminModeStore.setState({ isAdmin: accessLevel === "admin" });
+        adminModeStore.setState({
+          isAdmin: accessLevel === "admin" || accessLevel === "owner",
+        });
       } catch (error) {
         adminModeStore.setState({ isAdmin: false });
       }
