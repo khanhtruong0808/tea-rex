@@ -8,19 +8,19 @@ import { FiEdit3 } from "react-icons/fi";
 import useDialog from "../utils/dialogStore";
 import ownerModeStore from "../utils/ownerModeStore";
 import { jwtDecode } from "jwt-decode";
-import LogoutHandler from "../components/LogoutButton"
+import LogoutHandler from "../components/LogoutButton";
 
 const Accounts = () => {
   const { openDialog } = useDialog();
   const isOwner = ownerModeStore((state) => state.isOwner);
   const token = localStorage.getItem("token");
 
-  if (token){
+  if (token) {
     const decodedToken: { accessLevel: string } = jwtDecode(token);
-    let accessLevel = decodedToken.accessLevel;
-    
-    if(accessLevel = "owner"){
-      ownerModeStore.setState({isOwner: true});
+    const accessLevel = decodedToken.accessLevel;
+
+    if (accessLevel == "owner") {
+      ownerModeStore.setState({ isOwner: true });
     }
   }
 
@@ -54,7 +54,7 @@ const Accounts = () => {
     <div>
       {isOwner && (
         <div>
-          <h1 className="text-2xl font-semibold my-4 center">
+          <h1 className="center my-4 text-2xl font-semibold">
             List of Employee Accounts
           </h1>
           <div>
@@ -81,39 +81,43 @@ const Accounts = () => {
                 </tr>
               </thead>
               <tbody>
-                {data.filter((user: { isOwner: boolean; }) => !user.isOwner).map((user: account, index: number) => (
-                  <tr
-                    key={user.id}
-                    className="bg-gray-100 border-b border-gray-300"
-                  >
-                    <td className="p-2 text-center">{index + 1}</td>
-                    <td className="p-2 text-center">{user.firstName}</td>
-                    <td className="p-2 text-center">{user.lastName}</td>
-                    <td className="p-2 text-center">{user.username}</td>
-                    <td className="p-2 text-center">{user.isAdmin? 'true' : 'false'}</td>
-                    <td className="p-2 text-center">
-                      <button
-                        onClick={() => handleAccountEdit(user)}
-                        className="ml-4 mr-1 hover:scale-110"
-                      >
-                        <FiEdit3 size={24} />
-                      </button>
-                      <button
-                        onClick={() => handleAccountDelete(user.id)}
-                        className="ml-4 mr-1 hover:scale-110"
-                      >
-                        <TbTrash size={24} />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {data
+                  .filter((user: { isOwner: boolean }) => !user.isOwner)
+                  .map((user: account, index: number) => (
+                    <tr
+                      key={user.id}
+                      className="border-b border-gray-300 bg-gray-100"
+                    >
+                      <td className="p-2 text-center">{index + 1}</td>
+                      <td className="p-2 text-center">{user.firstName}</td>
+                      <td className="p-2 text-center">{user.lastName}</td>
+                      <td className="p-2 text-center">{user.username}</td>
+                      <td className="p-2 text-center">
+                        {user.isAdmin ? "true" : "false"}
+                      </td>
+                      <td className="p-2 text-center">
+                        <button
+                          onClick={() => handleAccountEdit(user)}
+                          className="ml-4 mr-1 hover:scale-110"
+                        >
+                          <FiEdit3 size={24} />
+                        </button>
+                        <button
+                          onClick={() => handleAccountDelete(user.id)}
+                          className="ml-4 mr-1 hover:scale-110"
+                        >
+                          <TbTrash size={24} />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           )}
         </div>
       )}
     </div>
-    )
+  );
 };
 
 export default Accounts;
