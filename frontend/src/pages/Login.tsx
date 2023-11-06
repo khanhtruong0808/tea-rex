@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { config } from "../config";
 import adminModeStore from "../utils/adminModeStore";
 import ownerModeStore from "../utils/ownerModeStore";
-import { jwtDecode, JwtPayload } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 function Login() {
   const [username, setUsername] = useState("");
@@ -12,7 +12,6 @@ function Login() {
   const [message, setMessage] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-  const isOwner = ownerModeStore((state) => state.isOwner);
 
   const navigate = useNavigate();
 
@@ -73,11 +72,10 @@ function Login() {
           const decodedToken: { accessLevel: string } = jwtDecode(token);
           const accessLevel = decodedToken.accessLevel;
           console.log(accessLevel);
-          if( accessLevel == "owner"){
+          if (accessLevel == "owner") {
             ownerModeStore.setState({ isOwner: true });
             adminModeStore.setState({ isAdmin: true });
-          }
-          else if( accessLevel == "admin"){
+          } else if (accessLevel == "admin") {
             adminModeStore.setState({ isAdmin: true });
           }
         }

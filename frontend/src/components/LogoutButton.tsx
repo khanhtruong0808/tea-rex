@@ -16,7 +16,6 @@ const LogoutButton = () => {
       .then((response) => {
         if (response.status === 200) {
           navigate("/Admin");
-        } else {
         }
       })
       .catch((error) => {
