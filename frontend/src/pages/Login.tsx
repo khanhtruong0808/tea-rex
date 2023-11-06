@@ -30,12 +30,6 @@ function Login() {
     setUsernameError("");
     setPasswordError("");
     setMessage("");
-
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      adminModeStore.setState({ isAdmin: true });
-    }
     //const isAdmin = localStorage.getItem("isAdmin") === "true";
     //adminModeStore.setState({ isAdmin });
   }, []);

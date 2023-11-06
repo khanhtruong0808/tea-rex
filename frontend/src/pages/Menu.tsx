@@ -24,14 +24,6 @@ const Menu = () => {
   // category selected on sidebar
   const [selectedCategory, setSelectedCategory] = useState<string>("Milk Tea");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-
-    if (token) {
-      adminModeStore.setState({ isAdmin: true });
-    }
-  }, []);
-
   const [showLoading, setShowLoading] = useState(false);
 
   // Introduce a delay for showing the loading screen

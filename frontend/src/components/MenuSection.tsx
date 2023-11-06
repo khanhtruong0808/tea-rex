@@ -8,6 +8,8 @@ import { ItemDeleteForm } from "./forms/ItemDeleteForm";
 import { ItemAddForm } from "./forms/ItemAddForm";
 import adminModeStore from "../utils/adminModeStore";
 import { MenuPhoto } from "./MenuPhoto";
+import { jwtDecode } from "jwt-decode";
+import { useEffect } from "react";
 interface MenuSectionProps {
   menuSection: MenuSection;
   handleAddToCart: (item: MenuItem) => void;
@@ -64,6 +66,21 @@ export const MenuSection = ({
 }: MenuSectionProps) => {
   const { openDialog } = useDialog();
   const isAdmin = adminModeStore((state) => state.isAdmin);
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decodedToken: { accessLevel: string } = jwtDecode(token);
+        const accessLevel = decodedToken.accessLevel;
+        adminModeStore.setState({ isAdmin: accessLevel === "admin" });
+      } catch (error) {
+        adminModeStore.setState({ isAdmin: false });
+      }
+    } else {
+      adminModeStore.setState({ isAdmin: false });
+    }
+  }, [token]);
 
   const handleSectionEdit = () => {
     openDialog({
