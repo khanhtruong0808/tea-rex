@@ -155,7 +155,8 @@ app.post("/send-mail", async (req, res) => {
     });
 
     const info = await transporter.sendMail({
-      from: `${req.body.from}" <replacewithtearexgmail@gmail.com>`,
+      //from: `${req.body.from}" <replacewithtearexgmail@gmail.com>`, // this is to bypass Google's stinginess with this feature
+      from: `<${req.body.from}>"`, // use this temporarily so the sent email is formatted nicely on ethereal
       to: req.body.to,
       subject: req.body.subject,
       text: req.body.text,

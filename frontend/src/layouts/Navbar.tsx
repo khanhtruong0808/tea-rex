@@ -98,7 +98,7 @@ export const Navbar = () => {
               <NavLink
                 to="/menu"
                 onClick={() => close()}
-                className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white hover:bg-lime-800"
+                className="rounded-full bg-lime-700 px-4 py-2 text-xl font-bold text-white"
               >
                 ORDER NOW
               </NavLink>

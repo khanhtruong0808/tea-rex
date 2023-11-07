@@ -86,7 +86,7 @@ export default function EmailForm() {
         },
         body: JSON.stringify({
           from: userEmail,
-          to: "cristopher2@ethereal.email", // testing email, change to tea-rex email before final deployment
+          to: "daphney.koss7@ethereal.email", // testing email, change to tea-rex email before final deployment
           subject: "Customer query",
           text: userMessage,
         }),
@@ -96,6 +96,10 @@ export default function EmailForm() {
 
       if (emailResponse.success) {
         console.log("Email sent successfully!");
+        setUserFirstName("");
+        setUserLastName("");
+        setUserEmail("");
+        setUserMessage("");
         setIsSubmitted(true);
       } else {
         console.error("Failed to send email", emailResponse.message);
@@ -104,10 +108,6 @@ export default function EmailForm() {
       console.error("Problem with sending email", error.message);
     }
 
-    setUserFirstName("");
-    setUserLastName("");
-    setUserEmail("");
-    setUserMessage("");
     setLoading(false);
   };
 
@@ -148,6 +148,7 @@ export default function EmailForm() {
                         className={`${
                           firstNameError ? "border-red-500" : "border-gray-200"
                         } font-navbar mr-1 w-full rounded border`}
+                        value={userFirstName}
                         onChange={(e) => {
                           setUserFirstName(e.target.value);
                           if (e.target.value.length > 0) {
@@ -168,6 +169,7 @@ export default function EmailForm() {
                         className={`${
                           lastNameError ? "border-red-500" : "border-gray-200"
                         } font-navbar w-full rounded border`}
+                        value={userLastName}
                         onChange={(e) => {
                           setUserLastName(e.target.value);
                           if (e.target.value.length > 0) {
@@ -189,6 +191,7 @@ export default function EmailForm() {
                       className={`${
                         emailError ? "border-red-500" : "border-gray-200"
                       } font-navbar flex w-full rounded border`}
+                      value={userEmail}
                       onChange={(e) => {
                         setUserEmail(e.target.value);
                         if (e.target.value.length > 0) {
@@ -209,6 +212,7 @@ export default function EmailForm() {
                       className={`${
                         messageError ? "border-red-500" : "border-gray-200"
                       } font-navbar flex w-full rounded border`}
+                      value={userMessage}
                       onChange={(e) => {
                         setUserMessage(e.target.value);
                         if (e.target.value.length > 0) {
