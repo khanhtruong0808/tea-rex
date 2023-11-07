@@ -35,7 +35,8 @@ model User {
   email     String  @unique
   firstName String?
   lastName  String?
-  name      String?
+  isAdmin   Boolean @default(false)
+  isOwner   Boolean @default(false)
 }
 
 model RewardsMember {

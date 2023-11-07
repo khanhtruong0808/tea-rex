@@ -1,6 +1,9 @@
 import React, { useState } from "react";
+import LogoutHandler from "../components/LogoutButton"
+import adminModeStore from "../utils/adminModeStore";
 
 const FAQPage = () => {
+  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
   const faqData = [
     {
       question: "Where can I view the menu?",
@@ -75,6 +78,11 @@ const FAQPage = () => {
             {expandedIndex.includes(index) && <p>{item.answer}</p>}
           </div>
         ))}
+      </div>
+      <div>
+        {isAdmin && (
+          <LogoutHandler />
+        )}
       </div>
     </div>
   );

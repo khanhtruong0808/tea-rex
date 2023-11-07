@@ -61,15 +61,27 @@ app.post("/login", async (req, res) => {
     return res.status(401).json();
   }
 
-  if (user) {
+  //check if the user is owner or admin
+  if (user && user.isOwner == true) {
     const payload = {
       userId: user.id,
       username: user.username,
+      accessLevel: "owner",
     };
-    //this should be depend on the admin
+
     const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
 
     res.json({ token });
+  }
+  else if (user && user.isAdmin == true) {
+      const payload = {
+        userId: user.id,
+        username: user.username,
+        accessLevel: "admin",
+      }
+
+      const token = jwt.sign(payload, jwtSecretKey, { expiresIn: "1h" });
+      res.json({ token });
   } else {
     console.log("no user data.");
     res.status(401).json();
@@ -111,13 +123,21 @@ app.get('/hi', async (req, res) => {
 });
 
 app.put("/accounts/:id", async (req, res) => {
-  const { id } = req.params;
-  console.log(id);
+  const { id } = req.params
+  const updatedUser = {...req.body};
+
+  if (updatedUser.isAdmin) {
+    updatedUser.isAdmin = updatedUser.isAdmin === 'true';
+  }
+  if(updatedUser.password){
+    const hashedPassword = await bcrypt.hash(updatedUser.password, 10)
+    updatedUser.password = hashedPassword;
+  }
   const updatedUsers = await prisma.user.update({
     where: { id: Number(id) },
-    data: { ...req.body },
+    data: updatedUser ,
   });
-  console.log(updatedUsers)
+
   res.json(updatedUsers);
 });
 
@@ -132,9 +152,22 @@ app.delete("/accounts/:id", async (req, res) => {
 });
 
 app.post("/accounts", async (req, res) => {
+  const newUser = {...req.body};
+  if(newUser.password){
+    const hashedPassword = await bcrypt.hash(newUser.password, 10)
+    newUser.password = hashedPassword;
+  }
+  if(newUser.isAdmin){
+    newUser.isAdmin = newUser.isAdmin === 'true';
+  }
   const newAccount = await prisma.user.create({
     data: {
-      ...req.body,
+      username: newUser.username,
+      password: newUser.password,
+      firstName: newUser.firstName,
+      lastName: newUser.lastName,
+      email: newUser.email,
+      isAdmin: newUser.isAdmin,
     },
   });
   res.json(newAccount);

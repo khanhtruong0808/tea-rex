@@ -84,13 +84,6 @@ const sugarChoices = [
   // Add more sugar choices here
 ];
 
-interface Item {
-  id?: number;
-  name: string;
-  price?: number;
-  qty: number;
-}
-
 interface AddItemFormProps {
   selectedItem: MenuItem;
 }
@@ -146,7 +139,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
     }
   };
 
-  const handleCupSize = (name: string, qty: number) => {
+  const handleCupSize = (name: string) => {
     if (name === "24 oz +$0.50") {
       setSelectedCupSize({ name: name, qty: -1, price: 0.5 });
     } else if (name === "Hot +$1.00") {
@@ -156,10 +149,10 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
     }
   };
 
-  const handleToppings = (name: string, qty: number) => {
+  const handleToppings = (name: string) => {
     if (name.includes("oz") || name.includes("Hot")) {
       setSizeError(false);
-      handleCupSize(name, -1);
+      handleCupSize(name);
     } else if (name.includes("Ice")) {
       setIceError(false);
       setSelectedIceLevel({ name: name, qty: -1 });
@@ -258,7 +251,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
           <input
             type="checkbox"
             className="form-checkbox absolute h-6 w-6 opacity-0"
-            onChange={() => handleToppings(choice, -1)}
+            onChange={() => handleToppings(choice)}
             checked={selected}
           />
           <div className="flex items-center p-4">
@@ -271,7 +264,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
 
   const renderToppings = (toppings: string[]) => {
     return toppings.map((choice: string, index: number) => {
-      const selected = selectedToppings.some((x: any) => x.name === choice);
+      const selected = selectedToppings.some((x: Item) => x.name === choice);
       const disabled = selectedToppings.length >= 3 && !selected;
       return (
         <label
@@ -286,7 +279,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
           <input
             type="checkbox"
             className="form-checkbox absolute h-6 w-6 opacity-0"
-            onChange={() => handleToppings(choice, 1)}
+            onChange={() => handleToppings(choice)}
             checked={selected}
             disabled={disabled}
           />

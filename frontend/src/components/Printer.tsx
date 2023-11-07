@@ -182,25 +182,26 @@ export function Printer() {
       .catch((err) => console.error(err));
   };
 
-  const submitPrintRequest = (oid: string) => {
-    //oid == orderId
-    const options = {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        authorization: `Bearer ${apiToken}`,
-      },
-      body: JSON.stringify({ orderRef: { id: oid } }),
-    };
-    fetch(
-      `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
-      options,
-    )
-      .then((res) => res.json())
-      .then((res) => console.log(res))
-      .catch((err) => console.error(err));
-  };
+  // Unsure if we're using this, commenting out for now -KT
+  // const submitPrintRequest = (oid: string) => {
+  //   //oid == orderId
+  //   const options = {
+  //     method: "POST",
+  //     headers: {
+  //       accept: "application/json",
+  //       "content-type": "application/json",
+  //       authorization: `Bearer ${apiToken}`,
+  //     },
+  //     body: JSON.stringify({ orderRef: { id: oid } }),
+  //   };
+  //   fetch(
+  //     `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
+  //     options,
+  //   )
+  //     .then((res) => res.json())
+  //     .then((res) => console.log(res))
+  //     .catch((err) => console.error(err));
+  // };
 
   addModifications();
 

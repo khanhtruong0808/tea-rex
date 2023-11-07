@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import LogoutHandler from "../components/LogoutButton"
+import adminModeStore from "../utils/adminModeStore";
 
 const foodPics = [
   { src: "galleryPhotos/fd1.webp", alt: "" },
@@ -18,6 +20,8 @@ const restaurantPics = [
 ];
 
 const Gallery = () => {
+  const [isAdmin] = adminModeStore((state) => [state.isAdmin]);
+
   const [fullScreenImageUrl, setFullScreenImageUrl] = useState<string | null>(
     null,
   );
@@ -102,6 +106,11 @@ const Gallery = () => {
             ))}
           </div>
         </div>
+      </div>
+      <div>
+        {isAdmin && (
+          <LogoutHandler />
+        )}
       </div>
     </div>
   );

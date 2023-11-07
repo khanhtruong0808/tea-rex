@@ -14,6 +14,13 @@ interface MenuSection {
   items: MenuItem[];
 }
 
+interface Item {
+  id?: number;
+  name: string;
+  price?: number;
+  qty: number;
+}
+
 type CartItem = {
   id: string;
   item: MenuItem;
@@ -30,4 +37,5 @@ interface account {
   email: string;
   firstName: string;
   lastName: string;
+  isAdmin: boolean;
 }

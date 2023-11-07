@@ -3,12 +3,6 @@ import { ShoppingCartContext } from "./ShoppingCartContext";
 import useRewards from "../components/RewardsContext";
 import SlideOver from "./SlideOver";
 
-interface Item {
-  name: string;
-  price?: number;
-  qty: number;
-}
-
 type ShoppingCartProviderProps = {
   children: ReactNode;
 };
