@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect, useCallback } from "react";
+import { FormEvent, useState, useCallback, useEffect } from "react";
 import { config } from "../../config";
 import Captcha from "../Captcha";
 import { Spinner } from "../../utils/Spinner";
@@ -86,7 +86,7 @@ export default function EmailForm() {
         },
         body: JSON.stringify({
           from: userEmail,
-          to: "cristopher2@ethereal.email", // testing email, change to tea-rex email before final deployment
+          to: "daphney.koss7@ethereal.email", // testing email, change to tea-rex email before final deployment
           subject: "Customer query",
           text: userMessage,
         }),
@@ -95,7 +95,10 @@ export default function EmailForm() {
       const emailResponse = await response.json();
 
       if (emailResponse.success) {
-        console.log("Email sent successfully!");
+        setUserFirstName("");
+        setUserLastName("");
+        setUserEmail("");
+        setUserMessage("");
         setIsSubmitted(true);
       } else {
         console.error("Failed to send email", emailResponse.message);
@@ -104,10 +107,6 @@ export default function EmailForm() {
       console.error("Problem with sending email", (error as Error).message);
     }
 
-    setUserFirstName("");
-    setUserLastName("");
-    setUserEmail("");
-    setUserMessage("");
     setLoading(false);
   };
 
@@ -135,9 +134,11 @@ export default function EmailForm() {
       {isNotABot && !captchaError && (
         <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
           <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
-            <fieldset className="w-full rounded-md border border-gray-300 p-4">
+            <fieldset className="w-full justify-center rounded-md border border-gray-300 p-4">
               {isSubmitted ? (
-                <p className="text-xl"> Your query has been submitted! </p>
+                <p className="font-navbar text-center text-xl">
+                  Your query has been submitted!
+                </p>
               ) : (
                 <>
                   <div className="mx-auto mb-4 flex">
@@ -154,6 +155,7 @@ export default function EmailForm() {
                             setFirstNameError(false);
                           }
                         }}
+                        value={userFirstName}
                       />
                       {firstNameError && (
                         <p className="text-xs text-red-500">
@@ -174,6 +176,7 @@ export default function EmailForm() {
                             setLastNameError(false);
                           }
                         }}
+                        value={userLastName}
                       />
                       {lastNameError && (
                         <p className="text-xs text-red-500">
@@ -195,6 +198,7 @@ export default function EmailForm() {
                           setEmailError(false);
                         }
                       }}
+                      value={userEmail}
                     />
                     {emailError && (
                       <p className="text-xs text-red-500">
@@ -215,6 +219,7 @@ export default function EmailForm() {
                           setMessageError(false);
                         }
                       }}
+                      value={userMessage}
                     />
                     {messageError && (
                       <p className="text-xs text-red-500">
