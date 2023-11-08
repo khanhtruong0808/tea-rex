@@ -62,7 +62,7 @@ const Home: React.FC = () => {
       widget = window.cloudinary.galleryWidget({
         container: containerRef.current,
         cloudName: "dwtzyvjko",
-        aspectRatio: "16:9",
+        aspectRatio: "40:10",
         mediaAssets: [{ tag: "top-items" }],
         carouselStyle: "indicators",
         carouselLocation: "bottom",
