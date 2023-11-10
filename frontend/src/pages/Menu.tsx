@@ -113,14 +113,12 @@ const Menu = () => {
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
-        <div className="fixed pt-9 lg:px-40">
-          <DeliveryOption />
-        </div>
       </div>
 
       <div>{isAdmin && <LogoutHandler />}</div>
 
       <div className="flex-1 space-y-12">
+      <DeliveryOption />
         {selectedCategory === "all"
           ? data.map((menuSection: MenuSection) => (
               <MenuSection

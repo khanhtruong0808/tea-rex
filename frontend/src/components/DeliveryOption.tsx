@@ -18,7 +18,7 @@ const DeliveryOption = () => {
     },
   ];
   return (
-    <div className="flex items-center justify-center gap-6">
+    <div className="flex items-center justify-center gap-20">
       {deliveryIcons.map((deliveryIcons) => (
         <NavLink
           to={deliveryIcons.path}
@@ -26,7 +26,7 @@ const DeliveryOption = () => {
           aria-label={deliveryIcons.ariaLabel}
           className="flex gap-8"
         >
-          <div className="flex rounded-full bg-violet-400 px-3 py-3 text-6xl font-bold text-white transition hover:scale-125">
+          <div className="flex rounded-full bg-violet-400 px-7 py-0.2 text-6xl font-bold text-white transition hover:scale-125">
             {deliveryIcons.icon}
           </div>
         </NavLink>
