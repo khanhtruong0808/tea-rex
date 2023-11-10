@@ -1,131 +1,123 @@
 import { config } from "../config";
 
-export function Printer() {
+export async function Printer() {
   const apiToken = config.cloverPrinterApiToken;
   const mid = config.cloverMerchantId;
 
   const cartItems = JSON.parse(localStorage.getItem("cartItems") || "");
 
-  interface Order {
-    items: [
-      {
-        price: string;
-        name: string;
-        options: [
-          {
-            name: string;
-            qty: number;
-          },
-        ];
-        spice: {
+  async function main() {
+    interface Order {
+      items: [
+        {
+          price: string;
           name: string;
-        };
-      },
-    ];
-  }
+          options: [
+            {
+              name: string;
+              qty: number;
+            },
+          ];
+          spice: {
+            name: string;
+          };
+          note: string;
+        },
+      ];
+    }
 
-  const order: Order = {
-    items: cartItems.map(
-      (cartItem: {
-        item: { price: string; name: string };
-        option: [{ name: string; qty: number }];
-        spice: { name: string; qty: number };
-      }) => ({
-        price: cartItem.item.price,
-        name: cartItem.item.name,
-        options: cartItem.option.map((option) => ({
-          name: option.name,
-          quantity: option.qty,
-        })),
-      }),
-    ),
-  };
+    // let order: Order;
+    const order: Order = {
+      items: cartItems.map(
+        (cartItem: {
+          item: { price: string; name: string };
+          option: [{ name: string; qty: number }];
+          spice: { name: string; qty: number };
+          specialInstructions: string;
+        }) => ({
+          price: cartItem.item.price,
+          name: cartItem.item.name,
+          options: cartItem.option.map((option) => ({
+            name: option.name,
+            quantity: option.qty,
+          })),
+          note: cartItem.specialInstructions,
+        }),
+      ),
+    };
 
-  // adding spice option to order
-  const addModifications = () => {
-    for (let i = 0; i < order.items.length; i++) {
-      if (order.items[i].spice) {
-        order.items[i].options.push({
-          name: order.items[i].spice.name,
-          qty: 1,
-        });
+    function addModifications() {
+      for (let i = 0; i < order.items.length; i++) {
+        if (order.items[i].spice) {
+          order.items[i].options.push({
+            name: order.items[i].spice.name,
+            qty: 1,
+          });
+        }
       }
     }
-    checkOrderType();
-  };
+    addModifications();
 
-  // 1
-  function checkOrderType() {
-    console.log(order);
-    const options = {
+    const orderTypeOptions = {
       method: "GET",
       headers: {
         accept: "application/json",
         authorization: `Bearer ${apiToken}`,
       },
     };
-
-    fetch(
+    const checkOrderType = await fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
-      options,
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        let present = false;
-        let pos: number = -1;
-        for (let i = 0; i < res.elements.length; i++) {
-          if (res.elements[i].label === "online") {
-            present = true;
-            pos = i;
-            break;
-          }
-        }
-        // create orderType if does not exist
-        if (present) {
-          createOrder(order, res.elements[pos].id, res.elements[pos].label);
-          present = false;
-        } else {
-          createOrderType();
-        }
-      })
-      .catch((err) => console.error(err));
-  }
+      orderTypeOptions,
+    );
+    if (!checkOrderType.ok) {
+      throw new Error(`Failed to check order type. ${checkOrderType.status}`);
+    }
+    const func1 = await checkOrderType.json();
 
-  const createOrderType = () => {
-    const options = {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-        authorization: `Bearer ${apiToken}`,
-      },
-      body: JSON.stringify({
-        taxable: "false",
-        isDefault: "false",
-        filterCategories: "false",
-        isHidden: "false",
-        isDeleted: "false",
-        label: "online",
-      }),
-    };
-
-    fetch(
-      `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
-      options,
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        createOrder(order, res.id, res.label);
-      })
-      .catch((err) => console.error(err));
-  };
-
-  const createOrder = (
-    order: Order,
-    orderTypeId: string,
-    orderTypeLabel: string,
-  ) => {
-    const options = {
+    let present = false;
+    let pos = -1;
+    for (let i = 0; i < func1.elements.length; i++) {
+      if (func1.elements[i].label === "online") {
+        present = true;
+        pos = i;
+        break;
+      }
+    }
+    let orderTypeId: number;
+    let orderTypeLabel: string;
+    if (present) {
+      orderTypeId = func1.elements[pos].id;
+      orderTypeLabel = func1.elements[pos].label;
+    } else {
+      const createOrderTypeptions = {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${apiToken}`,
+        },
+        body: JSON.stringify({
+          taxable: "false",
+          isDefault: "false",
+          filterCategories: "false",
+          isHidden: "false",
+          isDeleted: "false",
+          label: "online",
+        }),
+      };
+      const createOrderType = await fetch(
+        `https://sandbox.dev.clover.com/v3/merchants/${mid}/order_types`,
+        createOrderTypeptions,
+      );
+      if (!createOrderType.ok) {
+        throw new Error(
+          `Failed to create order type. ${createOrderType.status}`,
+        );
+      }
+      const func = await createOrderType.json();
+      orderTypeId = func.id;
+      orderTypeLabel = func.label;
+    }
+    const orderOptions = {
       method: "POST",
       headers: {
         accept: "application/json",
@@ -164,46 +156,48 @@ export function Printer() {
               },
               amount: option.qty,
             })),
-            note: cartItems.item.specialInstructions,
+            note: item.note,
           })),
           currency: "USD",
         },
       }),
     };
-    fetch(
+    const createOrder = await fetch(
       `https://sandbox.dev.clover.com/v3/merchants/${mid}/atomic_order/orders`,
-      options,
-    )
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res);
-        // submitPrintRequest(res.id);
-      })
-      .catch((err) => console.error(err));
-  };
+      orderOptions,
+    );
+    if (!createOrder.ok) {
+      throw new Error(`Failed to create order. ${createOrder.status}`);
+    }
+    const func2 = await createOrder.json();
+    const orderId = func2.id;
 
-  // Unsure if we're using this, commenting out for now -KT
-  // const submitPrintRequest = (oid: string) => {
-  //   //oid == orderId
-  //   const options = {
-  //     method: "POST",
-  //     headers: {
-  //       accept: "application/json",
-  //       "content-type": "application/json",
-  //       authorization: `Bearer ${apiToken}`,
-  //     },
-  //     body: JSON.stringify({ orderRef: { id: oid } }),
-  //   };
-  //   fetch(
-  //     `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
-  //     options,
-  //   )
-  //     .then((res) => res.json())
-  //     .then((res) => console.log(res))
-  //     .catch((err) => console.error(err));
-  // };
+    const submitPrintRequest = (oid: string) => {
+      //oid == orderId
+      const options = {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          authorization: `Bearer ${apiToken}`,
+        },
+        body: JSON.stringify({ orderRef: { id: oid } }),
+      };
+      fetch(
+        `https://sandbox.dev.clover.com/v3/merchants/${mid}/print_event`,
+        options,
+      )
+        .then((res) => res.json())
+        .then((res) => console.log(res))
+        .catch((err) => console.error(err));
+    };
+    /*
+    Call the print request to actually send the order to the printer
+    Commented out since actual printer is not connected and will throw no default printer error
+    */
+    // submitPrintRequest(orderId);
 
-  addModifications();
-
-  return <div></div>;
+    return orderId;
+  }
+  return main();
 }
