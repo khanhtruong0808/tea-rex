@@ -95,6 +95,7 @@ export default function EmailForm() {
       const emailResponse = await response.json();
 
       if (emailResponse.success) {
+        console.log("Email sent successfully!");
         setUserFirstName("");
         setUserLastName("");
         setUserEmail("");
@@ -134,7 +135,7 @@ export default function EmailForm() {
       {isNotABot && !captchaError && (
         <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
           <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
-            <fieldset className="w-full justify-center rounded-md border border-gray-300 p-4">
+            <fieldset className="w-full rounded-md border border-gray-300 p-4">
               {isSubmitted ? (
                 <p className="font-navbar text-center text-xl">
                   Your query has been submitted!
@@ -149,13 +150,13 @@ export default function EmailForm() {
                         className={`${
                           firstNameError ? "border-red-500" : "border-gray-200"
                         } font-navbar mr-1 w-full rounded border`}
+                        value={userFirstName}
                         onChange={(e) => {
                           setUserFirstName(e.target.value);
                           if (e.target.value.length > 0) {
                             setFirstNameError(false);
                           }
                         }}
-                        value={userFirstName}
                       />
                       {firstNameError && (
                         <p className="text-xs text-red-500">
@@ -170,13 +171,13 @@ export default function EmailForm() {
                         className={`${
                           lastNameError ? "border-red-500" : "border-gray-200"
                         } font-navbar w-full rounded border`}
+                        value={userLastName}
                         onChange={(e) => {
                           setUserLastName(e.target.value);
                           if (e.target.value.length > 0) {
                             setLastNameError(false);
                           }
                         }}
-                        value={userLastName}
                       />
                       {lastNameError && (
                         <p className="text-xs text-red-500">
@@ -192,13 +193,13 @@ export default function EmailForm() {
                       className={`${
                         emailError ? "border-red-500" : "border-gray-200"
                       } font-navbar flex w-full rounded border`}
+                      value={userEmail}
                       onChange={(e) => {
                         setUserEmail(e.target.value);
                         if (e.target.value.length > 0) {
                           setEmailError(false);
                         }
                       }}
-                      value={userEmail}
                     />
                     {emailError && (
                       <p className="text-xs text-red-500">
@@ -213,13 +214,13 @@ export default function EmailForm() {
                       className={`${
                         messageError ? "border-red-500" : "border-gray-200"
                       } font-navbar flex w-full rounded border`}
+                      value={userMessage}
                       onChange={(e) => {
                         setUserMessage(e.target.value);
                         if (e.target.value.length > 0) {
                           setMessageError(false);
                         }
                       }}
-                      value={userMessage}
                     />
                     {messageError && (
                       <p className="text-xs text-red-500">
