@@ -26,7 +26,8 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     let calculatedBeverageAmount = 0;
     for (const item of cartItems) {
       if (item.item.menuType === "beverage") {
-        calculatedBeverageAmount += Number(item.item.price);
+        calculatedBeverageAmount +=
+          Number(item.item.price) * Number(item.quantity);
       }
     }
 

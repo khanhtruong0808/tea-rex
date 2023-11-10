@@ -135,7 +135,7 @@ export default function EmailForm() {
       {isNotABot && !captchaError && (
         <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
           <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
-            <fieldset className="w-full justify-center rounded-md border border-gray-300 p-4">
+            <fieldset className="w-full rounded-md border border-gray-300 p-4">
               {isSubmitted ? (
                 <p className="font-navbar text-center text-xl">
                   Your query has been submitted!
