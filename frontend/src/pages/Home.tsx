@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import Map from "../components/Map";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, EffectFade, Autoplay } from "swiper";
-import LogoutHandler from "../components/LogoutButton"
+import LogoutHandler from "../components/LogoutButton";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -10,51 +10,7 @@ import "swiper/css/pagination";
 import "swiper/css/effect-fade";
 import adminModeStore from "../utils/adminModeStore";
 
-// const topTenItems = [
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636235/TeaRex/TopItems/1_qbs1pp.jpg",
-//     alt: "item1",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636243/TeaRex/TopItems/2_pq7juc.jpg",
-//     alt: "item2",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636246/TeaRex/TopItems/3_vtdaht.jpg",
-//     alt: "item3",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636250/TeaRex/TopItems/4_k3rtvb.jpg",
-//     alt: "item4",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636253/TeaRex/TopItems/5_pd1uhu.jpg",
-//     alt: "item5",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636257/TeaRex/TopItems/6_smi0wq.jpg",
-//     alt: "item6",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636260/TeaRex/TopItems/7_brrd1p.jpg",
-//     alt: "item7",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636264/TeaRex/TopItems/8_ykzm77.jpg",
-//     alt: "item8",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636267/TeaRex/TopItems/9_y5jiyc.jpg",
-//     alt: "item9",
-//   },
-//   {
-//     src: "https://res.cloudinary.com/dwtzyvjko/image/upload/v1698636272/TeaRex/TopItems/10_zsdorh.jpg",
-//     alt: "item10",
-//   },
-// ];
-
 const galleryItems = [
-  
   { src: "food-items/chicken-ramen-burger.webp", alt: "chicken ramen burger" },
   { src: "food-items/menu-board.webp", alt: "menu-board" },
   { src: "food-items/outside.webp", alt: "outside" },
@@ -102,11 +58,11 @@ const Home: React.FC = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let widget: any = null;
-    if (window && containerRef.current) {
+    if (window && containerRef.current && window.cloudinary) {
       widget = window.cloudinary.galleryWidget({
         container: containerRef.current,
         cloudName: "dwtzyvjko",
-        aspectRatio: "16:9",
+        aspectRatio: "40:10",
         mediaAssets: [{ tag: "top-items" }],
         carouselStyle: "indicators",
         carouselLocation: "bottom",
@@ -209,11 +165,7 @@ const Home: React.FC = () => {
           style={{ width: "1200px,", margin: "auto" }}
         ></div>
       </section>
-      <div>
-        {isAdmin && (
-          <LogoutHandler />
-        )}
-      </div>
+      <div>{isAdmin && <LogoutHandler />}</div>
     </div>
   );
 };

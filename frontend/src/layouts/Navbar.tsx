@@ -51,14 +51,14 @@ export const Navbar = () => {
                 </div>
               </div>
               {isOwner && (
-                  <div className="hidden md:block">
-                      <NavLink
-                        to="/account"
-                        className="whitespace-nowrap font-navbar text-2xl xl:text-3xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100"
-                        >
-                        Accounts
-                      </NavLink>
-                  </div>
+                <div className="hidden md:block">
+                  <NavLink
+                    to="/account"
+                    className="font-navbar whitespace-nowrap text-2xl font-bold transition duration-300 hover:scale-110 hover:text-amber-100 xl:text-3xl"
+                  >
+                    Accounts
+                  </NavLink>
+                </div>
               )}
               <div className="hidden md:block">
                 <div className="flex items-center">

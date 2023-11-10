@@ -1,4 +1,4 @@
-import { FormEvent, useState, useEffect, useCallback } from "react";
+import { FormEvent, useState, useCallback, useEffect } from "react";
 import { config } from "../../config";
 import Captcha from "../Captcha";
 import { Spinner } from "../../utils/Spinner";
@@ -135,9 +135,11 @@ export default function EmailForm() {
       {isNotABot && !captchaError && (
         <form onSubmit={handleSubmit} className="mx-auto w-full p-6">
           <div className="mx-auto mb-5 flex w-full flex-col items-center justify-center">
-            <fieldset className="w-full rounded-md border border-gray-300 p-4">
+            <fieldset className="w-full justify-center rounded-md border border-gray-300 p-4">
               {isSubmitted ? (
-                <p className="text-xl"> Your query has been submitted! </p>
+                <p className="font-navbar text-center text-xl">
+                  Your query has been submitted!
+                </p>
               ) : (
                 <>
                   <div className="mx-auto mb-4 flex">

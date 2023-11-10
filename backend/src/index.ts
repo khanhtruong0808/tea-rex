@@ -195,7 +195,6 @@ app.post("/send-mail", async (req, res) => {
       text: req.body.text,
     });
 
-    console.log("Message sent: %s", info.messageId);
     res.json({
       success: true,
     });
