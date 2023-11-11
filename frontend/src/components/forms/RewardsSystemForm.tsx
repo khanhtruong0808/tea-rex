@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { config } from "../../config";
 import { useShoppingCart } from "../ShoppingCartProvider";
 import useAlert from "../AlertMessageContext";
-import useRewards from "../RewardsContext";
+import { useRewards } from "../RewardsProvider";
+import { RewardsType } from "../RewardsContext";
 import { Spinner } from "../../utils/Spinner";
 
 /*  
@@ -13,16 +14,15 @@ import { Spinner } from "../../utils/Spinner";
 	Phone numbers are stored as 4444444444, not (444) 444-4444
 	-----------------------------------------------------------------------
 */
-type RewardsType = "drinks" | "popcorn-chicken";
 
 interface RewardsSystemProps {
   subtotal: number;
   total: number;
-  setIsRewardsMember: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsRewardsMember: (setIsRewardsMember: boolean) => void;
   setRewardsMemberPhoneNumber: (rewardsMemberPhoneNumber: string) => void;
 }
 
-const RewardsSystem = ({
+const RewardsSystemForm = ({
   subtotal,
   setIsRewardsMember,
   setRewardsMemberPhoneNumber,
@@ -30,36 +30,28 @@ const RewardsSystem = ({
   const { cartItems, updateDiscount, discount, totalBeverageAmount } =
     useShoppingCart();
   const {
+    points,
+    drinkLoading,
+    itemLoading,
+    beverageDiscount,
     setContextPhoneNumber,
     handleRevertPendingPoints,
+    applyDiscountForItem,
     setPoints,
     setSpentPoints,
     spentPoints,
-    points,
+    setDrinkLoading,
+    setItemLoading,
+    setLoading,
+    checkForBeverages,
   } = useRewards();
   const { showAlert } = useAlert();
 
   const [isShowingRewardsInfo, setIsShowingRewardsInfo] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
-  const [itemLoading, setItemLoading] = useState(false); // loading state for redeeming popcorn chicken
-  //MDC: changed the name to be some generic item, in case the client wants to add new discount to different items
-  const [drinkLoading, setDrinkLoading] = useState(false); // loading state for redeeming drinks
   const [phoneLoading, setPhoneLoading] = useState(false);
-  const [beverageDiscount, setBeverageDiscount] = useState(0);
   // eslint-disable-next-line prefer-const
   let [phoneNumber, setPhoneNumber] = useState("");
-
-  const discountItems = {
-    "popcorn-chicken": {
-      itemName: "Popcorn Chicken",
-      alertMessage: "Please add popcorn chicken to your cart to redeem reward!",
-    },
-
-    drinks: {
-      itemName: "Drink",
-      alertMessage: "Please add a drink to your cart to redeem reward!",
-    },
-  };
 
   const formatPhoneNumber = (input: string) => {
     const cleaned = ("" + input).replace(/\D/g, "");
@@ -83,15 +75,6 @@ const RewardsSystem = ({
 
   const cleanPhoneNumber = (input: string) => {
     return ("" + input).replace(/\D/g, "");
-  };
-
-  const checkForBeverages = () => {
-    for (const cartItem of cartItems) {
-      if (cartItem.item.menuType == "beverage") {
-        return true;
-      }
-    }
-    return false;
   };
 
   //This function only triggers when the user does a reload or exits the window, not when the user clicks on a new tab on the website.
@@ -131,13 +114,14 @@ const RewardsSystem = ({
 
   async function handleSpendPoints(
     spentPoints: number,
+    subtotal: number,
+    discount: number,
+    phoneNumber: string,
+    points: number,
+    totalBeverageAmount: number,
+    beverageDiscount: number,
     rewardsType: RewardsType,
   ) {
-    if (subtotal === discount) {
-      showAlert("You are already getting the drinks for free!", "error");
-      return;
-    }
-
     if (points === 0) {
       showAlert("Not enough points!", "error");
       return;
@@ -168,38 +152,52 @@ const RewardsSystem = ({
 
           switch (rewardsType) {
             case "drinks": {
-              if (!checkForBeverages()) {
-                showAlert("No beverages in cart!", "error");
+              if (!checkForBeverages(cartItems)) {
+                showAlert("No drinks in cart!", "error");
                 setDrinkLoading(false);
                 return;
               }
 
-              let potentialBeverageDiscount = Math.min(
-                totalBeverageAmount - beverageDiscount,
-                6,
-              );
-
-              if (potentialBeverageDiscount < 0) potentialBeverageDiscount = 0;
-
-              if (potentialBeverageDiscount === 0) {
-                showAlert("No more beverages to apply discount!", "error");
+              if (totalBeverageAmount === discount) {
+                showAlert(
+                  "You are already getting the drinks for free!",
+                  "error",
+                );
                 setDrinkLoading(false);
-                setItemLoading(false);
                 return;
               }
-
-              setBeverageDiscount(
-                (beverageDiscount) =>
-                  beverageDiscount + potentialBeverageDiscount,
+              const discountApplied = await applyDiscountForItem(
+                rewardsType,
+                cartItems,
+                discount,
+                totalBeverageAmount,
               );
-              updateDiscount(discount + potentialBeverageDiscount);
+              if (discountApplied === -1) {
+                return;
+              }
+              updateDiscount(discountApplied);
               break;
             }
 
             case "popcorn-chicken":
-              if (!applyDiscountForItem(rewardsType)) {
+              if (subtotal === discount) {
+                showAlert(
+                  `You already are getting ${rewardsType} for free!`,
+                  "error",
+                );
+                setItemLoading(false);
                 return;
               }
+              const discountApplied = await applyDiscountForItem(
+                rewardsType,
+                cartItems,
+                discount,
+                totalBeverageAmount,
+              );
+              if (discountApplied === -1) {
+                return;
+              }
+              updateDiscount(discountApplied);
               break;
             // more discounts for different food items, not including drinks, can be added using applyDiscountForItem function
           }
@@ -220,67 +218,21 @@ const RewardsSystem = ({
                 data.pendingPoints,
             );
           }
-          setDrinkLoading(false);
-          setItemLoading(false);
+          setLoading(false, false);
+
           return;
         }
       } else {
         console.error("No data received from the server!");
-        setDrinkLoading(false);
-        setItemLoading(false);
+        setLoading(false, false);
+
         return;
       }
     } catch (error) {
       const errorMessage = (error as Error).message;
-      showAlert(errorMessage, "error");
+      console.error(errorMessage);
     }
-    setDrinkLoading(false);
-    setItemLoading(false);
-  }
-
-  function applyDiscountForItem(itemType: RewardsType) {
-    let foundItem = false;
-    let itemPrice = 0;
-    let totalItemCost = 0;
-    const config = discountItems[itemType];
-
-    if (!config) {
-      console.error("Unknown item type");
-    }
-
-    for (const cartItem of cartItems) {
-      if (cartItem.item.name == config.itemName) {
-        totalItemCost += Number(cartItem.item.price);
-        foundItem = true;
-        if (itemPrice == 0) {
-          itemPrice = Number(cartItem.item.price);
-        }
-      }
-    }
-
-    if (!foundItem) {
-      showAlert(config.alertMessage, "error");
-      setItemLoading(false);
-      return;
-    }
-
-    const finalDiscount = Number(discount) + Number(itemPrice);
-
-    const adjustedDiscount = parseFloat(
-      (Number(finalDiscount) - Number(beverageDiscount)).toFixed(2),
-    );
-    const adjustedTotalItemCost = parseFloat(totalItemCost.toFixed(2));
-
-    if (adjustedDiscount > adjustedTotalItemCost) {
-      showAlert(
-        `No more ${config.itemName} to redeem or discount exceeds available amount!`,
-        "error",
-      );
-      return false;
-    }
-
-    updateDiscount(finalDiscount);
-    return true;
+    setLoading(false, false);
   }
 
   const handleSubmit = async () => {
@@ -378,7 +330,16 @@ const RewardsSystem = ({
           <div className="mb-4 flex flex-col">
             <button
               onClick={() => {
-                handleSpendPoints(50, "drinks");
+                handleSpendPoints(
+                  50,
+                  subtotal,
+                  discount,
+                  phoneNumber,
+                  points,
+                  totalBeverageAmount,
+                  beverageDiscount,
+                  "drinks",
+                );
               }}
               disabled={drinkLoading || points < 50}
               className="group mt-2 h-12 w-full rounded bg-lime-600 text-sm text-white enabled:hover:bg-lime-700 lg:block"
@@ -398,7 +359,16 @@ const RewardsSystem = ({
             </button>
             <button
               onClick={() => {
-                handleSpendPoints(200, "popcorn-chicken");
+                handleSpendPoints(
+                  200,
+                  subtotal,
+                  discount,
+                  phoneNumber,
+                  points,
+                  totalBeverageAmount,
+                  beverageDiscount,
+                  "popcorn-chicken",
+                );
               }}
               disabled={itemLoading || points < 200}
               className="group mt-2 h-12 w-full rounded bg-lime-600 text-sm text-white enabled:hover:bg-lime-700 lg:block"
@@ -433,4 +403,4 @@ const RewardsSystem = ({
   );
 };
 
-export default RewardsSystem;
+export default RewardsSystemForm;
