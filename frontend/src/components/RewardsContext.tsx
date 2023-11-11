@@ -1,130 +1,30 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { config } from "../config";
+import React, { createContext } from "react";
 
-interface RewardsContextProps {
+export type RewardsType = "drinks" | "popcorn-chicken";
+
+type RewardsContext = {
   points: number;
   setPoints: React.Dispatch<React.SetStateAction<number>>;
   spentPoints: number;
   setSpentPoints: React.Dispatch<React.SetStateAction<number>>;
-  setTotalBeverageAmount: React.Dispatch<React.SetStateAction<number>>;
-  totalBeverageAmount: number;
+  beverageDiscount: number;
+  itemLoading: boolean;
+  drinkLoading: boolean;
   handleAddPoints: (addPoints: number) => Promise<void>;
   handleRevertPendingPoints: () => Promise<boolean>;
   setContextPhoneNumber: (phoneNumber: string) => void;
   setContextPoints: (points: number) => void;
-}
-
-export const RewardsContext = createContext<RewardsContextProps | undefined>(
-  undefined,
-);
-
-export const RewardsProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [points, setPoints] = useState(0);
-  const [spentPoints, setSpentPoints] = useState(0);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [totalBeverageAmount, setTotalBeverageAmount] = useState(0);
-
-  function setContextPhoneNumber(phoneNumber: string) {
-    setPhoneNumber(phoneNumber);
-  }
-
-  function setContextPoints(points: number) {
-    setPoints(points);
-  }
-
-  async function handleRevertPendingPoints(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      if (!phoneNumber) {
-        reject(new Error("Phone number is required"));
-        return;
-      }
-      fetch(config.baseApiUrl + "/rewards-member-revert-pending", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ phoneNumber }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data && data.points) {
-            setPoints(data.points);
-            setSpentPoints(0);
-            setPhoneNumber("");
-            resolve(true);
-          } else {
-            console.error(data.error);
-            resolve(false);
-          }
-        })
-        .catch((error) => {
-          const errorMessage = error.message;
-          console.error(
-            `Error while reverting pending points: ${errorMessage}`,
-          );
-          reject(error);
-        });
-    });
-  }
-
-  async function handleAddPoints(subtotal: number) {
-    const addPoints = Math.round(subtotal);
-    const newPoints = points + addPoints;
-    try {
-      const response = await fetch(
-        config.baseApiUrl + "/rewards-member-update",
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ phoneNumber, newPoints }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (data) {
-        setPoints(data.points);
-        setSpentPoints(0);
-      } else {
-        console.error("No data!");
-        return;
-      }
-    } catch (error) {
-      const errorMessage = (error as Error).message;
-      console.error(errorMessage);
-    }
-  }
-
-  return (
-    <RewardsContext.Provider
-      value={{
-        points,
-        setPoints,
-        spentPoints,
-        setSpentPoints,
-        setTotalBeverageAmount,
-        totalBeverageAmount,
-        handleAddPoints,
-        handleRevertPendingPoints,
-        setContextPhoneNumber,
-        setContextPoints,
-      }}
-    >
-      {children}
-    </RewardsContext.Provider>
-  );
+  applyDiscountForItem: (
+    itemType: RewardsType,
+    cartItems: CartItem[],
+    discount: number,
+    totalBeverageAmount: number,
+  ) => Promise<number>;
+  setBeverageDiscount: React.Dispatch<React.SetStateAction<number>>;
+  setDrinkLoading: (drinkLoading: boolean) => void;
+  setItemLoading: (itemLoading: boolean) => void;
+  setLoading: (loading1: boolean, loading2: boolean) => void;
+  checkForBeverages: (cartItems: CartItem[]) => boolean;
 };
 
-const useRewards = () => {
-  const context = useContext(RewardsContext);
-  if (!context) {
-    throw new Error("useRewards must be used within a RewardsProvider");
-  }
-  return context;
-};
-
-export default useRewards;
+export const RewardsContext = createContext({} as RewardsContext);

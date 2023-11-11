@@ -1,6 +1,6 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
 import { ShoppingCartContext } from "./ShoppingCartContext";
-import useRewards from "../components/RewardsContext";
+import { useRewards } from "../components/RewardsProvider";
 import SlideOver from "./SlideOver";
 
 type ShoppingCartProviderProps = {
@@ -49,7 +49,6 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [subtotal, setSubtotal] = useState(0);
   const [finaltotal, setFinalTotal] = useState(0);
   const [isExternalTaxSet, setExternalTax] = useState(false);
-
   const { handleRevertPendingPoints } = useRewards();
 
   const cartQuantity = cartItems.length;

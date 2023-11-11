@@ -13,7 +13,7 @@ import {
 } from "@stripe/stripe-js";
 import { config } from "../../config";
 import { Printer } from "../Printer";
-import useRewards from "../RewardsContext";
+import { useRewards } from "../RewardsProvider";
 import { useShoppingCart } from "../ShoppingCartProvider";
 
 const STRIPE_OPTIONS: StripeCardElementOptions = {

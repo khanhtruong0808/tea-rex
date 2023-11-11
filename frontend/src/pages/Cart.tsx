@@ -130,6 +130,7 @@ export default function Cart() {
                 setRewardsMemberPhoneNumber={setPhoneNumber}
               />
             </AlertProvider>
+
             <PaymentForm
               cancelCheckout={handleCancel}
               isRewardsMember={isRewardsMember}

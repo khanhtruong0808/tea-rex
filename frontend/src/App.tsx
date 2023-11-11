@@ -17,7 +17,6 @@ import Accounts from "./pages/Accounts";
 import FAQPage from "./pages/FAQ"; // Import the FAQPage component
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "react-hot-toast";
-import { RewardsProvider } from "./components/RewardsContext";
 
 function App() {
   const queryClient = new QueryClient();
@@ -40,12 +39,10 @@ function App() {
   );
 
   return (
-    <RewardsProvider>
-      <QueryClientProvider client={queryClient}>
-        <Toaster />
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </RewardsProvider>
+    <QueryClientProvider client={queryClient}>
+      <Toaster />
+      <RouterProvider router={router} />
+    </QueryClientProvider>
   );
 }
 
