@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const SauceSelector = ({
   sauceName,
   onQtyChange,
+  defaultQuantity,
 }: {
   sauceName: string;
   onQtyChange: (quantity: number) => void;
+  defaultQuantity: number;
 }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(defaultQuantity);
+
+  useEffect(() => {
+    setQuantity(defaultQuantity);
+  }, [defaultQuantity]);
+
+  console.log(defaultQuantity, quantity);
 
   const handleIncrement = () => {
     setQuantity(quantity + 1);
