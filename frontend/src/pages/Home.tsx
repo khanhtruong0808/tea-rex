@@ -58,7 +58,7 @@ const Home: React.FC = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let widget: any = null;
-    if (window && containerRef.current && window.cloudinary) {
+    if (window && containerRef.current) {
       widget = window.cloudinary.galleryWidget({
         container: containerRef.current,
         cloudName: "dwtzyvjko",
