@@ -1,5 +1,7 @@
+import { EditItemForm } from "./EditItemForm";
 import { useShoppingCart } from "./ShoppingCartProvider";
 import { twMerge } from "tailwind-merge";
+import useDialog from "../utils/dialogStore";
 
 interface ShoppingCartListProps {
   cartItems: CartItem[];
@@ -10,7 +12,17 @@ export const ShoppingCartList = ({
   cartItems,
   className,
 }: ShoppingCartListProps) => {
-  const { removeItem } = useShoppingCart();
+  const { removeItem, closeCart } = useShoppingCart();
+  const openDialog = useDialog((state) => state.openDialog);
+
+  const EditCart = (cartItem: CartItem) => {
+    closeCart();
+    openDialog({
+      title: "",
+      content: <EditItemForm cartItem={cartItem} />,
+      variant: "cart",
+    });
+  };
 
   return (
     <div className={twMerge("mt-8", className)}>
@@ -72,6 +84,7 @@ export const ShoppingCartList = ({
                       <button
                         type="button"
                         className="pr-1 font-medium text-lime-600 hover:text-lime-500"
+                        onClick={() => EditCart(item)}
                       >
                         Edit
                       </button>

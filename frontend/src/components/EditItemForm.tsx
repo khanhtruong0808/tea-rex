@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useDialog from "../utils/dialogStore";
 import { SauceSelector } from "./SauceSelector";
 import { useShoppingCart } from "./ShoppingCartProvider";
@@ -84,11 +84,11 @@ const sugarChoices = [
   // Add more sugar choices here
 ];
 
-interface AddItemFormProps {
-  selectedItem: MenuItem;
+interface EditItemFormProps {
+  cartItem: CartItem;
 }
 
-export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
+export const EditItemForm = ({ cartItem }: EditItemFormProps) => {
   const { closeDialog } = useDialog();
   const [quantity, setQuantity] = useState(1);
   const [selectedOption, setSelectedOption] = useState<Item[]>([]);
@@ -115,7 +115,36 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
   });
   const [specialInstructions, setSpecialInstructions] = useState("");
 
-  const { addToCart } = useShoppingCart();
+  useEffect(() => {
+    initializeValues();
+  }, []);
+
+  const initializeValues = () => {
+    if (cartItem.item.menuType === "food") {
+      setSelectedOption(cartItem.option);
+      setSpecialInstructions(cartItem.specialInstructions);
+      if (cartItem.spice !== undefined) {
+        setSelectedSpiceLevel(cartItem.spice);
+      }
+    } else {
+      setSelectedToppings(cartItem.option.slice(3, cartItem.option.length));
+      setSelectedIceLevel({ name: cartItem.option[1].name, qty: -1 });
+      setSelectedSugarLevel({ name: cartItem.option[2].name, qty: -1 });
+      setSpecialInstructions(cartItem.specialInstructions);
+
+      if (cartItem.option[0].price !== undefined) {
+        setSelectedCupSize({
+          name: cartItem.option[0].name,
+          qty: -1,
+          price: cartItem.option[0].price,
+        });
+      } else {
+        setSelectedCupSize({ name: cartItem.option[0].name, qty: -1 });
+      }
+    }
+  };
+
+  const { updateItem, openCart } = useShoppingCart();
 
   const handleSpiceLevelChange = (choice: string, qty: number) => {
     setSelectedSpiceLevel({ name: choice, qty });
@@ -192,14 +221,15 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
 
     newOptionArr.map((x) => x.qty + 1);
 
-    addToCart(
+    updateItem(
+      cartItem.id,
       selectedItem,
       newOptionArr,
       specialInstructions,
       quantity,
       selectedSpiceLevel,
     );
-
+    openCart();
     closeDialog();
   };
 
@@ -232,7 +262,14 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
 
     if (isError) return;
 
-    addToCart(selectedItem, newArr, specialInstructions, quantity);
+    updateItem(
+      cartItem.id,
+      selectedItem,
+      newArr,
+      specialInstructions,
+      quantity,
+    );
+    openCart();
     closeDialog();
   };
 
@@ -303,7 +340,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h2 id="modalTitle" className="text-2xl font-bold">
-          {selectedItem.name}
+          {cartItem.item.name}
         </h2>
         <button
           className="text-4xl text-gray-400 hover:text-gray-800"
@@ -341,7 +378,7 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
           </div>
         </div>
 
-        {selectedItem.menuType === "food" && (
+        {cartItem.item.menuType === "food" && (
           <>
             <div className="mt-4">
               <h3 className="mb-2 text-lg font-bold">
@@ -353,16 +390,27 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
               </h3>
               <hr className="mb-4 border-gray-300" />
               <div className="mx-auto grid max-w-screen-lg grid-cols-1 gap-4 md:grid-cols-2">
-                {sauceChoices.map((choice, index) => (
-                  <SauceSelector
-                    key={index}
-                    sauceName={choice}
-                    onQtyChange={(quantity) =>
-                      collectAllOptionQuantity(choice, quantity)
-                    }
-                    defaultQuantity={0}
-                  />
-                ))}
+                {sauceChoices.map((choice, index) => {
+                  let qty = 0;
+                  const option = selectedOption.find(
+                    (item) => item.name === choice,
+                  );
+
+                  if (option) {
+                    qty = option.qty;
+                  }
+
+                  return (
+                    <SauceSelector
+                      key={index}
+                      sauceName={choice}
+                      onQtyChange={(quantity) =>
+                        collectAllOptionQuantity(choice, quantity)
+                      }
+                      defaultQuantity={qty}
+                    />
+                  );
+                })}
               </div>
             </div>
 
@@ -419,6 +467,11 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
                   className="w-full border border-gray-300 p-2 placeholder:text-sm sm:placeholder:text-base"
                   rows={3}
                   placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
+                  value={
+                    specialInstructions !== undefined
+                      ? specialInstructions
+                      : undefined
+                  }
                   maxLength={500}
                   onChange={(e) => setSpecialInstructions(e.target.value)}
                 />
@@ -429,19 +482,19 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
                   id="add-to-cart"
                   onClick={() =>
                     handleAddFoodToCart(
-                      selectedItem,
+                      cartItem.item,
                       selectedOption,
                       selectedSpiceLevel,
                     )
                   }
                 >
-                  Add to Cart
+                  Update Item
                 </button>
               </div>
             </div>
           </>
         )}
-        {selectedItem?.menuType === "beverage" && (
+        {cartItem.item?.menuType === "beverage" && (
           <>
             <div className="mt-4">
               <h3
@@ -534,6 +587,11 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
                   className="w-full border border-gray-300 p-2"
                   rows={3}
                   placeholder="Food allergy? Need something to put to the side? Let us know. (additional charges may apply and not all changes are possible)"
+                  value={
+                    specialInstructions !== undefined
+                      ? specialInstructions
+                      : undefined
+                  }
                   maxLength={500}
                   onChange={(e) => setSpecialInstructions(e.target.value)}
                 />
@@ -543,10 +601,10 @@ export const AddItemForm = ({ selectedItem }: AddItemFormProps) => {
                   className="mt-3 rounded-full bg-green-500 px-2 pb-1 font-bold text-white hover:bg-gray-700"
                   id="add-to-cart"
                   onClick={() =>
-                    handleAddBeverageToCart(selectedItem, selectedToppings)
+                    handleAddBeverageToCart(cartItem.item, selectedToppings)
                   }
                 >
-                  Add to Cart
+                  Update Item
                 </button>
               </div>
             </div>
