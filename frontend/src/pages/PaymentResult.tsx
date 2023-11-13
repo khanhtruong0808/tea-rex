@@ -26,7 +26,7 @@ function PaymentResult() {
               Pickup for: {name}
             </p>
             <p className="text-lg font-medium text-gray-600">
-              Order id: {orderId}
+              Order ID: {orderId}
             </p>
           </div>
         </div>
