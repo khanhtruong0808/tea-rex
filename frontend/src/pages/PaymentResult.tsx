@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 function PaymentResult() {
@@ -5,6 +6,22 @@ function PaymentResult() {
   const paymentSuccess = location.state?.success;
   const orderId = location.state?.orderId;
   const name = location.state?.name;
+
+  const generateTime = () => {
+    return new Date(new Date().getTime() + 20 * 60 * 1000).toLocaleTimeString(
+      "en-US",
+      { timeZone: "America/Los_Angeles" },
+    );
+  };
+
+  const [fixedDate] = useState(() => {
+    const savedTime = localStorage.getItem("fixedTime");
+    return savedTime || generateTime();
+  });
+
+  useEffect(() => {
+    localStorage.setItem("fixedTime", fixedDate);
+  }, [fixedDate]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -18,6 +35,8 @@ function PaymentResult() {
             <p className="font-description text-3xl">Order received!</p>
             <p className="text-lg font-bold text-gray-900">
               Thank you. Your order is in progress.
+              <p>Please check your email for order details.</p>
+              Approximate pick up time: {fixedDate}
             </p>
             <p className="mt-4 text-lg font-medium text-gray-600">
               We'll see you at 2475 Elk Grove Blvd #150, Elk Grove, CA 95758

@@ -26,8 +26,6 @@ export default function Cart() {
     isEmpty,
   } = useShoppingCart();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [isRewardsMember, setIsRewardsMember] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [loading, setLoading] = useState(false);
   const handleSubmitRef = useRef<(() => Promise<void>) | null>(null);
 
@@ -123,18 +121,11 @@ export default function Cart() {
               <Map width="100%" />
             </div>
             <AlertProvider>
-              <RewardsSystemForm
-                subtotal={Number(subtotal.toFixed(2))}
-                total={subtotal}
-                setIsRewardsMember={setIsRewardsMember}
-                setRewardsMemberPhoneNumber={setPhoneNumber}
-              />
+              <RewardsSystemForm subtotal={Number(subtotal.toFixed(2))} />
             </AlertProvider>
 
             <PaymentForm
               cancelCheckout={handleCancel}
-              isRewardsMember={isRewardsMember}
-              phoneNumber={phoneNumber}
               setLoading={setLoading}
               setHandleSubmit={(func) => (handleSubmitRef.current = func)}
             />

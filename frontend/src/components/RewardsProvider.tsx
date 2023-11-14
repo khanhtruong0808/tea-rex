@@ -30,7 +30,8 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
   const [beverageDiscount, setBeverageDiscount] = useState(0);
   const [itemLoading, setItemLoading] = useState(false); // loading state for redeeming some item
   const [drinkLoading, setDrinkLoading] = useState(false); // loading state for redeeming drinks
-
+  const [isRewardsMember, setIsRewardsMember] = useState(false);
+  const [rewardsMemberPhoneNumber, setRewardsMemberPhoneNumber] = useState("");
   const { showAlert } = useAlert();
 
   function setContextPhoneNumber(phoneNumber: string) {
@@ -115,10 +116,16 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
     }
   }
 
-  const checkForBeverages = (cartItems: CartItem[]) => {
+  const checkForItem = (cartItems: CartItem[], type: string) => {
     for (const cartItem of cartItems) {
-      if (cartItem.item.menuType == "beverage") {
-        return true;
+      if (type == "popcorn-chicken") {
+        if (cartItem.item.name == discountItems[type].itemName) {
+          return true;
+        }
+      } else {
+        if (cartItem.item.menuType == type.toString()) {
+          return true;
+        }
       }
     }
     return false;
@@ -150,10 +157,8 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
           }
 
           if (potentialBeverageDiscount === 0) {
-            showAlert("No more beverages to apply discount!", "error");
             setLoading(false, false);
-
-            return;
+            resolve(potentialBeverageDiscount);
           }
 
           setBeverageDiscount(
@@ -169,7 +174,8 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
 
           for (const cartItem of cartItems) {
             if (cartItem.item.name == config.itemName) {
-              totalItemCost += Number(cartItem.item.price);
+              totalItemCost +=
+                Number(cartItem.item.price) * Number(cartItem.quantity);
               foundItem = true;
               if (itemPrice == 0) {
                 itemPrice = Number(cartItem.item.price);
@@ -178,9 +184,8 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
           }
 
           if (!foundItem) {
-            showAlert(config.alertMessage, "error");
             setItemLoading(false);
-            resolve(-1);
+            resolve(-2);
             return;
           }
 
@@ -192,10 +197,6 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
           const adjustedTotalItemCost = parseFloat(totalItemCost.toFixed(2));
 
           if (adjustedDiscount > adjustedTotalItemCost) {
-            showAlert(
-              `No more ${config.itemName} to redeem or discount exceeds available amount!`,
-              "error",
-            );
             setItemLoading(false);
             resolve(-1);
             return;
@@ -216,6 +217,8 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
         spentPoints,
         itemLoading,
         drinkLoading,
+        isRewardsMember,
+        rewardsMemberPhoneNumber,
         setSpentPoints,
         handleAddPoints,
         handleRevertPendingPoints,
@@ -227,7 +230,9 @@ export function RewardsProvider({ children }: RewardsProviderProps) {
         setItemLoading,
         setDrinkLoading,
         setLoading,
-        checkForBeverages,
+        checkForItem,
+        setIsRewardsMember,
+        setRewardsMemberPhoneNumber,
       }}
     >
       {children}

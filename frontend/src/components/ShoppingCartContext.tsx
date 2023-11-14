@@ -4,6 +4,17 @@
 
 import { createContext } from "react";
 
+export type ProcessedCartItem = {
+  itemQuantity: string;
+  itemName: string;
+  itemPrice: string;
+  options: {
+    name: string;
+    quantity?: number;
+    price?: string;
+  }[];
+};
+
 type ShoppingCartContext = {
   addToCart: (
     item: MenuItem,
@@ -40,6 +51,7 @@ type ShoppingCartContext = {
   totalBeverageAmount: number;
   isExternalTaxSet: boolean;
   isEmpty: boolean;
+  cartToString: (cartItems: CartItem[]) => ProcessedCartItem[];
 };
 
 export const ShoppingCartContext = createContext({} as ShoppingCartContext);

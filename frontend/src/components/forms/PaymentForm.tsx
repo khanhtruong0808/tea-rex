@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactDOMServer from "react-dom/server";
 import {
   CardNumberElement,
   CardExpiryElement,
@@ -15,6 +16,7 @@ import { config } from "../../config";
 import { Printer } from "../Printer";
 import { useRewards } from "../RewardsProvider";
 import { useShoppingCart } from "../ShoppingCartProvider";
+import { ProcessedCartItem } from "../ShoppingCartContext";
 
 const STRIPE_OPTIONS: StripeCardElementOptions = {
   style: {
@@ -44,34 +46,45 @@ const CARD_NUMBER_OPTIONS: StripeCardNumberElementOptions = {
 
 interface PaymentFormProps {
   cancelCheckout: () => void;
-  isRewardsMember: boolean;
-  phoneNumber: string;
   setHandleSubmit: (func: () => Promise<void>) => void;
   setLoading: (loading: boolean) => void;
 }
 
-type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry";
+interface OrderMessageProps {
+  orderId: string;
+  name: string;
+  cartItems: ProcessedCartItem[];
+  subtotal: string;
+  tax: string;
+  finalAmount: string;
+}
 
-const PaymentForm = ({
-  isRewardsMember,
-  setHandleSubmit,
-  setLoading,
-}: PaymentFormProps) => {
+type ValidationErrorType = "zip" | "name" | "card" | "cvc" | "expiry" | "email";
+
+function isValidEmail(email: string) {
+  const regex =
+    /^(?!.*\.\.)(?!.*\.$)^[^\.][a-zA-Z0-9._-]+[^\.]@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
+}
+
+const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const navigate = useNavigate();
   const [zipCode, setZipCode] = useState("");
   const [name, setName] = useState("");
+  const [userEmail, setUserEmail] = useState("");
   const [cardError, setCardError] = useState(false);
   const [cvcError, setCvcError] = useState(false);
   const [nameError, setNameError] = useState(false);
   const [expiryError, setExpiryError] = useState(false);
   const [zipError, setZipError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [isCardComplete, setIsCardComplete] = useState(false);
   const [isExpiryComplete, setIsExpiryComplete] = useState(false);
   const [isCvcComplete, setIsCvcComplete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { handleAddPoints } = useRewards();
+  const { handleAddPoints, isRewardsMember } = useRewards();
   const {
     clearCart,
     closeCart,
@@ -80,6 +93,8 @@ const PaymentForm = ({
     discount,
     tax,
     finaltotal,
+    cartToString,
+    cartItems,
   } = useShoppingCart();
 
   const validations: { condition: boolean; type: ValidationErrorType }[] = [
@@ -100,6 +115,7 @@ const PaymentForm = ({
       type: "expiry",
     },
     { condition: !isCvcComplete, type: "cvc" },
+    { condition: !isValidEmail(userEmail), type: "email" },
   ];
 
   const errorSetters: Record<
@@ -111,6 +127,7 @@ const PaymentForm = ({
     card: setCardError,
     cvc: setCvcError,
     expiry: setExpiryError,
+    email: setEmailError,
   };
 
   useEffect(() => {
@@ -137,18 +154,62 @@ const PaymentForm = ({
 
       if (!error) {
         try {
-          console.log("Tax:" + tax);
           const finalAmount = Math.round(
             Number((subtotal - discount + tax).toFixed(2)) * 100,
           );
-          const response = await fetch(config.baseApiUrl + "/payment", {
+          const orderId = await Printer();
+
+          const orderMessage = createOrderMessage({
+            orderId: orderId.toString(),
+            name: name,
+            cartItems: cartToString(cartItems),
+            subtotal: subtotal.toFixed(2),
+            tax: tax.toFixed(2),
+            finalAmount: (finalAmount / 100).toFixed(2),
+          });
+
+          const emailContent = ReactDOMServer.renderToString(orderMessage);
+
+          let response = await fetch(config.baseApiUrl + "/send-mail", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
+              from: "daphney.koss7@ethereal.email", // testing email, change to tea-rex email before final deployment
+              to: userEmail,
+              subject: "Tea-Rex Order",
+              text: "",
+              html: emailContent,
+              attachments: [
+                {
+                  filename: "tea-rex.webp",
+                  path: "../frontend/public/tea-rex-logos/tearex.webp",
+                  cid: "tea-rexcid",
+                },
+              ],
+            }),
+          });
+
+          const emailResponse = await response.json();
+
+          if (emailResponse.success) {
+            console.log("Email sent successfully!");
+          } else {
+            console.error("Failed to send email", emailResponse.message);
+          }
+
+          response = await fetch(config.baseApiUrl + "/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: name,
+              email: userEmail,
               amount: finalAmount,
               id: paymentMethod.id,
+              orderId: orderId,
             }),
           });
 
@@ -156,10 +217,12 @@ const PaymentForm = ({
           closeCart();
 
           if (responseData.success) {
-            let orderId = await Printer();
-
             console.log("Successful payment");
-            clearCart();
+            //clearCart();
+            if (localStorage.getItem("fixedTime") !== null) {
+              localStorage.removeItem("fixedTime");
+            }
+
             navigate("/payment-result", {
               state: {
                 success: responseData.success,
@@ -168,7 +231,7 @@ const PaymentForm = ({
               },
             });
           } else {
-            console.log("Failed payment");
+            console.log(responseData.message);
             navigate("/payment-result", {
               state: {
                 success: responseData.success,
@@ -192,6 +255,7 @@ const PaymentForm = ({
     for (const validation of validations) {
       if (validation.condition) {
         formInvalid = true;
+        console.error("Invalid type: " + validation.type);
         errorSetters[validation.type](true);
       }
     }
@@ -204,12 +268,114 @@ const PaymentForm = ({
     setIsSubmitting(true);
     setLoading(true);
 
-    //update the points on the rewardsMember
     if (isRewardsMember && hasBeverages) {
       handleAddPoints(Math.floor(finaltotal));
     }
   };
   setHandleSubmit(handleSubmit);
+
+  function createOrderMessage({
+    orderId,
+    name,
+    cartItems,
+    subtotal,
+    tax,
+    finalAmount,
+  }: OrderMessageProps) {
+    const printCartItems = () => {
+      return cartItems.map((cartItem, index) => (
+        <table
+          key={index}
+          style={{
+            width: "100%",
+            marginBottom: "20px",
+            borderCollapse: "collapse",
+          }}
+        >
+          <tbody>
+            <tr>
+              <td
+                style={{ padding: "5px", border: "1px solid #ddd" }}
+                colSpan={2}
+              >
+                {" "}
+                <p style={{ fontWeight: "bold" }}>
+                  {cartItem.itemQuantity}x {cartItem.itemName}
+                </p>
+              </td>
+              <td
+                style={{
+                  padding: "5px",
+                  border: "1px solid #ddd",
+                  textAlign: "right",
+                }}
+              >
+                {cartItem.itemPrice}
+              </td>
+            </tr>
+            {cartItem.options.map((option, idx) => (
+              <tr key={idx}>
+                <td
+                  style={{ padding: "5px", border: "1px solid #ddd" }}
+                  colSpan={2}
+                >
+                  {option.name}
+                </td>
+                <td
+                  style={{
+                    padding: "5px",
+                    border: "1px solid #ddd",
+                    textAlign: "right",
+                  }}
+                >
+                  {option.quantity && option.quantity !== -1 && undefined
+                    ? `: ${option.quantity}`
+                    : ""}
+                  {option.price ? ` ${option.price}` : ""}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ));
+    };
+
+    return (
+      <html>
+        <head></head>
+        <body>
+          <table cellPadding="0" cellSpacing="0" width="100%">
+            <tr>
+              <td style={{ textAlign: "left", verticalAlign: "top" }}>
+                <h1>Tea-Rex order: {orderId}</h1>
+                <h2>For: {name}</h2>
+                <h5>2475 Elk Grove Blvd #150 Elk Grove, CA 95758</h5>
+                <h5>Order date: {new Date().toLocaleDateString()}</h5>
+              </td>
+              <td style={{ textAlign: "right", verticalAlign: "top" }}>
+                <img src="cid:tea-rexcid" width="200" />
+              </td>
+            </tr>
+          </table>
+          <p>{printCartItems()}</p>
+          <table cellPadding="0" cellSpacing="0" width="100%">
+            <tr>
+              <td style={{ textAlign: "left", verticalAlign: "top" }}>
+                <h5>Subtotal:</h5>
+                <h5>Tax:</h5>
+                <h5>Total Amount:</h5>
+              </td>
+              <td style={{ textAlign: "right", verticalAlign: "top" }}>
+                <h5>${subtotal}</h5>
+                <h5>${tax}</h5>
+                <h5>${finalAmount}</h5>
+              </td>
+            </tr>
+          </table>
+        </body>
+      </html>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="pb-8">
@@ -324,6 +490,27 @@ const PaymentForm = ({
         />
         {zipError && (
           <p className="text-sm text-red-500">Please enter a zip code!</p>
+        )}
+      </div>
+      {/* Email */}
+      <div className="relative mb-4">
+        <label className="block text-sm font-medium text-gray-700">Email</label>
+        <input
+          type="text"
+          className={`${
+            emailError ? "border-red-500" : "border-gray-200"
+          } font-base mt-1 block w-full rounded-md border px-3 py-2 text-sm`}
+          placeholder="Email Address"
+          inputMode="numeric"
+          onChange={(e) => {
+            setUserEmail(e.target.value);
+            if (e.target.value.length > 0) {
+              setEmailError(false);
+            }
+          }}
+        />
+        {emailError && (
+          <p className="text-sm text-red-500">Please enter a valid email!</p>
         )}
       </div>
     </form>

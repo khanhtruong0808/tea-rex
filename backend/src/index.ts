@@ -175,6 +175,7 @@ app.post("/accounts", async (req, res) => {
 
 app.post("/send-mail", async (req, res) => {
   try {
+    const {from, to, subject, text, html, attachments} = req.body;
     const transporter = nodemailer.createTransport({
       // host: "smtp.gmail.com",
       host: "smtp.ethereal.email",
@@ -186,19 +187,23 @@ app.post("/send-mail", async (req, res) => {
         pass: emailPassword,
       },
     });
+    const mailOptions = {
+      from: `"Tea-Rex Orders" <${from}>`,
+      to: to,
+      subject: subject,
+      text: text || undefined,
+      html: html || undefined,
+      attachments: attachments,
+    };
 
-    const info = await transporter.sendMail({
-      //from: `${req.body.from}" <replacewithtearexgmail@gmail.com>`, // this is to bypass Google's stinginess with this feature
-      from: `<${req.body.from}>"`, // use this temporarily so the sent email is formatted nicely on ethereal
-      to: req.body.to,
-      subject: req.body.subject,
-      text: req.body.text,
-    });
+    const info = await transporter.sendMail(mailOptions);
 
     res.json({
       success: true,
+      messageId: info.messageId,
     });
-  } catch (err: any) {
+  } catch (err:any) {
+    console.error(err);
     res.status(500).json({
       success: false,
       message: err.message,
@@ -536,9 +541,9 @@ app.delete("/rewards-member-delete", async (req, res) => {
 });
 
 app.post("/payment", cors(), async (req, res) => {
-  const { amount, id } = req.body;
+  const { name, email, amount, id, orderId } = req.body;
 
-  if (amount === undefined || !id) {
+  if (amount === undefined || !id || orderId === undefined) {
     return res.status(400).json({ message: "Amount and ID are required." });
   }
 
@@ -550,70 +555,33 @@ app.post("/payment", cors(), async (req, res) => {
   }
 
   try {
+    const customer = await stripe.customers.create({
+      name: name,
+      email: email,
+    })
+
     const payment = await stripe.paymentIntents.create({
       amount,
       currency: "USD",
-      description: "Tea-Rex",
+      description: orderId,
       payment_method: id,
       confirm: true,
       return_url: process.env.RETURN_URL || "http://localhost:5173",
+      customer: customer.id,
+      metadata: { order_id: orderId },
     });
-    console.log("Payment successful!");
     res.json({
       clientSecret: payment.client_secret,
       message: "Payment successful",
       success: true,
     });
   } catch (error: any) {
-    console.log("Payment failure!");
     res.json({
       message: "Payment has failed: " + error.message,
       success: false,
     });
   }
 });
-
-// app.post("/calculate-tax", async (req, res) => {
-//   const { amount, zipCode } = req.body;
-//   try {
-//     const calculation = await stripe.tax.calculations.create({
-//       currency: "usd",
-//       line_items: [
-//         {
-//           amount: amount,
-//           reference: "L1",
-//         },
-//       ],
-//       customer_details: {
-//         address: {
-//           postal_code: zipCode,
-//           country: "US",
-//         },
-//         address_source: "billing",
-//       },
-//       expand: ["line_items.data.tax_breakdown"],
-//     });
-
-//     if (calculation) {
-//       res.json({
-//         message: "calculation successful",
-//         tax: calculation.tax_amount_exclusive,
-//         totalAmount: calculation.amount_total,
-//         success: true,
-//       });
-//     } else {
-//       res.json({
-//         message: "Could not fetch tax data!",
-//         success: true,
-//       });
-//     }
-//   } catch (error: any) {
-//     res.json({
-//       message: error.message,
-//       success: false,
-//     });
-//   }
-// });
 
 // generating cloudinary signature
 cloudinary.config({
