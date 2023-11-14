@@ -96,6 +96,33 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
     setIsEmpty(false);
   }
 
+  function updateItem(
+    id: string,
+    item: MenuItem,
+    option: Item[],
+    specialInstructions: string,
+    quantity: number,
+    spice?: Item,
+  ) {
+    const newItem = cartItems.findIndex((element) => id === element.id);
+
+    if (item.menuType === "food") {
+      cartItems[newItem] = {
+        id,
+        item,
+        option,
+        spice,
+        specialInstructions,
+        quantity,
+      };
+    } else {
+      cartItems[newItem] = { id, item, option, specialInstructions, quantity };
+    }
+
+    setCartItems(cartItems);
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }
+
   function removeItem(id: string) {
     const newCartItems: CartItem[] = cartItems.filter((x) => x.id !== id);
     setCartItems(newCartItems);
@@ -169,6 +196,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
       value={{
         updateDiscount,
         addToCart,
+        updateItem,
         removeItem,
         clearCart,
         openCart,

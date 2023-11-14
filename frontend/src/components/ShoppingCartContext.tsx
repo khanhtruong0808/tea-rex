@@ -23,6 +23,14 @@ type ShoppingCartContext = {
     quantity: number,
     spice?: Item,
   ) => void;
+  updateItem: (
+    id: string,
+    item: MenuItem,
+    option: Item[],
+    specialInstructions: string,
+    quantity: number,
+    spice?: Item,
+  ) => void;
   removeItem: (id: string) => void;
   clearCart: () => void;
   openCart: () => void;
