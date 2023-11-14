@@ -17,24 +17,15 @@ import { Spinner } from "../../utils/Spinner";
 
 interface RewardsSystemProps {
   subtotal: number;
-  total: number;
-  setIsRewardsMember: (setIsRewardsMember: boolean) => void;
-  setRewardsMemberPhoneNumber: (rewardsMemberPhoneNumber: string) => void;
 }
 
-const RewardsSystemForm = ({
-  subtotal,
-  setIsRewardsMember,
-  setRewardsMemberPhoneNumber,
-}: RewardsSystemProps) => {
+const RewardsSystemForm = ({ subtotal }: RewardsSystemProps) => {
   const { cartItems, updateDiscount, discount, totalBeverageAmount } =
     useShoppingCart();
   const {
     points,
     drinkLoading,
     itemLoading,
-    beverageDiscount,
-    setContextPhoneNumber,
     handleRevertPendingPoints,
     applyDiscountForItem,
     setPoints,
@@ -43,7 +34,11 @@ const RewardsSystemForm = ({
     setDrinkLoading,
     setItemLoading,
     setLoading,
-    checkForBeverages,
+    checkForItem,
+    setRewardsMemberPhoneNumber,
+    setContextPhoneNumber,
+    isRewardsMember,
+    setIsRewardsMember,
   } = useRewards();
   const { showAlert } = useAlert();
 
@@ -80,7 +75,7 @@ const RewardsSystemForm = ({
   //This function only triggers when the user does a reload or exits the window, not when the user clicks on a new tab on the website.
   useEffect(() => {
     const handleBeforeUnload = (event: BeforeUnloadEvent) => {
-      if (spentPoints > 0) {
+      if (spentPoints > 0 && isRewardsMember) {
         event.preventDefault();
         event.returnValue =
           "You have spent points, are you sure you want to leave?";
@@ -98,7 +93,9 @@ const RewardsSystemForm = ({
 
   const cancelShowingRewardsInfo = () => {
     setIsShowingRewardsInfo(false);
-    handleRevertPendingPoints();
+    if (isRewardsMember) {
+      handleRevertPendingPoints();
+    }
     updateDiscount(0);
   };
 
@@ -119,7 +116,6 @@ const RewardsSystemForm = ({
     phoneNumber: string,
     points: number,
     totalBeverageAmount: number,
-    beverageDiscount: number,
     rewardsType: RewardsType,
   ) {
     if (points === 0) {
@@ -152,7 +148,7 @@ const RewardsSystemForm = ({
 
           switch (rewardsType) {
             case "drinks": {
-              if (!checkForBeverages(cartItems)) {
+              if (!checkForItem(cartItems, "beverage")) {
                 showAlert("No drinks in cart!", "error");
                 setDrinkLoading(false);
                 return;
@@ -172,7 +168,8 @@ const RewardsSystemForm = ({
                 discount,
                 totalBeverageAmount,
               );
-              if (discountApplied === -1) {
+              if (discountApplied === 0) {
+                showAlert("No more beverages to apply discount!", "error");
                 return;
               }
               updateDiscount(discountApplied);
@@ -180,6 +177,11 @@ const RewardsSystemForm = ({
             }
 
             case "popcorn-chicken":
+              if (!checkForItem(cartItems, rewardsType)) {
+                showAlert("No popcorn chicken in cart!", "error");
+                setItemLoading(false);
+                return;
+              }
               if (subtotal === discount) {
                 showAlert(
                   `You already are getting ${rewardsType} for free!`,
@@ -194,9 +196,22 @@ const RewardsSystemForm = ({
                 discount,
                 totalBeverageAmount,
               );
-              if (discountApplied === -1) {
-                return;
+
+              switch (discountApplied) {
+                case -1:
+                  showAlert(
+                    `No more popcorn chicken to redeem or discount exceeds available amount!`,
+                    "error",
+                  );
+                  return;
+                case -2:
+                  showAlert(
+                    "Please add popcorn chicken to your cart to redeem reward!",
+                    "error",
+                  );
+                  return;
               }
+
               updateDiscount(discountApplied);
               break;
             // more discounts for different food items, not including drinks, can be added using applyDiscountForItem function
@@ -204,8 +219,6 @@ const RewardsSystemForm = ({
 
           setPoints(data.points);
           setSpentPoints(data.pendingPoints);
-
-          console.log("Potential discount: " + potentialDiscount);
         } else {
           if (data.points == undefined) {
             console.error(
@@ -260,7 +273,9 @@ const RewardsSystemForm = ({
       const data = await response.json();
 
       if (data && data.exists) {
-        handleRevertPendingPoints();
+        if (isRewardsMember) {
+          handleRevertPendingPoints();
+        }
         setPoints(data.points);
         setIsShowingRewardsInfo(true);
         setIsRewardsMember(true);
@@ -337,7 +352,6 @@ const RewardsSystemForm = ({
                   phoneNumber,
                   points,
                   totalBeverageAmount,
-                  beverageDiscount,
                   "drinks",
                 );
               }}
@@ -366,7 +380,6 @@ const RewardsSystemForm = ({
                   phoneNumber,
                   points,
                   totalBeverageAmount,
-                  beverageDiscount,
                   "popcorn-chicken",
                 );
               }}

@@ -10,6 +10,8 @@ type RewardsContext = {
   beverageDiscount: number;
   itemLoading: boolean;
   drinkLoading: boolean;
+  isRewardsMember: boolean;
+  rewardsMemberPhoneNumber: string;
   handleAddPoints: (addPoints: number) => Promise<void>;
   handleRevertPendingPoints: () => Promise<boolean>;
   setContextPhoneNumber: (phoneNumber: string) => void;
@@ -24,7 +26,9 @@ type RewardsContext = {
   setDrinkLoading: (drinkLoading: boolean) => void;
   setItemLoading: (itemLoading: boolean) => void;
   setLoading: (loading1: boolean, loading2: boolean) => void;
-  checkForBeverages: (cartItems: CartItem[]) => boolean;
+  setIsRewardsMember: (isRewardsMember: boolean) => void;
+  setRewardsMemberPhoneNumber: (rewardsMemberPhoneNumber: string) => void;
+  checkForItem: (cartItems: CartItem[], type: string) => boolean;
 };
 
 export const RewardsContext = createContext({} as RewardsContext);

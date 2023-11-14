@@ -1,5 +1,5 @@
 import { ReactNode, useContext, useEffect, useState } from "react";
-import { ShoppingCartContext } from "./ShoppingCartContext";
+import { ProcessedCartItem, ShoppingCartContext } from "./ShoppingCartContext";
 import { useRewards } from "../components/RewardsProvider";
 import SlideOver from "./SlideOver";
 
@@ -49,7 +49,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
   const [subtotal, setSubtotal] = useState(0);
   const [finaltotal, setFinalTotal] = useState(0);
   const [isExternalTaxSet, setExternalTax] = useState(false);
-  const { handleRevertPendingPoints } = useRewards();
+  const { handleRevertPendingPoints, isRewardsMember } = useRewards();
 
   const cartQuantity = cartItems.length;
 
@@ -122,15 +122,46 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
 
   function closeCart() {
     setIsOpen(false);
-    handleRevertPendingPoints()
-      .then((isSuccessful) => {
-        if (isSuccessful) {
-          updateDiscount(0);
-        }
-      })
-      .catch((error) => {
-        console.error("Error during handleRevertPendingPoints", error);
-      });
+    if (isRewardsMember) {
+      handleRevertPendingPoints()
+        .then((isSuccessful) => {
+          if (isSuccessful) {
+            updateDiscount(0);
+          }
+        })
+        .catch((error) => {
+          console.error("Error during handleRevertPendingPoints", error);
+        });
+    }
+  }
+
+  function cartToString(cartItems: CartItem[]): ProcessedCartItem[] {
+    return cartItems.map((item) => {
+      return {
+        itemQuantity: `${item.quantity}`,
+        itemName: `${item.item.name}`,
+        itemPrice: `$${item.item.price}`,
+        options: item.option.map((option) => {
+          let optionDetails: {
+            name: string;
+            quantity?: number;
+            price?: string;
+          } = {
+            name: option.name,
+          };
+
+          if (option.qty !== null && option.qty !== -1) {
+            optionDetails.quantity = option.qty;
+          }
+
+          if (option.price !== null && option.price) {
+            optionDetails.price = `$${option.price.toFixed(2)}`;
+          }
+
+          return optionDetails;
+        }),
+      };
+    });
   }
 
   return (
@@ -157,6 +188,7 @@ export function ShoppingCartProvider({ children }: ShoppingCartProviderProps) {
         totalBeverageAmount,
         isExternalTaxSet,
         isEmpty,
+        cartToString,
       }}
     >
       {children}

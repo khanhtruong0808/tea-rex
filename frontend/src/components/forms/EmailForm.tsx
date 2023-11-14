@@ -3,9 +3,10 @@ import { config } from "../../config";
 import Captcha from "../Captcha";
 import { Spinner } from "../../utils/Spinner";
 
-function isNotValidEmail(email: string) {
-  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-  return !regex.test(email);
+function isValidEmail(email: string) {
+  const regex =
+    /^(?!.*\.\.)(?!.*\.$)^[^\.][a-zA-Z0-9._-]+[^\.]@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return regex.test(email);
 }
 
 type ValidationErrorType = "email" | "first_name" | "last_name" | "message";
@@ -26,7 +27,7 @@ export default function EmailForm() {
 
   const validations: { condition: boolean; type: ValidationErrorType }[] = [
     {
-      condition: isNotValidEmail(userEmail),
+      condition: !isValidEmail(userEmail),
       type: "email",
     },
     {
