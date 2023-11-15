@@ -6,4 +6,5 @@ export const config = {
   cloverMerchantId: import.meta.env.VITE_CLOVER_MERCHANT_ID || "",
   taxRate: import.meta.env.VITE_TAX_RATE || "",
   turnstileSiteKey: import.meta.env.VITE_TURNSTILE_SITE_KEY || "",
+  emailUserName: import.meta.env.VITE_EMAIL_USERNAME || "",
 };

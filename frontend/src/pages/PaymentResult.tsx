@@ -14,14 +14,14 @@ function PaymentResult() {
     );
   };
 
-  const [fixedDate] = useState(() => {
-    const savedTime = localStorage.getItem("fixedTime");
+  const [orderEstimateTime] = useState(() => {
+    const savedTime = localStorage.getItem("orderEstimatetime");
     return savedTime || generateTime();
   });
 
   useEffect(() => {
-    localStorage.setItem("fixedTime", fixedDate);
-  }, [fixedDate]);
+    localStorage.setItem("orderEstimateTime", orderEstimateTime);
+  }, [orderEstimateTime]);
 
   return (
     <div className="flex flex-col items-center justify-center">
@@ -36,7 +36,7 @@ function PaymentResult() {
             <p className="text-lg font-bold text-gray-900">
               Thank you. Your order is in progress.
               <p>Please check your email for order details.</p>
-              Approximate pick up time: {fixedDate}
+              Approximate pick up time: {orderEstimateTime}
             </p>
             <p className="mt-4 text-lg font-medium text-gray-600">
               We'll see you at 2475 Elk Grove Blvd #150, Elk Grove, CA 95758

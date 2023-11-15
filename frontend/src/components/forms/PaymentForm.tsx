@@ -158,7 +158,6 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
             Number((subtotal - discount + tax).toFixed(2)) * 100,
           );
           const orderId = await Printer();
-
           const orderMessage = createOrderMessage({
             orderId: orderId.toString(),
             name: name,
@@ -176,7 +175,7 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: "daphney.koss7@ethereal.email", // testing email, change to tea-rex email before final deployment
+              from: config.emailUserName, // testing email, change to tea-rex email before final deployment
               to: userEmail,
               subject: "Tea-Rex Order",
               text: "",
@@ -184,10 +183,11 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
               attachments: [
                 {
                   filename: "tea-rex.webp",
-                  path: "../frontend/public/tea-rex-logos/tearex.webp",
+                  path: "../frontend/public/tea-rex-logos/tea-rex-logo.png",
                   cid: "tea-rexcid",
                 },
               ],
+              replyTo: "tea-rex@noreply.com",
             }),
           });
 
@@ -218,9 +218,9 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
 
           if (responseData.success) {
             console.log("Successful payment");
-            //clearCart();
-            if (localStorage.getItem("fixedTime") !== null) {
-              localStorage.removeItem("fixedTime");
+            clearCart();
+            if (localStorage.getItem("orderEstimateTime") !== null) {
+              localStorage.removeItem("orderEstimateTime");
             }
 
             navigate("/payment-result", {
@@ -287,8 +287,10 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
         <table
           key={index}
           style={{
-            width: "100%",
+            width: "50%",
             marginBottom: "20px",
+            marginLeft: "auto",
+            marginRight: "auto",
             borderCollapse: "collapse",
           }}
         >
@@ -349,8 +351,8 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
               <td style={{ textAlign: "left", verticalAlign: "top" }}>
                 <h1>Tea-Rex order: {orderId}</h1>
                 <h2>For: {name}</h2>
-                <h5>2475 Elk Grove Blvd #150 Elk Grove, CA 95758</h5>
-                <h5>Order date: {new Date().toLocaleDateString()}</h5>
+                <h4>2475 Elk Grove Blvd #150 Elk Grove, CA 95758</h4>
+                <h4>Order date: {new Date().toLocaleDateString()}</h4>
               </td>
               <td style={{ textAlign: "right", verticalAlign: "top" }}>
                 <img src="cid:tea-rexcid" width="200" />
@@ -358,17 +360,27 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
             </tr>
           </table>
           <p>{printCartItems()}</p>
-          <table cellPadding="0" cellSpacing="0" width="100%">
+          <table
+            style={{ marginLeft: "auto", marginRight: "auto" }}
+            cellPadding="0"
+            cellSpacing="0"
+            width="25%"
+          >
             <tr>
               <td style={{ textAlign: "left", verticalAlign: "top" }}>
-                <h5>Subtotal:</h5>
-                <h5>Tax:</h5>
-                <h5>Total Amount:</h5>
+                <h3>Subtotal:</h3>
+                <h3>Tax:</h3>
+                <h3>Total Amount:</h3>
               </td>
-              <td style={{ textAlign: "right", verticalAlign: "top" }}>
-                <h5>${subtotal}</h5>
-                <h5>${tax}</h5>
-                <h5>${finalAmount}</h5>
+              <td
+                style={{
+                  textAlign: "right",
+                  verticalAlign: "top",
+                }}
+              >
+                <h3>${subtotal}</h3>
+                <h3>${tax}</h3>
+                <h3>${finalAmount}</h3>
               </td>
             </tr>
           </table>

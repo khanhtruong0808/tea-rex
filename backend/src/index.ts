@@ -175,25 +175,24 @@ app.post("/accounts", async (req, res) => {
 
 app.post("/send-mail", async (req, res) => {
   try {
-    const {from, to, subject, text, html, attachments} = req.body;
+    const {from, to, subject, text, html, attachments, replyTo} = req.body;
     const transporter = nodemailer.createTransport({
-      // host: "smtp.gmail.com",
-      host: "smtp.ethereal.email",
+      host: "smtp.gmail.com",
       port: 587,
+      secure: false,
       auth: {
-        // user: "replace with tea-rex gmail user",
-        // pass: "replace with tea-rex gmail password",
         user: emailUsername,
         pass: emailPassword,
       },
     });
     const mailOptions = {
-      from: `"Tea-Rex Orders" <${from}>`,
+      from: from,
       to: to,
       subject: subject,
       text: text || undefined,
       html: html || undefined,
       attachments: attachments,
+      replyTo: replyTo,
     };
 
     const info = await transporter.sendMail(mailOptions);
