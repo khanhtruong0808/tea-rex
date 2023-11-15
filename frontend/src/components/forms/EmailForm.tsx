@@ -87,9 +87,10 @@ export default function EmailForm() {
         },
         body: JSON.stringify({
           from: userEmail,
-          to: "daphney.koss7@ethereal.email", // testing email, change to tea-rex email before final deployment
-          subject: "Customer query",
+          to: config.emailUserName, // testing email, change to tea-rex email before final deployment
+          subject: "Customer Query",
           text: userMessage,
+          replyTo: userEmail,
         }),
       });
 
