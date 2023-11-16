@@ -6,7 +6,6 @@ import { config } from "../config";
 import useDialog from "../utils/dialogStore";
 import adminModeStore from "../utils/adminModeStore";
 import DeliveryOption from "../components/DeliveryOption";
-// import PulseLoader from "react-spinners/PulseLoader";
 import { AddItemForm } from "../components/AddItemForm";
 import LogoutHandler from "../components/LogoutButton";
 
@@ -48,22 +47,6 @@ const Menu = () => {
           alt="tearex.webp"
           className="ml-10 w-[40%] animate-pulse text-center" // Other classes can be used alongside inline styles
         />
-        {/* MAKE GIF INSTEAD OF LAYERING TO MAKE SCREEN RESPONSIVE
-        <div
-          className="relative flex items-center justify-center animate-pulse"
-          style={{
-            top: "-375px",
-            left: "-110px",
-            transform: "rotate(-65deg)",
-          }} // not mobile friendly yet
-        >
-          <PulseLoader
-            color={"#000000"}
-            loading={true} // Show loading screen for 4 seconds
-            size={15}
-            margin={15}
-          />
-        </div> */}
       </div>
     );
   }
@@ -118,7 +101,7 @@ const Menu = () => {
       <div>{isAdmin && <LogoutHandler />}</div>
 
       <div className="flex-1 space-y-12">
-      <DeliveryOption />
+        <DeliveryOption />
         {selectedCategory === "all"
           ? data.map((menuSection: MenuSection) => (
               <MenuSection

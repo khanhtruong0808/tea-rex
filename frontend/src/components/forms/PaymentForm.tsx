@@ -175,7 +175,7 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              from: config.emailUserName, // testing email, change to tea-rex email before final deployment
+              from: config.emailUserName,
               to: userEmail,
               subject: "Tea-Rex Order",
               text: "",
@@ -255,7 +255,6 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
     for (const validation of validations) {
       if (validation.condition) {
         formInvalid = true;
-        console.error("Invalid type: " + validation.type);
         errorSetters[validation.type](true);
       }
     }
@@ -494,8 +493,9 @@ const PaymentForm = ({ setHandleSubmit, setLoading }: PaymentFormProps) => {
           maxLength={5}
           inputMode="numeric"
           onChange={(e) => {
-            setZipCode(e.target.value);
-            if (e.target.value.length == 5) {
+            const numericValue = e.target.value.replace(/\D/g, "");
+            setZipCode(numericValue);
+            if (numericValue.length === 5) {
               setZipError(false);
             }
           }}

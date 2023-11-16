@@ -38,7 +38,7 @@ const MenuItem = ({
         key={item.id}
       >
         <p>{item.name}</p>
-        <p>${item.price}</p>
+        <p>${Number(item.price).toFixed(2)}</p>
       </div>
       {isAdmin && (
         <>

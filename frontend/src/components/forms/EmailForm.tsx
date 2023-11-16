@@ -87,7 +87,7 @@ export default function EmailForm() {
         },
         body: JSON.stringify({
           from: userEmail,
-          to: config.emailUserName, // testing email, change to tea-rex email before final deployment
+          to: config.emailUserName,
           subject: "Customer Query",
           text: userMessage,
           replyTo: userEmail,
