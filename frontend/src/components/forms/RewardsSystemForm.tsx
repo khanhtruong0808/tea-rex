@@ -144,8 +144,6 @@ const RewardsSystemForm = ({ subtotal }: RewardsSystemProps) => {
 
       if (data) {
         if (data.points !== undefined && data.pendingPoints !== undefined) {
-          const potentialDiscount = 0;
-
           switch (rewardsType) {
             case "drinks": {
               if (!checkForItem(cartItems, "beverage")) {
